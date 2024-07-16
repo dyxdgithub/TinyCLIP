@@ -123,6 +123,27 @@ ENV/
 env.bak/
 venv.bak/
 
+# Agent harness runtime artifacts
+harness/state/
+harness/trace/
+harness/checkpoints/
+
+# Local model weights and caches
+*.ckpt
+*.pth
+*.pt
+*.safetensors
+*.onnx
+.torch/
+torch/hub/
+
+# Local OpenImage and ImageNet dataset artifacts
+my_code/data/ImageNet-200/
+my_code/data/OpenImage/**/*.zip
+my_code/data/OpenImage/**/*.ogg
+my_code/data/OpenImage/**/audio/
+my_code/data/OpenImage/**/images/
+
 # Spyder project settings
 .spyderproject
 .spyproject

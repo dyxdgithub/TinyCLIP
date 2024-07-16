@@ -1,0 +1,750 @@
+﻿LabelName,TextName,ParentLabelName,ParentTextName,Depth,PathLabelName,PathTextName
+/m/0242l,Coin,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0242l,/m/0bl9f > Coin
+/m/03120,Flag,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/03120,/m/0bl9f > Flag
+/m/0h8l4fh,Light bulb,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0h8l4fh,/m/0bl9f > Light bulb
+/m/0167gd,Doll,/m/0138tl,Toy,2,/m/0bl9f > /m/0138tl > /m/0167gd,/m/0bl9f > Toy > Doll
+/m/01j51,Balloon,/m/0138tl,Toy,2,/m/0bl9f > /m/0138tl > /m/01j51,/m/0bl9f > Toy > Balloon
+/m/029b3,Dice,/m/0138tl,Toy,2,/m/0bl9f > /m/0138tl > /m/029b3,/m/0bl9f > Toy > Dice
+/m/02wmf,Flying disc,/m/0138tl,Toy,2,/m/0bl9f > /m/0138tl > /m/02wmf,/m/0bl9f > Toy > Flying disc
+/m/02zt3,Kite,/m/0138tl,Toy,2,/m/0bl9f > /m/0138tl > /m/02zt3,/m/0bl9f > Toy > Kite
+/m/0kmg4,Teddy bear,/m/0138tl,Toy,2,/m/0bl9f > /m/0138tl > /m/0kmg4,/m/0bl9f > Toy > Teddy bear
+/m/0174k2,Washing machine,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/0174k2,/m/0bl9f > Home appliance > Washing machine
+/m/01k6s3,Toaster,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/01k6s3,/m/0bl9f > Home appliance > Toaster
+/m/029bxz,Oven,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/029bxz,/m/0bl9f > Home appliance > Oven
+/m/02pjr4,Blender,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/02pjr4,/m/0bl9f > Home appliance > Blender
+/m/02wv84t,Gas stove,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/02wv84t,/m/0bl9f > Home appliance > Gas stove
+/m/02x984l,Mechanical fan,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/02x984l,/m/0bl9f > Home appliance > Mechanical fan
+/m/03qhv5,Heater,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/03qhv5,/m/0bl9f > Home appliance > Heater
+/m/03s_tn,Kettle,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/03s_tn,/m/0bl9f > Home appliance > Kettle
+/m/03wvsk,Hair dryer,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/03wvsk,/m/0bl9f > Home appliance > Hair dryer
+/m/040b_t,Refrigerator,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/040b_t,/m/0bl9f > Home appliance > Refrigerator
+/m/04169hn,Wood-burning stove,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/04169hn,/m/0bl9f > Home appliance > Wood-burning stove
+/m/04lvq_,Humidifier,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/04lvq_,/m/0bl9f > Home appliance > Humidifier
+/m/063rgb,Mixer,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/063rgb,/m/0bl9f > Home appliance > Mixer
+/m/07xyvk,Coffeemaker,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/07xyvk,/m/0bl9f > Home appliance > Coffeemaker
+/m/0fx9l,Microwave oven,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/0fx9l,/m/0bl9f > Home appliance > Microwave oven
+/m/0ky7b,Dishwasher,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/0ky7b,/m/0bl9f > Home appliance > Dishwasher
+/m/0llzx,Sewing machine,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/0llzx,/m/0bl9f > Home appliance > Sewing machine
+/m/0c3m8g,Hand dryer,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/0c3m8g,/m/0bl9f > Home appliance > Hand dryer
+/m/03ldnb,Ceiling fan,/m/019dx1,Home appliance,2,/m/0bl9f > /m/019dx1 > /m/03ldnb,/m/0bl9f > Home appliance > Ceiling fan
+/m/0130jx,Sink,/m/02pkr5,Plumbing fixture,2,/m/0bl9f > /m/02pkr5 > /m/0130jx,/m/0bl9f > Plumbing fixture > Sink
+/m/01vbnl,Bidet,/m/02pkr5,Plumbing fixture,2,/m/0bl9f > /m/02pkr5 > /m/01vbnl,/m/0bl9f > Plumbing fixture > Bidet
+/m/02f9f_,Shower,/m/02pkr5,Plumbing fixture,2,/m/0bl9f > /m/02pkr5 > /m/02f9f_,/m/0bl9f > Plumbing fixture > Shower
+/m/02jz0l,Tap,/m/02pkr5,Plumbing fixture,2,/m/0bl9f > /m/02pkr5 > /m/02jz0l,/m/0bl9f > Plumbing fixture > Tap
+/m/03dnzn,Bathtub,/m/02pkr5,Plumbing fixture,2,/m/0bl9f > /m/02pkr5 > /m/03dnzn,/m/0bl9f > Plumbing fixture > Bathtub
+/m/09g1w,Toilet,/m/02pkr5,Plumbing fixture,2,/m/0bl9f > /m/02pkr5 > /m/09g1w,/m/0bl9f > Plumbing fixture > Toilet
+/m/01lsmm,Scissors,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/01lsmm,/m/0bl9f > Office supplies > Scissors
+/m/01n5jq,Poster,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/01n5jq,/m/0bl9f > Office supplies > Poster
+/m/024d2,Calculator,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/024d2,/m/0bl9f > Office supplies > Calculator
+/m/025dyy,Box,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/025dyy,/m/0bl9f > Office supplies > Box
+/m/025fsf,Stapler,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/025fsf,/m/0bl9f > Office supplies > Stapler
+/m/02d9qx,Whiteboard,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/02d9qx,/m/0bl9f > Office supplies > Whiteboard
+/m/02ddwp,Pencil sharpener,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/02ddwp,/m/0bl9f > Office supplies > Pencil sharpener
+/m/02fh7f,Eraser,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/02fh7f,/m/0bl9f > Office supplies > Eraser
+/m/02xqq,Fax,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/02xqq,/m/0bl9f > Office supplies > Fax
+/m/03m3vtv,Adhesive tape,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/03m3vtv,/m/0bl9f > Office supplies > Adhesive tape
+/m/04zwwv,Ring binder,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/04zwwv,/m/0bl9f > Office supplies > Ring binder
+/m/05676x,Pencil case,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/05676x,/m/0bl9f > Office supplies > Pencil case
+/m/05gqfk,Plastic bag,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/05gqfk,/m/0bl9f > Office supplies > Plastic bag
+/m/080n7g,Paper cutter,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/080n7g,/m/0bl9f > Office supplies > Paper cutter
+/m/09gtd,Toilet paper,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/09gtd,/m/0bl9f > Office supplies > Toilet paper
+/m/0frqm,Envelope,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/0frqm,/m/0bl9f > Office supplies > Envelope
+/m/0k1tl,Pen,/m/02rdsp,Office supplies,2,/m/0bl9f > /m/02rdsp > /m/0k1tl,/m/0bl9f > Office supplies > Pen
+/m/02w3r3,Paper towel,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/02w3r3,/m/0bl9f > Paper towel
+/m/034c16,Pillow,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/034c16,/m/0bl9f > Pillow
+/m/01_5g,Chopsticks,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/01_5g,/m/0bl9f > Kitchenware > Kitchen utensil > Chopsticks
+/m/027rl48,Ladle,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/027rl48,/m/0bl9f > Kitchenware > Kitchen utensil > Ladle
+/m/02d1br,Spatula,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/02d1br,/m/0bl9f > Kitchenware > Kitchen utensil > Spatula
+/m/02mqfb,Can opener,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/02mqfb,/m/0bl9f > Kitchenware > Kitchen utensil > Can opener
+/m/02pdsw,Cutting board,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/02pdsw,/m/0bl9f > Kitchenware > Kitchen utensil > Cutting board
+/m/02vwcm,Whisk,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/02vwcm,/m/0bl9f > Kitchenware > Kitchen utensil > Whisk
+/m/03v5tg,Drinking straw,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/03v5tg,/m/0bl9f > Kitchenware > Kitchen utensil > Drinking straw
+/m/04ctx,Knife,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/04ctx,/m/0bl9f > Kitchenware > Kitchen utensil > Knife
+/m/04f5ws,Bottle opener,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/04f5ws,/m/0bl9f > Kitchenware > Kitchen utensil > Bottle opener
+/m/07v9_z,Measuring cup,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/07v9_z,/m/0bl9f > Kitchenware > Kitchen utensil > Measuring cup
+/m/08ks85,Pizza cutter,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/08ks85,/m/0bl9f > Kitchenware > Kitchen utensil > Pizza cutter
+/m/0cmx8,Spoon,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/0cmx8,/m/0bl9f > Kitchenware > Kitchen utensil > Spoon
+/m/0dt3t,Fork,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/03_wxk > /m/03hlz0c > /m/0dt3t,/m/0bl9f > Kitchenware > Kitchen utensil > Fork
+/m/01_5g,Chopsticks,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/01_5g,/m/0bl9f > Kitchenware > Tableware > Chopsticks
+/m/01fh4r,Teapot,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/01fh4r,/m/0bl9f > Kitchenware > Tableware > Teapot
+/m/02jvh9,Mug,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/02jvh9,/m/0bl9f > Kitchenware > Tableware > Mug
+/m/02p5f1q,Coffee cup,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/02p5f1q,/m/0bl9f > Kitchenware > Tableware > Coffee cup
+/m/02x8cch,Salt and pepper shakers,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/02x8cch,/m/0bl9f > Kitchenware > Tableware > Salt and pepper shakers
+/m/03hj559,Mixing bowl,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/03hj559,/m/0bl9f > Kitchenware > Tableware > Mixing bowl
+/m/03q5c7,Saucer,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/03q5c7,/m/0bl9f > Kitchenware > Tableware > Saucer
+/m/0440zs,Cocktail shaker,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/0440zs,/m/0bl9f > Kitchenware > Tableware > Cocktail shaker
+/m/04dr76w,Bottle,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/04dr76w,/m/0bl9f > Kitchenware > Tableware > Bottle
+/m/04kkgm,Bowl,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/04kkgm,/m/0bl9f > Kitchenware > Tableware > Bowl
+/m/050gv4,Plate,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/050gv4,/m/0bl9f > Kitchenware > Tableware > Plate
+/m/054fyh,Pitcher (Container),/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/054fyh,/m/0bl9f > Kitchenware > Tableware > Pitcher (Container)
+/m/058qzx,Kitchen knife,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/058qzx,/m/0bl9f > Kitchenware > Tableware > Kitchen knife
+/m/08hvt4,Jug,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/08hvt4,/m/0bl9f > Kitchenware > Tableware > Jug
+/m/099ssp,Platter,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/099ssp,/m/0bl9f > Kitchenware > Tableware > Platter
+/m/09tvcd,Wine glass,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/09tvcd,/m/0bl9f > Kitchenware > Tableware > Wine glass
+/m/0cmx8,Spoon,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/0cmx8,/m/0bl9f > Kitchenware > Tableware > Spoon
+/m/0dt3t,Fork,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/0dt3t,/m/0bl9f > Kitchenware > Tableware > Fork
+/m/0h8n27j,Serving tray,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/0h8n27j,/m/0bl9f > Kitchenware > Tableware > Serving tray
+/m/0h8n6ft,Cake stand,/m/04brg2,Tableware,3,/m/0bl9f > /m/03_wxk > /m/04brg2 > /m/0h8n6ft,/m/0bl9f > Kitchenware > Tableware > Cake stand
+/m/04v6l4,Frying pan,/m/03_wxk,Kitchenware,2,/m/0bl9f > /m/03_wxk > /m/04v6l4,/m/0bl9f > Kitchenware > Frying pan
+/m/084rd,Wok,/m/03_wxk,Kitchenware,2,/m/0bl9f > /m/03_wxk > /m/084rd,/m/0bl9f > Kitchenware > Wok
+/m/0h8kx63,Spice rack,/m/03_wxk,Kitchenware,2,/m/0bl9f > /m/03_wxk > /m/0h8kx63,/m/0bl9f > Kitchenware > Spice rack
+/m/029bxz,Oven,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/029bxz,/m/0bl9f > Kitchenware > Kitchen appliance > Oven
+/m/02pjr4,Blender,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/02pjr4,/m/0bl9f > Kitchenware > Kitchen appliance > Blender
+/m/02tsc9,Slow cooker,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/02tsc9,/m/0bl9f > Kitchenware > Kitchen appliance > Slow cooker
+/m/03y6mg,Food processor,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/03y6mg,/m/0bl9f > Kitchenware > Kitchen appliance > Food processor
+/m/040b_t,Refrigerator,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/040b_t,/m/0bl9f > Kitchenware > Kitchen appliance > Refrigerator
+/m/04z4wx,Waffle iron,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/04z4wx,/m/0bl9f > Kitchenware > Kitchen appliance > Waffle iron
+/m/063rgb,Mixer,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/063rgb,/m/0bl9f > Kitchenware > Kitchen appliance > Mixer
+/m/07xyvk,Coffeemaker,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/07xyvk,/m/0bl9f > Kitchenware > Kitchen appliance > Coffeemaker
+/m/0fx9l,Microwave oven,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/0fx9l,/m/0bl9f > Kitchenware > Kitchen appliance > Microwave oven
+/m/0h8ntjv,Pressure cooker,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/0h8ntjv,/m/0bl9f > Kitchenware > Kitchen appliance > Pressure cooker
+/m/0ky7b,Dishwasher,/m/0h99cwc,Kitchen appliance,3,/m/0bl9f > /m/03_wxk > /m/0h99cwc > /m/0ky7b,/m/0bl9f > Kitchenware > Kitchen appliance > Dishwasher
+/m/03tw93,Fireplace,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/03tw93,/m/0bl9f > Fireplace
+/m/0b3fp9,Countertop,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0b3fp9,/m/0bl9f > Countertop
+/m/0bt_c3,Book,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0bt_c3,/m/0bl9f > Book
+/m/01mzpv,Chair,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/01mzpv,/m/0bl9f > Furniture > Chair
+/m/01s105,Cabinetry,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/01s105,/m/0bl9f > Furniture > Cabinetry
+/m/01y9k5,Desk,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/01y9k5,/m/0bl9f > Furniture > Desk
+/m/0271qf7,Wine rack,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0271qf7,/m/0bl9f > Furniture > Wine rack
+/m/03m3pdh,Sofa bed,/m/02crq1,Couch,3,/m/0bl9f > /m/0c_jw > /m/02crq1 > /m/03m3pdh,/m/0bl9f > Furniture > Couch > Sofa bed
+/m/0703r8,Loveseat,/m/02crq1,Couch,3,/m/0bl9f > /m/0c_jw > /m/02crq1 > /m/0703r8,/m/0bl9f > Furniture > Couch > Loveseat
+/m/02vkqh8,Wardrobe,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/02vkqh8,/m/0bl9f > Furniture > Wardrobe
+/m/02z51p,Nightstand,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/02z51p,/m/0bl9f > Furniture > Nightstand
+/m/03__z0,Bookcase,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/03__z0,/m/0bl9f > Furniture > Bookcase
+/m/061hd_,Infant bed,/m/03ssj5,Bed,3,/m/0bl9f > /m/0c_jw > /m/03ssj5 > /m/061hd_,/m/0bl9f > Furniture > Bed > Infant bed
+/m/026qbn5,Studio couch,/m/03ssj5,Bed,3,/m/0bl9f > /m/0c_jw > /m/03ssj5 > /m/026qbn5,/m/0bl9f > Furniture > Bed > Studio couch
+/m/047j0r,Filing cabinet,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/047j0r,/m/0bl9f > Furniture > Filing cabinet
+/m/078n6m,Coffee table,/m/04bcr3,Table,3,/m/0bl9f > /m/0c_jw > /m/04bcr3 > /m/078n6m,/m/0bl9f > Furniture > Table > Coffee table
+/m/0h8n5zk,Kitchen & dining room table,/m/04bcr3,Table,3,/m/0bl9f > /m/0c_jw > /m/04bcr3 > /m/0h8n5zk,/m/0bl9f > Furniture > Table > Kitchen & dining room table
+/m/05kyg_,Chest of drawers,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/05kyg_,/m/0bl9f > Furniture > Chest of drawers
+/m/0642b4,Cupboard,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0642b4,/m/0bl9f > Furniture > Cupboard
+/m/0cvnqh,Bench,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0cvnqh,/m/0bl9f > Furniture > Bench
+/m/0fqfqc,Drawer,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0fqfqc,/m/0bl9f > Furniture > Drawer
+/m/0fqt361,Stool,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0fqt361,/m/0bl9f > Furniture > Stool
+/m/0gjbg72,Shelf,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0gjbg72,/m/0bl9f > Furniture > Shelf
+/m/0h8mzrc,Wall clock,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0h8mzrc,/m/0bl9f > Furniture > Wall clock
+/m/04y4h8h,Bathroom cabinet,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/04y4h8h,/m/0bl9f > Furniture > Bathroom cabinet
+/m/0d4w1,Closet,/m/0c_jw,Furniture,2,/m/0bl9f > /m/0c_jw > /m/0d4w1,/m/0bl9f > Furniture > Closet
+/m/0h8n6f9,Dog bed,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0h8n6f9,/m/0bl9f > Dog bed
+/m/0h8nm9j,Cat furniture,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0h8nm9j,/m/0bl9f > Cat furniture
+/m/01jfsr,Lantern,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01jfsr,/m/0bl9f > Lantern
+/m/046dlr,Alarm clock,/m/01x3z,Clock,2,/m/0bl9f > /m/01x3z > /m/046dlr,/m/0bl9f > Clock > Alarm clock
+/m/06_72j,Digital clock,/m/01x3z,Clock,2,/m/0bl9f > /m/01x3z > /m/06_72j,/m/0bl9f > Clock > Digital clock
+/m/0h8mzrc,Wall clock,/m/01x3z,Clock,2,/m/0bl9f > /m/01x3z > /m/0h8mzrc,/m/0bl9f > Clock > Wall clock
+/m/02s195,Vase,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/02s195,/m/0bl9f > Vase
+/m/031b6r,Window blind,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/031b6r,/m/0bl9f > Window blind
+/m/03rszm,Curtain,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/03rszm,/m/0bl9f > Curtain
+/m/054_l,Mirror,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/054_l,/m/0bl9f > Mirror
+/m/0152hh,Snowman,/m/06msq,Sculpture,2,/m/0bl9f > /m/06msq > /m/0152hh,/m/0bl9f > Sculpture > Snowman
+/m/04yqq2,Bust,/m/06msq,Sculpture,2,/m/0bl9f > /m/06msq > /m/04yqq2,/m/0bl9f > Sculpture > Bust
+/m/01yx86,Bronze sculpture,/m/06msq,Sculpture,2,/m/0bl9f > /m/06msq > /m/01yx86,/m/0bl9f > Sculpture > Bronze sculpture
+/m/06z37_,Picture frame,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/06z37_,/m/0bl9f > Picture frame
+/m/0c06p,Candle,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0c06p,/m/0bl9f > Candle
+/m/0dtln,Lamp,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0dtln,/m/0bl9f > Lamp
+/m/0162_1,Towel,/m/0h8nr_l,Bathroom accessory,2,/m/0bl9f > /m/0h8nr_l > /m/0162_1,/m/0bl9f > Bathroom accessory > Towel
+/m/09gtd,Toilet paper,/m/0h8nr_l,Bathroom accessory,2,/m/0bl9f > /m/0h8nr_l > /m/09gtd,/m/0bl9f > Bathroom accessory > Toilet paper
+/m/0c3mkw,Soap dispenser,/m/0h8nr_l,Bathroom accessory,2,/m/0bl9f > /m/0h8nr_l > /m/0c3mkw,/m/0bl9f > Bathroom accessory > Soap dispenser
+/m/0h8nsvg,Facial tissue holder,/m/0h8nr_l,Bathroom accessory,2,/m/0bl9f > /m/0h8nr_l > /m/0h8nsvg,/m/0bl9f > Bathroom accessory > Facial tissue holder
+/m/01gllr,Beehive,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01gllr,/m/0bl9f > Beehive
+/m/01j61q,Tent,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01j61q,/m/0bl9f > Tent
+/m/015qbp,Parking meter,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/015qbp,/m/0bl9f > Parking meter
+/m/015qff,Traffic light,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/015qff,/m/0bl9f > Traffic light
+/m/01knjb,Billboard,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01knjb,/m/0bl9f > Billboard
+/m/02pv19,Stop sign,/m/01mqdt,Traffic sign,2,/m/0bl9f > /m/01mqdt > /m/02pv19,/m/0bl9f > Traffic sign > Stop sign
+/m/01pns0,Fire hydrant,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01pns0,/m/0bl9f > Fire hydrant
+/m/0220r2,Fountain,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0220r2,/m/0bl9f > Fountain
+/m/033rq4,Street light,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/033rq4,/m/0bl9f > Street light
+/m/065h6l,Jacuzzi,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/065h6l,/m/0bl9f > Jacuzzi
+/m/02wg_p,Tree house,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/02wg_p,/m/0bl9f > Building > Tree house
+/m/04h7h,Lighthouse,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/04h7h,/m/0bl9f > Building > Lighthouse
+/m/079cl,Skyscraper,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/079cl,/m/0bl9f > Building > Skyscraper
+/m/0d5gx,Castle,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/0d5gx,/m/0bl9f > Building > Castle
+/m/01fdzj,Tower,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/01fdzj,/m/0bl9f > Building > Tower
+/m/03jm5,House,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/03jm5,/m/0bl9f > Building > House
+/m/021sj1,Office building,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/021sj1,/m/0bl9f > Building > Office building
+/m/0crjs,Convenience store,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/0crjs,/m/0bl9f > Building > Convenience store
+/m/012ysf,Syringe,/m/01xgg_,Medical equipment,3,/m/0bl9f > /m/0cgh4 > /m/01xgg_ > /m/012ysf,/m/0bl9f > Building > Medical equipment > Syringe
+/m/02lbcq,Stretcher,/m/01xgg_,Medical equipment,3,/m/0bl9f > /m/0cgh4 > /m/01xgg_ > /m/02lbcq,/m/0bl9f > Building > Medical equipment > Stretcher
+/m/073g6,Stethoscope,/m/01xgg_,Medical equipment,3,/m/0bl9f > /m/0cgh4 > /m/01xgg_ > /m/073g6,/m/0bl9f > Building > Medical equipment > Stethoscope
+/m/0j496,Band-aid,/m/01xgg_,Medical equipment,3,/m/0bl9f > /m/0cgh4 > /m/01xgg_ > /m/0j496,/m/0bl9f > Building > Medical equipment > Band-aid
+/m/013y1f,Organ (Musical Instrument),/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/013y1f,/m/0bl9f > Building > Musical instrument > Organ (Musical Instrument)
+/m/018j2,Banjo,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/018j2,/m/0bl9f > Building > Musical instrument > Banjo
+/m/01xqw,Cello,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/01xqw,/m/0bl9f > Building > Musical instrument > Cello
+/m/026t6,Drum,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/026t6,/m/0bl9f > Building > Musical instrument > Drum
+/m/0319l,French horn,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/0319l,/m/0bl9f > Building > Musical instrument > French horn
+/m/0342h,Guitar,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/0342h,/m/0bl9f > Building > Musical instrument > Guitar
+/m/03m5k,Harp,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/03m5k,/m/0bl9f > Building > Musical instrument > Harp
+/m/03q5t,Harpsichord,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/03q5t,/m/0bl9f > Building > Musical instrument > Harpsichord
+/m/03qjg,Harmonica,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/03qjg,/m/0bl9f > Building > Musical instrument > Harmonica
+/m/057cc,Musical keyboard,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/057cc,/m/0bl9f > Building > Musical instrument > Musical keyboard
+/m/05kms,Oboe,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/05kms,/m/0bl9f > Building > Musical instrument > Oboe
+/m/05r5c,Piano,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/05r5c,/m/0bl9f > Building > Musical instrument > Piano
+/m/06ncr,Saxophone,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/06ncr,/m/0bl9f > Building > Musical instrument > Saxophone
+/m/07c6l,Trombone,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/07c6l,/m/0bl9f > Building > Musical instrument > Trombone
+/m/07gql,Trumpet,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/07gql,/m/0bl9f > Building > Musical instrument > Trumpet
+/m/07y_7,Violin,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/07y_7,/m/0bl9f > Building > Musical instrument > Violin
+/m/0f8s22,Chime,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/0f8s22,/m/0bl9f > Building > Musical instrument > Chime
+/m/0l14j_,Flute,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/0l14j_,/m/0bl9f > Building > Musical instrument > Flute
+/m/0mkg,Accordion,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/0mkg,/m/0bl9f > Building > Musical instrument > Accordion
+/m/0xzly,Maraca,/m/04szw,Musical instrument,3,/m/0bl9f > /m/0cgh4 > /m/04szw > /m/0xzly,/m/0bl9f > Building > Musical instrument > Maraca
+/m/014y4n,Paddle,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/014y4n,/m/0bl9f > Building > Sports equipment > Paddle
+/m/01226z,Football,/m/018xm,Ball (Object),4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/018xm > /m/01226z,/m/0bl9f > Building > Sports equipment > Ball (Object) > Football
+/m/02ctlc,Cricket ball,/m/018xm,Ball (Object),4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/018xm > /m/02ctlc,/m/0bl9f > Building > Sports equipment > Ball (Object) > Cricket ball
+/m/02rgn06,Volleyball (Ball),/m/018xm,Ball (Object),4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/018xm > /m/02rgn06,/m/0bl9f > Building > Sports equipment > Ball (Object) > Volleyball (Ball)
+/m/05ctyq,Tennis ball,/m/018xm,Ball (Object),4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/018xm > /m/05ctyq,/m/0bl9f > Building > Sports equipment > Ball (Object) > Tennis ball
+/m/0wdt60w,Rugby ball,/m/018xm,Ball (Object),4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/018xm > /m/0wdt60w,/m/0bl9f > Building > Sports equipment > Ball (Object) > Rugby ball
+/m/01bqk0,Bicycle wheel,/m/0199g,Bicycle,4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0199g > /m/01bqk0,/m/0bl9f > Building > Sports equipment > Bicycle > Bicycle wheel
+/m/019w40,Surfboard,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/019w40,/m/0bl9f > Building > Sports equipment > Surfboard
+/m/01g3x7,Bow and arrow,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/01g3x7,/m/0bl9f > Building > Sports equipment > Bow and arrow
+/m/0268lbt,Hiking equipment,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0268lbt,/m/0bl9f > Building > Sports equipment > Hiking equipment
+/m/02p3w7d,Roller skates,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/02p3w7d,/m/0bl9f > Building > Sports equipment > Roller skates
+/m/02wmf,Flying disc,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/02wmf,/m/0bl9f > Building > Sports equipment > Flying disc
+/m/03g8mr,Baseball bat,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/03g8mr,/m/0bl9f > Building > Sports equipment > Baseball bat
+/m/03grzl,Baseball glove,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/03grzl,/m/0bl9f > Building > Sports equipment > Baseball glove
+/m/0420v5,Punching bag,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0420v5,/m/0bl9f > Building > Sports equipment > Punching bag
+/m/044r5d,Golf ball,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/044r5d,/m/0bl9f > Building > Sports equipment > Golf ball
+/m/054xkw,Personal flotation device,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/054xkw,/m/0bl9f > Building > Sports equipment > Personal flotation device
+/m/057p5t,Scoreboard,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/057p5t,/m/0bl9f > Building > Sports equipment > Scoreboard
+/m/06__v,Snowboard,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/06__v,/m/0bl9f > Building > Sports equipment > Snowboard
+/m/06_fw,Skateboard,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/06_fw,/m/0bl9f > Building > Sports equipment > Skateboard
+/m/071p9,Ski,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/071p9,/m/0bl9f > Building > Sports equipment > Ski
+/m/07pj7bq,Bowling equipment,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/07pj7bq,/m/0bl9f > Building > Sports equipment > Bowling equipment
+/m/04h8sr,Dumbbell,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/04h8sr,/m/0bl9f > Building > Sports equipment > Dumbbell
+/m/03kt2w,Stationary bicycle,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/03kt2w,/m/0bl9f > Building > Sports equipment > Stationary bicycle
+/m/030610,Treadmill,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/030610,/m/0bl9f > Building > Sports equipment > Treadmill
+/m/076lb9,Training bench,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/076lb9,/m/0bl9f > Building > Sports equipment > Training bench
+/m/03wym,Indoor rower,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/03wym,/m/0bl9f > Building > Sports equipment > Indoor rower
+/m/0cqn2,Horizontal bar,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0cqn2,/m/0bl9f > Building > Sports equipment > Horizontal bar
+/m/0cyfs,Parachute,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0cyfs,/m/0bl9f > Building > Sports equipment > Parachute
+/m/0h8my_4,Tennis racket,/m/0dv9c,Racket,4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0dv9c > /m/0h8my_4,/m/0bl9f > Building > Sports equipment > Racket > Tennis racket
+/m/05_5p_0,Table tennis racket,/m/0dv9c,Racket,4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0dv9c > /m/05_5p_0,/m/0bl9f > Building > Sports equipment > Racket > Table tennis racket
+/m/0l3ms,Balance beam,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0l3ms,/m/0bl9f > Building > Sports equipment > Balance beam
+/m/03p3bw,Bicycle helmet,/m/0zvk5,Helmet,4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0zvk5 > /m/03p3bw,/m/0bl9f > Building > Sports equipment > Helmet > Bicycle helmet
+/m/07qxg_,Football helmet,/m/0zvk5,Helmet,4,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/0zvk5 > /m/07qxg_,/m/0bl9f > Building > Sports equipment > Helmet > Football helmet
+/m/04p0qw,Billiard table,/m/05y5lj,Sports equipment,3,/m/0bl9f > /m/0cgh4 > /m/05y5lj > /m/04p0qw,/m/0bl9f > Building > Sports equipment > Billiard table
+/m/02jnhm,Tin can,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/02jnhm,/m/0bl9f > Building > Tool > Container > Tin can
+/m/02zn6n,Barrel,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/02zn6n,/m/0bl9f > Building > Tool > Container > Barrel
+/m/04dr76w,Bottle,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/04dr76w,/m/0bl9f > Building > Tool > Container > Bottle
+/m/07kng9,Picnic basket,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/07kng9,/m/0bl9f > Building > Tool > Container > Picnic basket
+/m/08hvt4,Jug,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/08hvt4,/m/0bl9f > Building > Tool > Container > Jug
+/m/0bjyj5,Waste container,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/0bjyj5,/m/0bl9f > Building > Tool > Container > Waste container
+/m/0d20w4,Beaker,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/0d20w4,/m/0bl9f > Building > Tool > Container > Beaker
+/m/0fm3zh,Flowerpot,/m/011q46kg,Container,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/011q46kg > /m/0fm3zh,/m/0bl9f > Building > Tool > Container > Flowerpot
+/m/012w5l,Ladder,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/012w5l,/m/0bl9f > Building > Tool > Ladder
+/m/012xff,Toothbrush,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/012xff,/m/0bl9f > Building > Tool > Toothbrush
+/m/01bms0,Screwdriver,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/01bms0,/m/0bl9f > Building > Tool > Screwdriver
+/m/01d380,Drill (Tool),/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/01d380,/m/0bl9f > Building > Tool > Drill (Tool)
+/m/01j4z9,Chainsaw,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/01j4z9,/m/0bl9f > Building > Tool > Chainsaw
+/m/01j5ks,Wrench,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/01j5ks,/m/0bl9f > Building > Tool > Wrench
+/m/01kb5b,Flashlight,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/01kb5b,/m/0bl9f > Building > Tool > Flashlight
+/m/01lsmm,Scissors,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/01lsmm,/m/0bl9f > Building > Tool > Scissors
+/m/02bm9n,Ratchet (Device),/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/02bm9n,/m/0bl9f > Building > Tool > Ratchet (Device)
+/m/01_5g,Chopsticks,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/01_5g,/m/0bl9f > Building > Tool > Kitchen utensil > Chopsticks
+/m/027rl48,Ladle,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/027rl48,/m/0bl9f > Building > Tool > Kitchen utensil > Ladle
+/m/02d1br,Spatula,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/02d1br,/m/0bl9f > Building > Tool > Kitchen utensil > Spatula
+/m/02mqfb,Can opener,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/02mqfb,/m/0bl9f > Building > Tool > Kitchen utensil > Can opener
+/m/02pdsw,Cutting board,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/02pdsw,/m/0bl9f > Building > Tool > Kitchen utensil > Cutting board
+/m/02vwcm,Whisk,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/02vwcm,/m/0bl9f > Building > Tool > Kitchen utensil > Whisk
+/m/03v5tg,Drinking straw,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/03v5tg,/m/0bl9f > Building > Tool > Kitchen utensil > Drinking straw
+/m/04ctx,Knife,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/04ctx,/m/0bl9f > Building > Tool > Kitchen utensil > Knife
+/m/04f5ws,Bottle opener,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/04f5ws,/m/0bl9f > Building > Tool > Kitchen utensil > Bottle opener
+/m/07v9_z,Measuring cup,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/07v9_z,/m/0bl9f > Building > Tool > Kitchen utensil > Measuring cup
+/m/08ks85,Pizza cutter,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/08ks85,/m/0bl9f > Building > Tool > Kitchen utensil > Pizza cutter
+/m/0cmx8,Spoon,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/0cmx8,/m/0bl9f > Building > Tool > Kitchen utensil > Spoon
+/m/0dt3t,Fork,/m/03hlz0c,Kitchen utensil,4,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03hlz0c > /m/0dt3t,/m/0bl9f > Building > Tool > Kitchen utensil > Fork
+/m/03l9g,Hammer,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03l9g,/m/0bl9f > Building > Tool > Hammer
+/m/03txqz,Scale,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/03txqz,/m/0bl9f > Building > Tool > Scale
+/m/04vv5k,Snowplow,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/04vv5k,/m/0bl9f > Building > Tool > Snowplow
+/m/05bm6,Nail (Construction),/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/05bm6,/m/0bl9f > Building > Tool > Nail (Construction)
+/m/073bxn,Tripod,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/073bxn,/m/0bl9f > Building > Tool > Tripod
+/m/07dd4,Torch,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/07dd4,/m/0bl9f > Building > Tool > Torch
+/m/0_dqb,Chisel,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/0_dqb,/m/0bl9f > Building > Tool > Chisel
+/m/0c2jj,Axe,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/0c2jj,/m/0bl9f > Building > Tool > Axe
+/m/0dv5r,Camera,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/0dv5r,/m/0bl9f > Building > Tool > Camera
+/m/0h8jyh6,Grinder,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/0h8jyh6,/m/0bl9f > Building > Tool > Grinder
+/m/0hdln,Ruler,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/0hdln,/m/0bl9f > Building > Tool > Ruler
+/m/0lt4_,Binoculars,/m/07k1x,Tool,3,/m/0bl9f > /m/0cgh4 > /m/07k1x > /m/0lt4_,/m/0bl9f > Building > Tool > Binoculars
+/m/01g3x7,Bow and arrow,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/01g3x7,/m/0bl9f > Building > Weapon > Bow and arrow
+/m/020kz,Cannon,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/020kz,/m/0bl9f > Building > Weapon > Cannon
+/m/02gzp,Dagger,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/02gzp,/m/0bl9f > Building > Weapon > Dagger
+/m/04ctx,Knife,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/04ctx,/m/0bl9f > Building > Weapon > Knife
+/m/06c54,Rifle,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/06c54,/m/0bl9f > Building > Weapon > Rifle
+/m/06nrc,Shotgun,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/06nrc,/m/0bl9f > Building > Weapon > Shotgun
+/m/07cmd,Tank,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/07cmd,/m/0bl9f > Building > Weapon > Tank
+/m/0c2jj,Axe,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/0c2jj,/m/0bl9f > Building > Weapon > Axe
+/m/0gxl3,Handgun,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/0gxl3,/m/0bl9f > Building > Weapon > Handgun
+/m/06y5r,Sword,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/06y5r,/m/0bl9f > Building > Weapon > Sword
+/m/04ylt,Missile,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/04ylt,/m/0bl9f > Building > Weapon > Missile
+/m/0ct4f,Bomb,/m/083kb,Weapon,3,/m/0bl9f > /m/0cgh4 > /m/083kb > /m/0ct4f,/m/0bl9f > Building > Weapon > Bomb
+/m/01432t,Cassette deck,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/01432t,/m/0bl9f > Building > Cassette deck
+/m/01b7fy,Headphones,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/01b7fy,/m/0bl9f > Building > Headphones
+/m/01c648,Laptop,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/01c648,/m/0bl9f > Building > Laptop
+/m/01m2v,Computer keyboard,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/01m2v,/m/0bl9f > Building > Computer keyboard
+/m/01m4t,Printer,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/01m4t,/m/0bl9f > Building > Printer
+/m/020lf,Computer mouse,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/020lf,/m/0bl9f > Building > Computer mouse
+/m/02522,Computer monitor,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/02522,/m/0bl9f > Building > Computer monitor
+/m/03bbps,Power plugs and sockets,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/03bbps,/m/0bl9f > Building > Power plugs and sockets
+/m/03jbxj,Light switch,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/03jbxj,/m/0bl9f > Building > Light switch
+/m/057cc,Musical keyboard,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/057cc,/m/0bl9f > Building > Musical keyboard
+/m/07c52,Television,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/07c52,/m/0bl9f > Building > Television
+/m/050k8,Mobile phone,/m/07cx4,Telephone,3,/m/0bl9f > /m/0cgh4 > /m/07cx4 > /m/050k8,/m/0bl9f > Building > Telephone > Mobile phone
+/m/0h8lkj8,Corded phone,/m/07cx4,Telephone,3,/m/0bl9f > /m/0cgh4 > /m/07cx4 > /m/0h8lkj8,/m/0bl9f > Building > Telephone > Corded phone
+/m/0bh9flk,Tablet computer,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/0bh9flk,/m/0bl9f > Building > Tablet computer
+/m/0hg7b,Microphone,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/0hg7b,/m/0bl9f > Building > Microphone
+/m/0mcx2,Ipod,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/0mcx2,/m/0bl9f > Building > Ipod
+/m/0qjjc,Remote control,/m/0cgh4,Building,2,/m/0bl9f > /m/0cgh4 > /m/0qjjc,/m/0bl9f > Building > Remote control
+/m/0b_rs,Swimming pool,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0b_rs,/m/0bl9f > Swimming pool
+/m/04yx4,Man,/m/01g317,Person,2,/m/0bl9f > /m/01g317 > /m/04yx4,/m/0bl9f > Person > Man
+/m/03bt1vf,Woman,/m/01g317,Person,2,/m/0bl9f > /m/01g317 > /m/03bt1vf,/m/0bl9f > Person > Woman
+/m/01bl7v,Boy,/m/01g317,Person,2,/m/0bl9f > /m/01g317 > /m/01bl7v,/m/0bl9f > Person > Boy
+/m/05r655,Girl,/m/01g317,Person,2,/m/0bl9f > /m/01g317 > /m/05r655,/m/0bl9f > Person > Girl
+/m/014sv8,Human eye,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/014sv8,/m/0bl9f > Person > Human body > Human eye
+/m/016m2d,Skull,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/016m2d,/m/0bl9f > Person > Human body > Skull
+/m/04hgtk,Human head,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/04hgtk,/m/0bl9f > Person > Human body > Human head
+/m/0dzct,Human face,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/0dzct,/m/0bl9f > Person > Human body > Human face
+/m/0283dt1,Human mouth,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/0283dt1,/m/0bl9f > Person > Human body > Human mouth
+/m/039xj_,Human ear,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/039xj_,/m/0bl9f > Person > Human body > Human ear
+/m/0k0pj,Human nose,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/0k0pj,/m/0bl9f > Person > Human body > Human nose
+/m/03q69,Human hair,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/03q69,/m/0bl9f > Person > Human body > Human hair
+/m/0k65p,Human hand,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/0k65p,/m/0bl9f > Person > Human body > Human hand
+/m/031n1,Human foot,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/031n1,/m/0bl9f > Person > Human body > Human foot
+/m/0dzf4,Human arm,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/0dzf4,/m/0bl9f > Person > Human body > Human arm
+/m/035r7c,Human leg,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/035r7c,/m/0bl9f > Person > Human body > Human leg
+/m/015h_t,Beard,/m/02p0tk3,Human body,3,/m/0bl9f > /m/01g317 > /m/02p0tk3 > /m/015h_t,/m/0bl9f > Person > Human body > Beard
+/m/01b9xk,Hot dog,/m/01_bhs,Fast food,3,/m/0bl9f > /m/02wbm > /m/01_bhs > /m/01b9xk,/m/0bl9f > Food > Fast food > Hot dog
+/m/02y6n,French fries,/m/01_bhs,Fast food,3,/m/0bl9f > /m/02wbm > /m/01_bhs > /m/02y6n,/m/0bl9f > Food > Fast food > French fries
+/m/01dwsz,Waffle,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/01dwsz,/m/0bl9f > Food > Waffle
+/m/01dwwc,Pancake,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/01dwwc,/m/0bl9f > Food > Pancake
+/m/01j3zr,Burrito,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/01j3zr,/m/0bl9f > Food > Burrito
+/m/01f91_,Pretzel,/m/01ww8y,Snack,3,/m/0bl9f > /m/02wbm > /m/01ww8y > /m/01f91_,/m/0bl9f > Food > Snack > Pretzel
+/m/01hrv5,Popcorn,/m/01ww8y,Snack,3,/m/0bl9f > /m/02wbm > /m/01ww8y > /m/01hrv5,/m/0bl9f > Food > Snack > Popcorn
+/m/021mn,Cookie,/m/01ww8y,Snack,3,/m/0bl9f > /m/02wbm > /m/01ww8y > /m/021mn,/m/0bl9f > Food > Snack > Cookie
+/m/01tcjp,Muffin,/m/0270h,Dessert,3,/m/0bl9f > /m/02wbm > /m/0270h > /m/01tcjp,/m/0bl9f > Food > Dessert > Muffin
+/m/021mn,Cookie,/m/0270h,Dessert,3,/m/0bl9f > /m/02wbm > /m/0270h > /m/021mn,/m/0bl9f > Food > Dessert > Cookie
+/m/0cxn2,Ice cream,/m/0270h,Dessert,3,/m/0bl9f > /m/02wbm > /m/0270h > /m/0cxn2,/m/0bl9f > Food > Dessert > Ice cream
+/m/0fszt,Cake,/m/0270h,Dessert,3,/m/0bl9f > /m/02wbm > /m/0270h > /m/0fszt,/m/0bl9f > Food > Dessert > Cake
+/m/0gm28,Candy,/m/0270h,Dessert,3,/m/0bl9f > /m/02wbm > /m/0270h > /m/0gm28,/m/0bl9f > Food > Dessert > Candy
+/m/02g30s,Guacamole,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/02g30s,/m/0bl9f > Food > Guacamole
+/m/014j1m,Apple,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/014j1m,/m/0bl9f > Food > Fruit > Apple
+/m/0388q,Grape,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0388q,/m/0bl9f > Food > Fruit > Grape
+/m/043nyj,Common fig,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/043nyj,/m/0bl9f > Food > Fruit > Common fig
+/m/061_f,Pear,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/061_f,/m/0bl9f > Food > Fruit > Pear
+/m/07fbm7,Strawberry,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/07fbm7,/m/0bl9f > Food > Fruit > Strawberry
+/m/07j87,Tomato,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/07j87,/m/0bl9f > Food > Fruit > Tomato
+/m/09k_b,Lemon (plant),/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/09k_b,/m/0bl9f > Food > Fruit > Lemon (plant)
+/m/09qck,Banana,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/09qck,/m/0bl9f > Food > Fruit > Banana
+/m/0cyhj_,Orange (fruit),/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0cyhj_,/m/0bl9f > Food > Fruit > Orange (fruit)
+/m/0dj6p,Peach,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0dj6p,/m/0bl9f > Food > Fruit > Peach
+/m/0fldg,Mango,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0fldg,/m/0bl9f > Food > Fruit > Mango
+/m/0fp6w,Pineapple,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0fp6w,/m/0bl9f > Food > Fruit > Pineapple
+/m/0hqkz,Grapefruit,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0hqkz,/m/0bl9f > Food > Fruit > Grapefruit
+/m/0jwn_,Pomegranate,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0jwn_,/m/0bl9f > Food > Fruit > Pomegranate
+/m/0kpqd,Watermelon,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0kpqd,/m/0bl9f > Food > Fruit > Watermelon
+/m/0kpt_,Cantaloupe,/m/02xwb,Fruit,3,/m/0bl9f > /m/02wbm > /m/02xwb > /m/0kpt_,/m/0bl9f > Food > Fruit > Cantaloupe
+/m/033cnk,Egg,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/033cnk,/m/0bl9f > Food > Egg
+/m/01f91_,Pretzel,/m/052lwg6,Baked goods,3,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/01f91_,/m/0bl9f > Food > Baked goods > Pretzel
+/m/01fb_0,Bagel,/m/052lwg6,Baked goods,3,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/01fb_0,/m/0bl9f > Food > Baked goods > Bagel
+/m/01tcjp,Muffin,/m/052lwg6,Baked goods,3,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/01tcjp,/m/0bl9f > Food > Baked goods > Muffin
+/m/021mn,Cookie,/m/052lwg6,Baked goods,3,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/021mn,/m/0bl9f > Food > Baked goods > Cookie
+/m/09728,Bread,/m/052lwg6,Baked goods,3,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/09728,/m/0bl9f > Food > Baked goods > Bread
+/m/0jy4k,Doughnut,/m/0hnyx,Pastry,4,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/0hnyx > /m/0jy4k,/m/0bl9f > Food > Baked goods > Pastry > Doughnut
+/m/015wgc,Croissant,/m/0hnyx,Pastry,4,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/0hnyx > /m/015wgc,/m/0bl9f > Food > Baked goods > Pastry > Croissant
+/m/02zvsm,Tart,/m/0hnyx,Pastry,4,/m/0bl9f > /m/02wbm > /m/052lwg6 > /m/0hnyx > /m/02zvsm,/m/0bl9f > Food > Baked goods > Pastry > Tart
+/m/052sf,Mushroom,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/052sf,/m/0bl9f > Food > Mushroom
+/m/05z55,Pasta,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/05z55,/m/0bl9f > Food > Pasta
+/m/0663v,Pizza,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/0663v,/m/0bl9f > Food > Pizza
+/m/09gys,Squid,/m/06nwz,Seafood,3,/m/0bl9f > /m/02wbm > /m/06nwz > /m/09gys,/m/0bl9f > Food > Seafood > Squid
+/m/0_cp5,Oyster,/m/0fbdv,Shellfish,4,/m/0bl9f > /m/02wbm > /m/06nwz > /m/0fbdv > /m/0_cp5,/m/0bl9f > Food > Seafood > Shellfish > Oyster
+/m/0cjq5,Lobster,/m/0fbdv,Shellfish,4,/m/0bl9f > /m/02wbm > /m/06nwz > /m/0fbdv > /m/0cjq5,/m/0bl9f > Food > Seafood > Shellfish > Lobster
+/m/0ll1f78,Shrimp,/m/0fbdv,Shellfish,4,/m/0bl9f > /m/02wbm > /m/06nwz > /m/0fbdv > /m/0ll1f78,/m/0bl9f > Food > Seafood > Shellfish > Shrimp
+/m/0n28_,Crab,/m/0fbdv,Shellfish,4,/m/0bl9f > /m/02wbm > /m/06nwz > /m/0fbdv > /m/0n28_,/m/0bl9f > Food > Seafood > Shellfish > Crab
+/m/07crc,Taco,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/07crc,/m/0bl9f > Food > Taco
+/m/07mcwg,Cooking spray,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/07mcwg,/m/0bl9f > Food > Cooking spray
+/m/015x4r,Cucumber,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/015x4r,/m/0bl9f > Food > Vegetable > Cucumber
+/m/015x5n,Radish,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/015x5n,/m/0bl9f > Food > Vegetable > Radish
+/m/047v4b,Artichoke,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/047v4b,/m/0bl9f > Food > Vegetable > Artichoke
+/m/05vtc,Potato,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/05vtc,/m/0bl9f > Food > Vegetable > Potato
+/m/07j87,Tomato,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/07j87,/m/0bl9f > Food > Vegetable > Tomato
+/m/0cjs7,Garden Asparagus,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0cjs7,/m/0bl9f > Food > Vegetable > Garden Asparagus
+/m/05zsy,Pumpkin,/m/0dv77,Squash (Plant),4,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0dv77 > /m/05zsy,/m/0bl9f > Food > Vegetable > Squash (Plant) > Pumpkin
+/m/027pcv,Zucchini,/m/0dv77,Squash (Plant),4,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0dv77 > /m/027pcv,/m/0bl9f > Food > Vegetable > Squash (Plant) > Zucchini
+/m/0fbw6,Cabbage,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0fbw6,/m/0bl9f > Food > Vegetable > Cabbage
+/m/0fj52s,Carrot,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0fj52s,/m/0bl9f > Food > Vegetable > Carrot
+/m/0grw1,Salad,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0grw1,/m/0bl9f > Food > Vegetable > Salad
+/m/0hkxq,Broccoli,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0hkxq,/m/0bl9f > Food > Vegetable > Broccoli
+/m/0jg57,Bell pepper,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/0jg57,/m/0bl9f > Food > Vegetable > Bell pepper
+/m/02cvgx,Winter melon,/m/0f4s2w,Vegetable,3,/m/0bl9f > /m/02wbm > /m/0f4s2w > /m/02cvgx,/m/0bl9f > Food > Vegetable > Winter melon
+/m/0fz0h,Honeycomb,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/0fz0h,/m/0bl9f > Food > Honeycomb
+/m/0cdn1,Hamburger,/m/0l515,Sandwich,3,/m/0bl9f > /m/02wbm > /m/0l515 > /m/0cdn1,/m/0bl9f > Food > Sandwich > Hamburger
+/m/06pcq,Submarine sandwich,/m/0l515,Sandwich,3,/m/0bl9f > /m/02wbm > /m/0l515 > /m/06pcq,/m/0bl9f > Food > Sandwich > Submarine sandwich
+/m/01nkt,Cheese,/m/0284d,Dairy Product,3,/m/0bl9f > /m/02wbm > /m/0284d > /m/01nkt,/m/0bl9f > Food > Dairy Product > Cheese
+/m/04zpv,Milk,/m/0284d,Dairy Product,3,/m/0bl9f > /m/02wbm > /m/0284d > /m/04zpv,/m/0bl9f > Food > Dairy Product > Milk
+/m/07030,Sushi,/m/02wbm,Food,2,/m/0bl9f > /m/02wbm > /m/07030,/m/0bl9f > Food > Sushi
+/m/03fp41,Houseplant,/m/05s2s,Plant,2,/m/0bl9f > /m/05s2s > /m/03fp41,/m/0bl9f > Plant > Houseplant
+/m/025nd,Christmas tree,/m/07j7r,Tree,3,/m/0bl9f > /m/05s2s > /m/07j7r > /m/025nd,/m/0bl9f > Plant > Tree > Christmas tree
+/m/0cdl1,Palm tree,/m/07j7r,Tree,3,/m/0bl9f > /m/05s2s > /m/07j7r > /m/0cdl1,/m/0bl9f > Plant > Tree > Palm tree
+/m/0cffdh,Maple,/m/07j7r,Tree,3,/m/0bl9f > /m/05s2s > /m/07j7r > /m/0cffdh,/m/0bl9f > Plant > Tree > Maple
+/m/0mw_6,Willow,/m/07j7r,Tree,3,/m/0bl9f > /m/05s2s > /m/07j7r > /m/0mw_6,/m/0bl9f > Plant > Tree > Willow
+/m/04gth,Lavender (Plant),/m/0c9ph5,Flower,3,/m/0bl9f > /m/05s2s > /m/0c9ph5 > /m/04gth,/m/0bl9f > Plant > Flower > Lavender (Plant)
+/m/06m11,Rose,/m/0c9ph5,Flower,3,/m/0bl9f > /m/05s2s > /m/0c9ph5 > /m/06m11,/m/0bl9f > Plant > Flower > Rose
+/m/0ftb8,Common sunflower,/m/0c9ph5,Flower,3,/m/0bl9f > /m/05s2s > /m/0c9ph5 > /m/0ftb8,/m/0bl9f > Plant > Flower > Common sunflower
+/m/0jqgx,Lily,/m/0c9ph5,Flower,3,/m/0bl9f > /m/05s2s > /m/0c9ph5 > /m/0jqgx,/m/0bl9f > Plant > Flower > Lily
+/m/012n7d,Ambulance,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/012n7d,/m/0bl9f > Vehicle > Land vehicle > Ambulance
+/m/018p4k,Cart,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/018p4k,/m/0bl9f > Vehicle > Land vehicle > Cart
+/m/01bqk0,Bicycle wheel,/m/0199g,Bicycle,4,/m/0bl9f > /m/07yv9 > /m/01prls > /m/0199g > /m/01bqk0,/m/0bl9f > Vehicle > Land vehicle > Bicycle > Bicycle wheel
+/m/01bjv,Bus,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/01bjv,/m/0bl9f > Vehicle > Land vehicle > Bus
+/m/01x3jk,Snowmobile,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/01x3jk,/m/0bl9f > Vehicle > Land vehicle > Snowmobile
+/m/0323sq,Golf cart,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/0323sq,/m/0bl9f > Vehicle > Land vehicle > Golf cart
+/m/04_sv,Motorcycle,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/04_sv,/m/0bl9f > Vehicle > Land vehicle > Motorcycle
+/m/076bq,Segway,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/076bq,/m/0bl9f > Vehicle > Land vehicle > Segway
+/m/07cmd,Tank,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/07cmd,/m/0bl9f > Vehicle > Land vehicle > Tank
+/m/07jdr,Train,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/07jdr,/m/0bl9f > Vehicle > Land vehicle > Train
+/m/07r04,Truck,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/07r04,/m/0bl9f > Vehicle > Land vehicle > Truck
+/m/0f6nr,Unicycle,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/0f6nr,/m/0bl9f > Vehicle > Land vehicle > Unicycle
+/m/01lcw4,Limousine,/m/0k4j,Car,4,/m/0bl9f > /m/07yv9 > /m/01prls > /m/0k4j > /m/01lcw4,/m/0bl9f > Vehicle > Land vehicle > Car > Limousine
+/m/0h2r6,Van,/m/0k4j,Car,4,/m/0bl9f > /m/07yv9 > /m/01prls > /m/0k4j > /m/0h2r6,/m/0bl9f > Vehicle > Land vehicle > Car > Van
+/m/0pg52,Taxi,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/0pg52,/m/0bl9f > Vehicle > Land vehicle > Taxi
+/m/0qmmr,Wheelchair,/m/01prls,Land vehicle,3,/m/0bl9f > /m/07yv9 > /m/01prls > /m/0qmmr,/m/0bl9f > Vehicle > Land vehicle > Wheelchair
+/m/01jfm_,Vehicle registration plate,/m/08dz3q,Auto part,4,/m/0bl9f > /m/07yv9 > /m/01prls > /m/08dz3q > /m/01jfm_,/m/0bl9f > Vehicle > Land vehicle > Auto part > Vehicle registration plate
+/m/083wq,Wheel,/m/08dz3q,Auto part,4,/m/0bl9f > /m/07yv9 > /m/01prls > /m/08dz3q > /m/083wq,/m/0bl9f > Vehicle > Land vehicle > Auto part > Wheel
+/m/0dkzw,Seat belt,/m/08dz3q,Auto part,4,/m/0bl9f > /m/07yv9 > /m/01prls > /m/08dz3q > /m/0dkzw,/m/0bl9f > Vehicle > Land vehicle > Auto part > Seat belt
+/m/0h9mv,Tire,/m/08dz3q,Auto part,4,/m/0bl9f > /m/07yv9 > /m/01prls > /m/08dz3q > /m/0h9mv,/m/0bl9f > Vehicle > Land vehicle > Auto part > Tire
+/m/01btn,Barge,/m/019jd,Boat,4,/m/0bl9f > /m/07yv9 > /m/01rzcn > /m/019jd > /m/01btn,/m/0bl9f > Vehicle > Watercraft > Boat > Barge
+/m/02068x,Gondola,/m/019jd,Boat,4,/m/0bl9f > /m/07yv9 > /m/01rzcn > /m/019jd > /m/02068x,/m/0bl9f > Vehicle > Watercraft > Boat > Gondola
+/m/0ph39,Canoe,/m/019jd,Boat,4,/m/0bl9f > /m/07yv9 > /m/01rzcn > /m/019jd > /m/0ph39,/m/0bl9f > Vehicle > Watercraft > Boat > Canoe
+/m/01xs3r,Jet ski,/m/01rzcn,Watercraft,3,/m/0bl9f > /m/07yv9 > /m/01rzcn > /m/01xs3r,/m/0bl9f > Vehicle > Watercraft > Jet ski
+/m/074d1,Submarine,/m/01rzcn,Watercraft,3,/m/0bl9f > /m/07yv9 > /m/01rzcn > /m/074d1,/m/0bl9f > Vehicle > Watercraft > Submarine
+/m/09ct_,Helicopter,/m/0k5j,Aircraft,3,/m/0bl9f > /m/07yv9 > /m/0k5j > /m/09ct_,/m/0bl9f > Vehicle > Aircraft > Helicopter
+/m/0cmf2,Fixed-wing aircraft,/m/0k5j,Aircraft,3,/m/0bl9f > /m/07yv9 > /m/0k5j > /m/0cmf2,/m/0bl9f > Vehicle > Aircraft > Fixed-wing aircraft
+/m/09rvcxw,Rocket,/m/0k5j,Aircraft,3,/m/0bl9f > /m/07yv9 > /m/0k5j > /m/09rvcxw,/m/0bl9f > Vehicle > Aircraft > Rocket
+/m/01bfm9,Shorts,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01bfm9,/m/0bl9f > Clothing > Shorts
+/m/01d40f,Dress,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01d40f,/m/0bl9f > Clothing > Dress
+/m/01gkx_,Swimwear,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01gkx_,/m/0bl9f > Clothing > Swimwear
+/m/01gmv2,Brassiere,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01gmv2,/m/0bl9f > Clothing > Brassiere
+/m/01krhy,Tiara,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01krhy,/m/0bl9f > Clothing > Tiara
+/m/01n4qj,Shirt,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01n4qj,/m/0bl9f > Clothing > Shirt
+/m/01xygc,Coat,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01xygc,/m/0bl9f > Clothing > Coat
+/m/01xyhv,Suit,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/01xyhv,/m/0bl9f > Clothing > Suit
+/m/025rp__,Cowboy hat,/m/02dl1y,Hat,3,/m/0bl9f > /m/09j2d > /m/02dl1y > /m/025rp__,/m/0bl9f > Clothing > Hat > Cowboy hat
+/m/02fq_6,Fedora,/m/02dl1y,Hat,3,/m/0bl9f > /m/09j2d > /m/02dl1y > /m/02fq_6,/m/0bl9f > Clothing > Hat > Fedora
+/m/02jfl0,Sombrero,/m/02dl1y,Hat,3,/m/0bl9f > /m/09j2d > /m/02dl1y > /m/02jfl0,/m/0bl9f > Clothing > Hat > Sombrero
+/m/02wbtzl,Sun hat,/m/02dl1y,Hat,3,/m/0bl9f > /m/09j2d > /m/02dl1y > /m/02wbtzl,/m/0bl9f > Clothing > Hat > Sun hat
+/m/02h19r,Scarf,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/02h19r,/m/0bl9f > Clothing > Scarf
+/m/01cmb2,Miniskirt,/m/02wv6h6,Skirt,3,/m/0bl9f > /m/09j2d > /m/02wv6h6 > /m/01cmb2,/m/0bl9f > Clothing > Skirt > Miniskirt
+/m/032b3c,Jacket,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/032b3c,/m/0bl9f > Clothing > Jacket
+/m/03grzl,Baseball glove,/m/0174n1,Glove,4,/m/0bl9f > /m/09j2d > /m/0463sg > /m/0174n1 > /m/03grzl,/m/0bl9f > Clothing > Fashion accessory > Glove > Baseball glove
+/m/0176mf,Belt,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/0176mf,/m/0bl9f > Clothing > Fashion accessory > Belt
+/m/017ftj,Sunglasses,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/017ftj,/m/0bl9f > Clothing > Fashion accessory > Sunglasses
+/m/01krhy,Tiara,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/01krhy,/m/0bl9f > Clothing > Fashion accessory > Tiara
+/m/01llwg,Necklace,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/01llwg,/m/0bl9f > Clothing > Fashion accessory > Necklace
+/m/01nq26,Sock,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/01nq26,/m/0bl9f > Clothing > Fashion accessory > Sock
+/m/01r546,Earring,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/01r546,/m/0bl9f > Clothing > Fashion accessory > Earring
+/m/01rkbr,Tie,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/01rkbr,/m/0bl9f > Clothing > Fashion accessory > Tie
+/m/02_n6y,Goggles,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/02_n6y,/m/0bl9f > Clothing > Fashion accessory > Goggles
+/m/025rp__,Cowboy hat,/m/02dl1y,Hat,4,/m/0bl9f > /m/09j2d > /m/0463sg > /m/02dl1y > /m/025rp__,/m/0bl9f > Clothing > Fashion accessory > Hat > Cowboy hat
+/m/02fq_6,Fedora,/m/02dl1y,Hat,4,/m/0bl9f > /m/09j2d > /m/0463sg > /m/02dl1y > /m/02fq_6,/m/0bl9f > Clothing > Fashion accessory > Hat > Fedora
+/m/02jfl0,Sombrero,/m/02dl1y,Hat,4,/m/0bl9f > /m/09j2d > /m/0463sg > /m/02dl1y > /m/02jfl0,/m/0bl9f > Clothing > Fashion accessory > Hat > Sombrero
+/m/02wbtzl,Sun hat,/m/02dl1y,Hat,4,/m/0bl9f > /m/09j2d > /m/0463sg > /m/02dl1y > /m/02wbtzl,/m/0bl9f > Clothing > Fashion accessory > Hat > Sun hat
+/m/02h19r,Scarf,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/02h19r,/m/0bl9f > Clothing > Fashion accessory > Scarf
+/m/080hkjn,Handbag,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/080hkjn,/m/0bl9f > Clothing > Fashion accessory > Handbag
+/m/0gjkl,Watch,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/0gjkl,/m/0bl9f > Clothing > Fashion accessory > Watch
+/m/0hnnb,Umbrella,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/0hnnb,/m/0bl9f > Clothing > Fashion accessory > Umbrella
+/m/0jyfg,Glasses,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/0jyfg,/m/0bl9f > Clothing > Fashion accessory > Glasses
+/m/0nl46,Crown,/m/0463sg,Fashion accessory,3,/m/0bl9f > /m/09j2d > /m/0463sg > /m/0nl46,/m/0bl9f > Clothing > Fashion accessory > Crown
+/m/04tn4x,Swim cap,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/04tn4x,/m/0bl9f > Clothing > Swim cap
+/m/0fly7,Jeans,/m/07mhn,Trousers,3,/m/0bl9f > /m/09j2d > /m/07mhn > /m/0fly7,/m/0bl9f > Clothing > Trousers > Jeans
+/m/02p3w7d,Roller skates,/m/09j5n,Footwear,3,/m/0bl9f > /m/09j2d > /m/09j5n > /m/02p3w7d,/m/0bl9f > Clothing > Footwear > Roller skates
+/m/01b638,Boot,/m/09j5n,Footwear,3,/m/0bl9f > /m/09j2d > /m/09j5n > /m/01b638,/m/0bl9f > Clothing > Footwear > Boot
+/m/06k2mb,High heels,/m/09j5n,Footwear,3,/m/0bl9f > /m/09j2d > /m/09j5n > /m/06k2mb,/m/0bl9f > Clothing > Footwear > High heels
+/m/03nfch,Sandal,/m/09j5n,Footwear,3,/m/0bl9f > /m/09j2d > /m/09j5n > /m/03nfch,/m/0bl9f > Clothing > Footwear > Sandal
+/m/0h8mhzd,Sports uniform,/m/09j2d,Clothing,2,/m/0bl9f > /m/09j2d > /m/0h8mhzd,/m/0bl9f > Clothing > Sports uniform
+/m/01940j,Backpack,/m/0hf58v5,Luggage and bags,3,/m/0bl9f > /m/09j2d > /m/0hf58v5 > /m/01940j,/m/0bl9f > Clothing > Luggage and bags > Backpack
+/m/01s55n,Suitcase,/m/0hf58v5,Luggage and bags,3,/m/0bl9f > /m/09j2d > /m/0hf58v5 > /m/01s55n,/m/0bl9f > Clothing > Luggage and bags > Suitcase
+/m/0584n8,Briefcase,/m/0hf58v5,Luggage and bags,3,/m/0bl9f > /m/09j2d > /m/0hf58v5 > /m/0584n8,/m/0bl9f > Clothing > Luggage and bags > Briefcase
+/m/080hkjn,Handbag,/m/0hf58v5,Luggage and bags,3,/m/0bl9f > /m/09j2d > /m/0hf58v5 > /m/080hkjn,/m/0bl9f > Clothing > Luggage and bags > Handbag
+/m/03p3bw,Bicycle helmet,/m/0zvk5,Helmet,3,/m/0bl9f > /m/09j2d > /m/0zvk5 > /m/03p3bw,/m/0bl9f > Clothing > Helmet > Bicycle helmet
+/m/07qxg_,Football helmet,/m/0zvk5,Helmet,3,/m/0bl9f > /m/09j2d > /m/0zvk5 > /m/07qxg_,/m/0bl9f > Clothing > Helmet > Football helmet
+/m/012074,Magpie,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/012074,/m/0bl9f > Animal > Bird > Magpie
+/m/01dy8n,Woodpecker,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/01dy8n,/m/0bl9f > Animal > Bird > Woodpecker
+/m/01f8m5,Blue jay,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/01f8m5,/m/0bl9f > Animal > Bird > Blue jay
+/m/05n4y,Ostrich,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/05n4y,/m/0bl9f > Animal > Bird > Ostrich
+/m/05z6w,Penguin,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/05z6w,/m/0bl9f > Animal > Bird > Penguin
+/m/06j2d,Raven,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/06j2d,/m/0bl9f > Animal > Bird > Raven
+/m/09b5t,Chicken,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/09b5t,/m/0bl9f > Animal > Bird > Chicken
+/m/09csl,Eagle,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/09csl,/m/0bl9f > Animal > Bird > Eagle
+/m/09d5_,Owl,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/09d5_,/m/0bl9f > Animal > Bird > Owl
+/m/09ddx,Duck,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/09ddx,/m/0bl9f > Animal > Bird > Duck
+/m/0ccs93,Canary,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/0ccs93,/m/0bl9f > Animal > Bird > Canary
+/m/0dbvp,Goose,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/0dbvp,/m/0bl9f > Animal > Bird > Goose
+/m/0dftk,Swan,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/0dftk,/m/0bl9f > Animal > Bird > Swan
+/m/0f6wt,Falcon,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/0f6wt,/m/0bl9f > Animal > Bird > Falcon
+/m/0gv1x,Parrot,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/0gv1x,/m/0bl9f > Animal > Bird > Parrot
+/m/0h23m,Sparrow,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/0h23m,/m/0bl9f > Animal > Bird > Sparrow
+/m/0jly1,Turkey,/m/015p6,Bird,3,/m/0bl9f > /m/0jbk > /m/015p6 > /m/0jly1,/m/0bl9f > Animal > Bird > Turkey
+/m/0175cv,Tick,/m/03xxp,Invertebrate,3,/m/0bl9f > /m/0jbk > /m/03xxp > /m/0175cv,/m/0bl9f > Animal > Invertebrate > Tick
+/m/019h78,Centipede,/m/03xxp,Invertebrate,3,/m/0bl9f > /m/0jbk > /m/03xxp > /m/019h78,/m/0bl9f > Animal > Invertebrate > Centipede
+/m/01h8tj,Starfish,/m/03hl4l9,Marine invertebrates,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03hl4l9 > /m/01h8tj,/m/0bl9f > Animal > Invertebrate > Marine invertebrates > Starfish
+/m/035vxb,Isopod,/m/03hl4l9,Marine invertebrates,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03hl4l9 > /m/035vxb,/m/0bl9f > Animal > Invertebrate > Marine invertebrates > Isopod
+/m/09gys,Squid,/m/03hl4l9,Marine invertebrates,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03hl4l9 > /m/09gys,/m/0bl9f > Animal > Invertebrate > Marine invertebrates > Squid
+/m/0cjq5,Lobster,/m/03hl4l9,Marine invertebrates,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03hl4l9 > /m/0cjq5,/m/0bl9f > Animal > Invertebrate > Marine invertebrates > Lobster
+/m/0d8zb,Jellyfish,/m/03hl4l9,Marine invertebrates,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03hl4l9 > /m/0d8zb,/m/0bl9f > Animal > Invertebrate > Marine invertebrates > Jellyfish
+/m/0ll1f78,Shrimp,/m/03hl4l9,Marine invertebrates,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03hl4l9 > /m/0ll1f78,/m/0bl9f > Animal > Invertebrate > Marine invertebrates > Shrimp
+/m/0n28_,Crab,/m/03hl4l9,Marine invertebrates,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03hl4l9 > /m/0n28_,/m/0bl9f > Animal > Invertebrate > Marine invertebrates > Crab
+/m/01h3n,Bee,/m/03vt0,Insect,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03vt0 > /m/01h3n,/m/0bl9f > Animal > Invertebrate > Insect > Bee
+/m/0gj37,Ladybug,/m/020jm,Beetle,5,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03vt0 > /m/020jm > /m/0gj37,/m/0bl9f > Animal > Invertebrate > Insect > Beetle > Ladybug
+/m/0_k2,Ant,/m/03vt0,Insect,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03vt0 > /m/0_k2,/m/0bl9f > Animal > Invertebrate > Insect > Ant
+/m/0cydv,Caterpillar,/m/0d_2m,Moths and butterflies,5,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03vt0 > /m/0d_2m > /m/0cydv,/m/0bl9f > Animal > Invertebrate > Insect > Moths and butterflies > Caterpillar
+/m/0cyf8,Butterfly,/m/0d_2m,Moths and butterflies,5,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03vt0 > /m/0d_2m > /m/0cyf8,/m/0bl9f > Animal > Invertebrate > Insect > Moths and butterflies > Butterfly
+/m/0ft9s,Dragonfly,/m/03vt0,Insect,4,/m/0bl9f > /m/0jbk > /m/03xxp > /m/03vt0 > /m/0ft9s,/m/0bl9f > Animal > Invertebrate > Insect > Dragonfly
+/m/0755b,Scorpion,/m/03xxp,Invertebrate,3,/m/0bl9f > /m/0jbk > /m/03xxp > /m/0755b,/m/0bl9f > Animal > Invertebrate > Scorpion
+/m/084hf,Worm,/m/03xxp,Invertebrate,3,/m/0bl9f > /m/0jbk > /m/03xxp > /m/084hf,/m/0bl9f > Animal > Invertebrate > Worm
+/m/09kmb,Spider,/m/03xxp,Invertebrate,3,/m/0bl9f > /m/0jbk > /m/03xxp > /m/09kmb,/m/0bl9f > Animal > Invertebrate > Spider
+/m/0_cp5,Oyster,/m/03xxp,Invertebrate,3,/m/0bl9f > /m/0jbk > /m/03xxp > /m/0_cp5,/m/0bl9f > Animal > Invertebrate > Oyster
+/m/0f9_l,Snail,/m/03xxp,Invertebrate,3,/m/0bl9f > /m/0jbk > /m/03xxp > /m/0f9_l,/m/0bl9f > Animal > Invertebrate > Snail
+/m/01h44,Bat (Animal),/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/01h44,/m/0bl9f > Animal > Mammal > Bat (Animal)
+/m/01dxs,Brown bear,/m/01dws,Bear,5,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/01dws > /m/01dxs,/m/0bl9f > Animal > Mammal > Carnivore > Bear > Brown bear
+/m/03bj1,Panda,/m/01dws,Bear,5,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/01dws > /m/03bj1,/m/0bl9f > Animal > Mammal > Carnivore > Bear > Panda
+/m/0633h,Polar bear,/m/01dws,Bear,5,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/01dws > /m/0633h,/m/0bl9f > Animal > Mammal > Carnivore > Bear > Polar bear
+/m/0kmg4,Teddy bear,/m/01dws,Bear,5,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/01dws > /m/0kmg4,/m/0bl9f > Animal > Mammal > Carnivore > Bear > Teddy bear
+/m/01yrx,Cat,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/01yrx,/m/0bl9f > Animal > Mammal > Carnivore > Cat
+/m/0306r,Fox,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/0306r,/m/0bl9f > Animal > Mammal > Carnivore > Fox
+/m/0449p,Jaguar (Animal),/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/0449p,/m/0bl9f > Animal > Mammal > Carnivore > Jaguar (Animal)
+/m/04g2r,Lynx,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/04g2r,/m/0bl9f > Animal > Mammal > Carnivore > Lynx
+/m/06l9r,Red panda,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/06l9r,/m/0bl9f > Animal > Mammal > Carnivore > Red panda
+/m/07dm6,Tiger,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/07dm6,/m/0bl9f > Animal > Mammal > Carnivore > Tiger
+/m/096mb,Lion,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/096mb,/m/0bl9f > Animal > Mammal > Carnivore > Lion
+/m/0bt9lr,Dog,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/0bt9lr,/m/0bl9f > Animal > Mammal > Carnivore > Dog
+/m/0c29q,Leopard,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/0c29q,/m/0bl9f > Animal > Mammal > Carnivore > Leopard
+/m/0cd4d,Cheetah,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/0cd4d,/m/0bl9f > Animal > Mammal > Carnivore > Cheetah
+/m/0cn6p,Otter,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/0cn6p,/m/0bl9f > Animal > Mammal > Carnivore > Otter
+/m/0dq75,Raccoon,/m/01lrl,Carnivore,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/01lrl > /m/0dq75,/m/0bl9f > Animal > Mammal > Carnivore > Raccoon
+/m/01x_v,Camel,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/01x_v,/m/0bl9f > Animal > Mammal > Camel
+/m/01xq0k1,Cattle,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/01xq0k1,/m/0bl9f > Animal > Mammal > Cattle
+/m/03bk1,Giraffe,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/03bk1,/m/0bl9f > Animal > Mammal > Giraffe
+/m/03d443,Rhinoceros,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/03d443,/m/0bl9f > Animal > Mammal > Rhinoceros
+/m/03fwl,Goat,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/03fwl,/m/0bl9f > Animal > Mammal > Goat
+/m/03k3r,Horse,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/03k3r,/m/0bl9f > Animal > Mammal > Horse
+/m/03qrc,Hamster,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/03qrc,/m/0bl9f > Animal > Mammal > Hamster
+/m/04c0y,Kangaroo,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/04c0y,/m/0bl9f > Animal > Mammal > Kangaroo
+/m/04cp_,Koala,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/04cp_,/m/0bl9f > Animal > Mammal > Koala
+/m/04rmv,Mouse,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/04rmv,/m/0bl9f > Animal > Mammal > Mouse
+/m/068zj,Pig,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/068zj,/m/0bl9f > Animal > Mammal > Pig
+/m/06mf6,Rabbit,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/06mf6,/m/0bl9f > Animal > Mammal > Rabbit
+/m/071qp,Squirrel,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/071qp,/m/0bl9f > Animal > Mammal > Squirrel
+/m/07bgp,Sheep,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/07bgp,/m/0bl9f > Animal > Mammal > Sheep
+/m/0898b,Zebra,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0898b,/m/0bl9f > Animal > Mammal > Zebra
+/m/08pbxl,Monkey,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/08pbxl,/m/0bl9f > Animal > Mammal > Monkey
+/m/09f20,Hippopotamus,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/09f20,/m/0bl9f > Animal > Mammal > Hippopotamus
+/m/09kx5,Deer,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/09kx5,/m/0bl9f > Animal > Mammal > Deer
+/m/0bwd_0j,Elephant,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0bwd_0j,/m/0bl9f > Animal > Mammal > Elephant
+/m/0c568,Porcupine,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0c568,/m/0bl9f > Animal > Mammal > Porcupine
+/m/0cl4p,Hedgehog,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0cl4p,/m/0bl9f > Animal > Mammal > Hedgehog
+/m/0cnyhnx,Bull,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0cnyhnx,/m/0bl9f > Animal > Mammal > Bull
+/m/0czz2,Antelope,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0czz2,/m/0bl9f > Animal > Mammal > Antelope
+/m/0dbzx,Mule,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0dbzx,/m/0bl9f > Animal > Mammal > Mule
+/m/02hj4,Dolphin,/m/0gd2v,Marine mammal,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/0gd2v > /m/02hj4,/m/0bl9f > Animal > Mammal > Marine mammal > Dolphin
+/m/084zz,Whale,/m/0gd2v,Marine mammal,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/0gd2v > /m/084zz,/m/0bl9f > Animal > Mammal > Marine mammal > Whale
+/m/0gd36,Sea lion,/m/0gd2v,Marine mammal,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/0gd2v > /m/0gd36,/m/0bl9f > Animal > Mammal > Marine mammal > Sea lion
+/m/02l8p9,Harbor seal,/m/0gd2v,Marine mammal,4,/m/0bl9f > /m/0jbk > /m/04rky > /m/0gd2v > /m/02l8p9,/m/0bl9f > Animal > Mammal > Marine mammal > Harbor seal
+/m/0km7z,Skunk,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0km7z,/m/0bl9f > Animal > Mammal > Skunk
+/m/0pcr,Alpaca,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0pcr,/m/0bl9f > Animal > Mammal > Alpaca
+/m/0xfy,Armadillo,/m/04rky,Mammal,3,/m/0bl9f > /m/0jbk > /m/04rky > /m/0xfy,/m/0bl9f > Animal > Mammal > Armadillo
+/m/029tx,Dinosaur,/m/06bt6,Reptile,3,/m/0bl9f > /m/0jbk > /m/06bt6 > /m/029tx,/m/0bl9f > Animal > Reptile > Dinosaur
+/m/04m9y,Lizard,/m/06bt6,Reptile,3,/m/0bl9f > /m/0jbk > /m/06bt6 > /m/04m9y,/m/0bl9f > Animal > Reptile > Lizard
+/m/078jl,Snake,/m/06bt6,Reptile,3,/m/0bl9f > /m/0jbk > /m/06bt6 > /m/078jl,/m/0bl9f > Animal > Reptile > Snake
+/m/011k07,Tortoise,/m/09dzg,Turtle,4,/m/0bl9f > /m/0jbk > /m/06bt6 > /m/09dzg > /m/011k07,/m/0bl9f > Animal > Reptile > Turtle > Tortoise
+/m/0120dh,Sea turtle,/m/09dzg,Turtle,4,/m/0bl9f > /m/0jbk > /m/06bt6 > /m/09dzg > /m/0120dh,/m/0bl9f > Animal > Reptile > Turtle > Sea turtle
+/m/09f_2,Crocodile,/m/06bt6,Reptile,3,/m/0bl9f > /m/0jbk > /m/06bt6 > /m/09f_2,/m/0bl9f > Animal > Reptile > Crocodile
+/m/09ld4,Frog,/m/06bt6,Reptile,3,/m/0bl9f > /m/0jbk > /m/06bt6 > /m/09ld4,/m/0bl9f > Animal > Reptile > Frog
+/m/03fj2,Goldfish,/m/0ch_cf,Fish,3,/m/0bl9f > /m/0jbk > /m/0ch_cf > /m/03fj2,/m/0bl9f > Animal > Fish > Goldfish
+/m/0by6g,Shark,/m/0ch_cf,Fish,3,/m/0bl9f > /m/0jbk > /m/0ch_cf > /m/0by6g,/m/0bl9f > Animal > Fish > Shark
+/m/0m53l,Rays and skates,/m/0ch_cf,Fish,3,/m/0bl9f > /m/0jbk > /m/0ch_cf > /m/0m53l,/m/0bl9f > Animal > Fish > Rays and skates
+/m/0nybt,Seahorse,/m/0ch_cf,Fish,3,/m/0bl9f > /m/0jbk > /m/0ch_cf > /m/0nybt,/m/0bl9f > Animal > Fish > Seahorse
+/m/0_cp5,Oyster,/m/0fbdv,Shellfish,3,/m/0bl9f > /m/0jbk > /m/0fbdv > /m/0_cp5,/m/0bl9f > Animal > Shellfish > Oyster
+/m/0cjq5,Lobster,/m/0fbdv,Shellfish,3,/m/0bl9f > /m/0jbk > /m/0fbdv > /m/0cjq5,/m/0bl9f > Animal > Shellfish > Lobster
+/m/0ll1f78,Shrimp,/m/0fbdv,Shellfish,3,/m/0bl9f > /m/0jbk > /m/0fbdv > /m/0ll1f78,/m/0bl9f > Animal > Shellfish > Shrimp
+/m/0n28_,Crab,/m/0fbdv,Shellfish,3,/m/0bl9f > /m/0jbk > /m/0fbdv > /m/0n28_,/m/0bl9f > Animal > Shellfish > Crab
+/m/02xb7qb,Face powder,/m/014trl,Cosmetics,2,/m/0bl9f > /m/014trl > /m/02xb7qb,/m/0bl9f > Cosmetics > Face powder
+/m/05w9t9,Hair spray,/m/014trl,Cosmetics,2,/m/0bl9f > /m/014trl > /m/05w9t9,/m/0bl9f > Cosmetics > Hair spray
+/m/06c7f7,Lipstick,/m/014trl,Cosmetics,2,/m/0bl9f > /m/014trl > /m/06c7f7,/m/0bl9f > Cosmetics > Lipstick
+/m/0p833,Perfume,/m/014trl,Cosmetics,2,/m/0bl9f > /m/014trl > /m/0p833,/m/0bl9f > Cosmetics > Perfume
+/m/012xff,Toothbrush,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/012xff,/m/0bl9f > Personal care > Toothbrush
+/m/017ftj,Sunglasses,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/017ftj,/m/0bl9f > Personal care > Sunglasses
+/m/02_n6y,Goggles,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/02_n6y,/m/0bl9f > Personal care > Goggles
+/m/05441v,Crutch,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/05441v,/m/0bl9f > Personal care > Crutch
+/m/08p92x,Cream,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/08p92x,/m/0bl9f > Personal care > Cream
+/m/0f571,Diaper,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/0f571,/m/0bl9f > Personal care > Diaper
+/m/0jyfg,Glasses,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/0jyfg,/m/0bl9f > Personal care > Glasses
+/m/0qmmr,Wheelchair,/m/02w3_ws,Personal care,2,/m/0bl9f > /m/02w3_ws > /m/0qmmr,/m/0bl9f > Personal care > Wheelchair
+/m/012ysf,Syringe,/m/01xgg_,Medical equipment,2,/m/0bl9f > /m/01xgg_ > /m/012ysf,/m/0bl9f > Medical equipment > Syringe
+/m/02lbcq,Stretcher,/m/01xgg_,Medical equipment,2,/m/0bl9f > /m/01xgg_ > /m/02lbcq,/m/0bl9f > Medical equipment > Stretcher
+/m/073g6,Stethoscope,/m/01xgg_,Medical equipment,2,/m/0bl9f > /m/01xgg_ > /m/073g6,/m/0bl9f > Medical equipment > Stethoscope
+/m/0j496,Band-aid,/m/01xgg_,Medical equipment,2,/m/0bl9f > /m/01xgg_ > /m/0j496,/m/0bl9f > Medical equipment > Band-aid
+/m/013y1f,Organ (Musical Instrument),/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/013y1f,/m/0bl9f > Musical instrument > Organ (Musical Instrument)
+/m/018j2,Banjo,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/018j2,/m/0bl9f > Musical instrument > Banjo
+/m/01xqw,Cello,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/01xqw,/m/0bl9f > Musical instrument > Cello
+/m/026t6,Drum,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/026t6,/m/0bl9f > Musical instrument > Drum
+/m/0319l,French horn,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/0319l,/m/0bl9f > Musical instrument > French horn
+/m/0342h,Guitar,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/0342h,/m/0bl9f > Musical instrument > Guitar
+/m/03m5k,Harp,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/03m5k,/m/0bl9f > Musical instrument > Harp
+/m/03q5t,Harpsichord,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/03q5t,/m/0bl9f > Musical instrument > Harpsichord
+/m/03qjg,Harmonica,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/03qjg,/m/0bl9f > Musical instrument > Harmonica
+/m/057cc,Musical keyboard,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/057cc,/m/0bl9f > Musical instrument > Musical keyboard
+/m/05kms,Oboe,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/05kms,/m/0bl9f > Musical instrument > Oboe
+/m/05r5c,Piano,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/05r5c,/m/0bl9f > Musical instrument > Piano
+/m/06ncr,Saxophone,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/06ncr,/m/0bl9f > Musical instrument > Saxophone
+/m/07c6l,Trombone,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/07c6l,/m/0bl9f > Musical instrument > Trombone
+/m/07gql,Trumpet,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/07gql,/m/0bl9f > Musical instrument > Trumpet
+/m/07y_7,Violin,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/07y_7,/m/0bl9f > Musical instrument > Violin
+/m/0f8s22,Chime,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/0f8s22,/m/0bl9f > Musical instrument > Chime
+/m/0l14j_,Flute,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/0l14j_,/m/0bl9f > Musical instrument > Flute
+/m/0mkg,Accordion,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/0mkg,/m/0bl9f > Musical instrument > Accordion
+/m/0xzly,Maraca,/m/04szw,Musical instrument,2,/m/0bl9f > /m/04szw > /m/0xzly,/m/0bl9f > Musical instrument > Maraca
+/m/014y4n,Paddle,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/014y4n,/m/0bl9f > Sports equipment > Paddle
+/m/01226z,Football,/m/018xm,Ball (Object),3,/m/0bl9f > /m/05y5lj > /m/018xm > /m/01226z,/m/0bl9f > Sports equipment > Ball (Object) > Football
+/m/02ctlc,Cricket ball,/m/018xm,Ball (Object),3,/m/0bl9f > /m/05y5lj > /m/018xm > /m/02ctlc,/m/0bl9f > Sports equipment > Ball (Object) > Cricket ball
+/m/02rgn06,Volleyball (Ball),/m/018xm,Ball (Object),3,/m/0bl9f > /m/05y5lj > /m/018xm > /m/02rgn06,/m/0bl9f > Sports equipment > Ball (Object) > Volleyball (Ball)
+/m/05ctyq,Tennis ball,/m/018xm,Ball (Object),3,/m/0bl9f > /m/05y5lj > /m/018xm > /m/05ctyq,/m/0bl9f > Sports equipment > Ball (Object) > Tennis ball
+/m/0wdt60w,Rugby ball,/m/018xm,Ball (Object),3,/m/0bl9f > /m/05y5lj > /m/018xm > /m/0wdt60w,/m/0bl9f > Sports equipment > Ball (Object) > Rugby ball
+/m/01bqk0,Bicycle wheel,/m/0199g,Bicycle,3,/m/0bl9f > /m/05y5lj > /m/0199g > /m/01bqk0,/m/0bl9f > Sports equipment > Bicycle > Bicycle wheel
+/m/019w40,Surfboard,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/019w40,/m/0bl9f > Sports equipment > Surfboard
+/m/01g3x7,Bow and arrow,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/01g3x7,/m/0bl9f > Sports equipment > Bow and arrow
+/m/0268lbt,Hiking equipment,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/0268lbt,/m/0bl9f > Sports equipment > Hiking equipment
+/m/02p3w7d,Roller skates,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/02p3w7d,/m/0bl9f > Sports equipment > Roller skates
+/m/02wmf,Flying disc,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/02wmf,/m/0bl9f > Sports equipment > Flying disc
+/m/03g8mr,Baseball bat,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/03g8mr,/m/0bl9f > Sports equipment > Baseball bat
+/m/03grzl,Baseball glove,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/03grzl,/m/0bl9f > Sports equipment > Baseball glove
+/m/0420v5,Punching bag,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/0420v5,/m/0bl9f > Sports equipment > Punching bag
+/m/044r5d,Golf ball,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/044r5d,/m/0bl9f > Sports equipment > Golf ball
+/m/054xkw,Personal flotation device,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/054xkw,/m/0bl9f > Sports equipment > Personal flotation device
+/m/057p5t,Scoreboard,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/057p5t,/m/0bl9f > Sports equipment > Scoreboard
+/m/06__v,Snowboard,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/06__v,/m/0bl9f > Sports equipment > Snowboard
+/m/06_fw,Skateboard,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/06_fw,/m/0bl9f > Sports equipment > Skateboard
+/m/071p9,Ski,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/071p9,/m/0bl9f > Sports equipment > Ski
+/m/07pj7bq,Bowling equipment,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/07pj7bq,/m/0bl9f > Sports equipment > Bowling equipment
+/m/04h8sr,Dumbbell,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/04h8sr,/m/0bl9f > Sports equipment > Dumbbell
+/m/03kt2w,Stationary bicycle,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/03kt2w,/m/0bl9f > Sports equipment > Stationary bicycle
+/m/030610,Treadmill,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/030610,/m/0bl9f > Sports equipment > Treadmill
+/m/076lb9,Training bench,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/076lb9,/m/0bl9f > Sports equipment > Training bench
+/m/03wym,Indoor rower,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/03wym,/m/0bl9f > Sports equipment > Indoor rower
+/m/0cqn2,Horizontal bar,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/0cqn2,/m/0bl9f > Sports equipment > Horizontal bar
+/m/0cyfs,Parachute,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/0cyfs,/m/0bl9f > Sports equipment > Parachute
+/m/0h8my_4,Tennis racket,/m/0dv9c,Racket,3,/m/0bl9f > /m/05y5lj > /m/0dv9c > /m/0h8my_4,/m/0bl9f > Sports equipment > Racket > Tennis racket
+/m/05_5p_0,Table tennis racket,/m/0dv9c,Racket,3,/m/0bl9f > /m/05y5lj > /m/0dv9c > /m/05_5p_0,/m/0bl9f > Sports equipment > Racket > Table tennis racket
+/m/0l3ms,Balance beam,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/0l3ms,/m/0bl9f > Sports equipment > Balance beam
+/m/03p3bw,Bicycle helmet,/m/0zvk5,Helmet,3,/m/0bl9f > /m/05y5lj > /m/0zvk5 > /m/03p3bw,/m/0bl9f > Sports equipment > Helmet > Bicycle helmet
+/m/07qxg_,Football helmet,/m/0zvk5,Helmet,3,/m/0bl9f > /m/05y5lj > /m/0zvk5 > /m/07qxg_,/m/0bl9f > Sports equipment > Helmet > Football helmet
+/m/04p0qw,Billiard table,/m/05y5lj,Sports equipment,2,/m/0bl9f > /m/05y5lj > /m/04p0qw,/m/0bl9f > Sports equipment > Billiard table
+/m/02jnhm,Tin can,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/02jnhm,/m/0bl9f > Tool > Container > Tin can
+/m/02zn6n,Barrel,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/02zn6n,/m/0bl9f > Tool > Container > Barrel
+/m/04dr76w,Bottle,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/04dr76w,/m/0bl9f > Tool > Container > Bottle
+/m/07kng9,Picnic basket,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/07kng9,/m/0bl9f > Tool > Container > Picnic basket
+/m/08hvt4,Jug,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/08hvt4,/m/0bl9f > Tool > Container > Jug
+/m/0bjyj5,Waste container,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/0bjyj5,/m/0bl9f > Tool > Container > Waste container
+/m/0d20w4,Beaker,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/0d20w4,/m/0bl9f > Tool > Container > Beaker
+/m/0fm3zh,Flowerpot,/m/011q46kg,Container,3,/m/0bl9f > /m/07k1x > /m/011q46kg > /m/0fm3zh,/m/0bl9f > Tool > Container > Flowerpot
+/m/012w5l,Ladder,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/012w5l,/m/0bl9f > Tool > Ladder
+/m/012xff,Toothbrush,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/012xff,/m/0bl9f > Tool > Toothbrush
+/m/01bms0,Screwdriver,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/01bms0,/m/0bl9f > Tool > Screwdriver
+/m/01d380,Drill (Tool),/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/01d380,/m/0bl9f > Tool > Drill (Tool)
+/m/01j4z9,Chainsaw,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/01j4z9,/m/0bl9f > Tool > Chainsaw
+/m/01j5ks,Wrench,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/01j5ks,/m/0bl9f > Tool > Wrench
+/m/01kb5b,Flashlight,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/01kb5b,/m/0bl9f > Tool > Flashlight
+/m/01lsmm,Scissors,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/01lsmm,/m/0bl9f > Tool > Scissors
+/m/02bm9n,Ratchet (Device),/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/02bm9n,/m/0bl9f > Tool > Ratchet (Device)
+/m/01_5g,Chopsticks,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/01_5g,/m/0bl9f > Tool > Kitchen utensil > Chopsticks
+/m/027rl48,Ladle,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/027rl48,/m/0bl9f > Tool > Kitchen utensil > Ladle
+/m/02d1br,Spatula,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/02d1br,/m/0bl9f > Tool > Kitchen utensil > Spatula
+/m/02mqfb,Can opener,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/02mqfb,/m/0bl9f > Tool > Kitchen utensil > Can opener
+/m/02pdsw,Cutting board,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/02pdsw,/m/0bl9f > Tool > Kitchen utensil > Cutting board
+/m/02vwcm,Whisk,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/02vwcm,/m/0bl9f > Tool > Kitchen utensil > Whisk
+/m/03v5tg,Drinking straw,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/03v5tg,/m/0bl9f > Tool > Kitchen utensil > Drinking straw
+/m/04ctx,Knife,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/04ctx,/m/0bl9f > Tool > Kitchen utensil > Knife
+/m/04f5ws,Bottle opener,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/04f5ws,/m/0bl9f > Tool > Kitchen utensil > Bottle opener
+/m/07v9_z,Measuring cup,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/07v9_z,/m/0bl9f > Tool > Kitchen utensil > Measuring cup
+/m/08ks85,Pizza cutter,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/08ks85,/m/0bl9f > Tool > Kitchen utensil > Pizza cutter
+/m/0cmx8,Spoon,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/0cmx8,/m/0bl9f > Tool > Kitchen utensil > Spoon
+/m/0dt3t,Fork,/m/03hlz0c,Kitchen utensil,3,/m/0bl9f > /m/07k1x > /m/03hlz0c > /m/0dt3t,/m/0bl9f > Tool > Kitchen utensil > Fork
+/m/03l9g,Hammer,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/03l9g,/m/0bl9f > Tool > Hammer
+/m/03txqz,Scale,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/03txqz,/m/0bl9f > Tool > Scale
+/m/04vv5k,Snowplow,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/04vv5k,/m/0bl9f > Tool > Snowplow
+/m/05bm6,Nail (Construction),/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/05bm6,/m/0bl9f > Tool > Nail (Construction)
+/m/073bxn,Tripod,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/073bxn,/m/0bl9f > Tool > Tripod
+/m/07dd4,Torch,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/07dd4,/m/0bl9f > Tool > Torch
+/m/0_dqb,Chisel,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/0_dqb,/m/0bl9f > Tool > Chisel
+/m/0c2jj,Axe,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/0c2jj,/m/0bl9f > Tool > Axe
+/m/0dv5r,Camera,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/0dv5r,/m/0bl9f > Tool > Camera
+/m/0h8jyh6,Grinder,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/0h8jyh6,/m/0bl9f > Tool > Grinder
+/m/0hdln,Ruler,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/0hdln,/m/0bl9f > Tool > Ruler
+/m/0lt4_,Binoculars,/m/07k1x,Tool,2,/m/0bl9f > /m/07k1x > /m/0lt4_,/m/0bl9f > Tool > Binoculars
+/m/01g3x7,Bow and arrow,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/01g3x7,/m/0bl9f > Weapon > Bow and arrow
+/m/020kz,Cannon,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/020kz,/m/0bl9f > Weapon > Cannon
+/m/02gzp,Dagger,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/02gzp,/m/0bl9f > Weapon > Dagger
+/m/04ctx,Knife,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/04ctx,/m/0bl9f > Weapon > Knife
+/m/06c54,Rifle,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/06c54,/m/0bl9f > Weapon > Rifle
+/m/06nrc,Shotgun,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/06nrc,/m/0bl9f > Weapon > Shotgun
+/m/07cmd,Tank,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/07cmd,/m/0bl9f > Weapon > Tank
+/m/0c2jj,Axe,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/0c2jj,/m/0bl9f > Weapon > Axe
+/m/0gxl3,Handgun,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/0gxl3,/m/0bl9f > Weapon > Handgun
+/m/06y5r,Sword,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/06y5r,/m/0bl9f > Weapon > Sword
+/m/04ylt,Missile,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/04ylt,/m/0bl9f > Weapon > Missile
+/m/0ct4f,Bomb,/m/083kb,Weapon,2,/m/0bl9f > /m/083kb > /m/0ct4f,/m/0bl9f > Weapon > Bomb
+/m/01432t,Cassette deck,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01432t,/m/0bl9f > Cassette deck
+/m/01b7fy,Headphones,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01b7fy,/m/0bl9f > Headphones
+/m/01c648,Laptop,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01c648,/m/0bl9f > Laptop
+/m/01m2v,Computer keyboard,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01m2v,/m/0bl9f > Computer keyboard
+/m/01m4t,Printer,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01m4t,/m/0bl9f > Printer
+/m/020lf,Computer mouse,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/020lf,/m/0bl9f > Computer mouse
+/m/02522,Computer monitor,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/02522,/m/0bl9f > Computer monitor
+/m/03bbps,Power plugs and sockets,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/03bbps,/m/0bl9f > Power plugs and sockets
+/m/03jbxj,Light switch,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/03jbxj,/m/0bl9f > Light switch
+/m/07c52,Television,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/07c52,/m/0bl9f > Television
+/m/050k8,Mobile phone,/m/07cx4,Telephone,2,/m/0bl9f > /m/07cx4 > /m/050k8,/m/0bl9f > Telephone > Mobile phone
+/m/0h8lkj8,Corded phone,/m/07cx4,Telephone,2,/m/0bl9f > /m/07cx4 > /m/0h8lkj8,/m/0bl9f > Telephone > Corded phone
+/m/0bh9flk,Tablet computer,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0bh9flk,/m/0bl9f > Tablet computer
+/m/0hg7b,Microphone,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0hg7b,/m/0bl9f > Microphone
+/m/0mcx2,Ipod,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0mcx2,/m/0bl9f > Ipod
+/m/0qjjc,Remote control,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0qjjc,/m/0bl9f > Remote control
+/m/01599,Beer,/m/0271t,Drink,2,/m/0bl9f > /m/0271t > /m/01599,/m/0bl9f > Drink > Beer
+/m/024g6,Cocktail,/m/0271t,Drink,2,/m/0bl9f > /m/0271t > /m/024g6,/m/0bl9f > Drink > Cocktail
+/m/02vqfm,Coffee (drink),/m/0271t,Drink,2,/m/0bl9f > /m/0271t > /m/02vqfm,/m/0bl9f > Drink > Coffee (drink)
+/m/01z1kdw,Juice,/m/0271t,Drink,2,/m/0bl9f > /m/0271t > /m/01z1kdw,/m/0bl9f > Drink > Juice
+/m/07clx,Tea,/m/0271t,Drink,2,/m/0bl9f > /m/0271t > /m/07clx,/m/0bl9f > Drink > Tea
+/m/081qc,Wine,/m/0271t,Drink,2,/m/0bl9f > /m/0271t > /m/081qc,/m/0bl9f > Drink > Wine
+/m/01bqk0,Bicycle wheel,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01bqk0,/m/0bl9f > Bicycle wheel
+/m/03c7gz,Door handle,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/03c7gz,/m/0bl9f > Door handle
+/m/03c7gz,Door handle,/m/02dgv,Door,2,/m/0bl9f > /m/02dgv > /m/03c7gz,/m/0bl9f > Door > Door handle
+/m/0d4v4,Window,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0d4v4,/m/0bl9f > Window
+/m/01lynh,Stairs,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/01lynh,/m/0bl9f > Stairs
+/m/04m6gz,Porch,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/04m6gz,/m/0bl9f > Porch
+/m/014sv8,Human eye,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/014sv8,/m/0bl9f > Human eye
+/m/016m2d,Skull,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/016m2d,/m/0bl9f > Skull
+/m/04hgtk,Human head,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/04hgtk,/m/0bl9f > Human head
+/m/0dzct,Human face,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0dzct,/m/0bl9f > Human face
+/m/0283dt1,Human mouth,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0283dt1,/m/0bl9f > Human mouth
+/m/039xj_,Human ear,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/039xj_,/m/0bl9f > Human ear
+/m/0k0pj,Human nose,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0k0pj,/m/0bl9f > Human nose
+/m/03q69,Human hair,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/03q69,/m/0bl9f > Human hair
+/m/0k65p,Human hand,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0k65p,/m/0bl9f > Human hand
+/m/031n1,Human foot,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/031n1,/m/0bl9f > Human foot
+/m/0dzf4,Human arm,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0dzf4,/m/0bl9f > Human arm
+/m/035r7c,Human leg,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/035r7c,/m/0bl9f > Human leg
+/m/015h_t,Beard,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/015h_t,/m/0bl9f > Beard
+/m/014sv8,Human eye,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/014sv8,/m/0bl9f > Human body > Human eye
+/m/016m2d,Skull,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/016m2d,/m/0bl9f > Human body > Skull
+/m/04hgtk,Human head,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/04hgtk,/m/0bl9f > Human body > Human head
+/m/0dzct,Human face,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/0dzct,/m/0bl9f > Human body > Human face
+/m/0283dt1,Human mouth,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/0283dt1,/m/0bl9f > Human body > Human mouth
+/m/039xj_,Human ear,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/039xj_,/m/0bl9f > Human body > Human ear
+/m/0k0pj,Human nose,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/0k0pj,/m/0bl9f > Human body > Human nose
+/m/03q69,Human hair,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/03q69,/m/0bl9f > Human body > Human hair
+/m/0k65p,Human hand,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/0k65p,/m/0bl9f > Human body > Human hand
+/m/031n1,Human foot,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/031n1,/m/0bl9f > Human body > Human foot
+/m/0dzf4,Human arm,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/0dzf4,/m/0bl9f > Human body > Human arm
+/m/035r7c,Human leg,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/035r7c,/m/0bl9f > Human body > Human leg
+/m/015h_t,Beard,/m/02p0tk3,Human body,2,/m/0bl9f > /m/02p0tk3 > /m/015h_t,/m/0bl9f > Human body > Beard
+/m/01jfm_,Vehicle registration plate,/m/08dz3q,Auto part,2,/m/0bl9f > /m/08dz3q > /m/01jfm_,/m/0bl9f > Auto part > Vehicle registration plate
+/m/083wq,Wheel,/m/08dz3q,Auto part,2,/m/0bl9f > /m/08dz3q > /m/083wq,/m/0bl9f > Auto part > Wheel
+/m/0dkzw,Seat belt,/m/08dz3q,Auto part,2,/m/0bl9f > /m/08dz3q > /m/0dkzw,/m/0bl9f > Auto part > Seat belt
+/m/0h9mv,Tire,/m/08dz3q,Auto part,2,/m/0bl9f > /m/08dz3q > /m/0h9mv,/m/0bl9f > Auto part > Tire
+/m/0djtd,Coconut,/m/0bl9f,/m/0bl9f,1,/m/0bl9f > /m/0djtd,/m/0bl9f > Coconut

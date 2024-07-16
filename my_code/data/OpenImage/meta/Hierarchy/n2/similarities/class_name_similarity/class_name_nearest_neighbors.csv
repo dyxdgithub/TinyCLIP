@@ -1,0 +1,414 @@
+LabelName,DisplayName,Top1Name,Top1Value
+/m/0167gd,Doll,Duck,0.6000397205352783
+/m/01j51,Balloon,Bomb,0.6650712490081787
+/m/029b3,Dice,Cake,0.5683468580245972
+/m/02wmf,Flying disc,Rays and skates,0.5947551727294922
+/m/02zt3,Kite,Kettle,0.6206172704696655
+/m/0kmg4,Teddy bear,Teddy bear,1.0
+/m/0174k2,Washing machine,Sewing machine,0.8303817510604858
+/m/01k6s3,Toaster,Lobster,0.6940268278121948
+/m/029bxz,Oven,Oven,1.0000001192092896
+/m/02pjr4,Blender,Blender,1.0
+/m/02wv84t,Gas stove,Wood-burning stove,0.7903971672058105
+/m/02x984l,Mechanical fan,Ceiling fan,0.7712600231170654
+/m/03qhv5,Heater,Mixer,0.7002164721488953
+/m/03s_tn,Kettle,Heater,0.6554902791976929
+/m/03wvsk,Hair dryer,Hand dryer,0.8417825102806091
+/m/040b_t,Refrigerator,Refrigerator,1.0000001192092896
+/m/04169hn,Wood-burning stove,Gas stove,0.7903971672058105
+/m/04lvq_,Humidifier,Heater,0.6361083388328552
+/m/063rgb,Mixer,Mixer,1.0000001192092896
+/m/07xyvk,Coffeemaker,Coffeemaker,1.000000238418579
+/m/0fx9l,Microwave oven,Microwave oven,0.9999998807907104
+/m/0ky7b,Dishwasher,Dishwasher,0.9999998211860657
+/m/0llzx,Sewing machine,Washing machine,0.8303817510604858
+/m/0c3m8g,Hand dryer,Hair dryer,0.8417825102806091
+/m/03ldnb,Ceiling fan,Mechanical fan,0.7712600231170654
+/m/0130jx,Sink,Shark,0.6522372364997864
+/m/01vbnl,Bidet,Bathtub,0.6913276314735413
+/m/02f9f_,Shower,Bathtub,0.6390392184257507
+/m/02jz0l,Tap,Tea,0.6332204937934875
+/m/03dnzn,Bathtub,Toilet,0.7023617029190063
+/m/09g1w,Toilet,Toilet paper,0.819168746471405
+/m/01lsmm,Scissors,Eraser,0.6692306399345398
+/m/01n5jq,Poster,Mixer,0.6123605966567993
+/m/024d2,Calculator,Mixer,0.6185206174850464
+/m/025dyy,Box,Cookie,0.6241111755371094
+/m/025fsf,Stapler,Stretcher,0.6326170563697815
+/m/02d9qx,Whiteboard,Cutting board,0.6478022336959839
+/m/02ddwp,Pencil sharpener,Pencil case,0.6902112364768982
+/m/02fh7f,Eraser,Scissors,0.6692306399345398
+/m/02xqq,Fax,Axe,0.6034053564071655
+/m/03m3vtv,Adhesive tape,Toilet paper,0.6272792220115662
+/m/04zwwv,Ring binder,Seat belt,0.6072285175323486
+/m/05676x,Pencil case,Pencil sharpener,0.6902112364768982
+/m/05gqfk,Plastic bag,Handbag,0.7172475457191467
+/m/080n7g,Paper cutter,Cutting board,0.7997254133224487
+/m/09gtd,Toilet paper,Toilet paper,1.0
+/m/0frqm,Envelope,Backpack,0.6185321807861328
+/m/0k1tl,Pen,Pencil case,0.6585997939109802
+/m/01_5g,Chopsticks,Chopsticks,1.0000001192092896
+/m/027rl48,Ladle,Ladle,1.0
+/m/02d1br,Spatula,Spatula,0.9999998807907104
+/m/02mqfb,Can opener,Can opener,1.000000238418579
+/m/02pdsw,Cutting board,Cutting board,1.0000001192092896
+/m/02vwcm,Whisk,Whisk,1.000000238418579
+/m/03v5tg,Drinking straw,Drinking straw,1.0000001192092896
+/m/04ctx,Knife,Knife,0.9999999403953552
+/m/04f5ws,Bottle opener,Bottle opener,0.9999998211860657
+/m/07v9_z,Measuring cup,Measuring cup,1.0
+/m/08ks85,Pizza cutter,Pizza cutter,1.000000238418579
+/m/0cmx8,Spoon,Spoon,1.0000001192092896
+/m/0dt3t,Fork,Fork,0.9999999403953552
+/m/01_5g,Chopsticks,Chopsticks,1.0000001192092896
+/m/01fh4r,Teapot,Flowerpot,0.7721988558769226
+/m/02jvh9,Mug,Handbag,0.6007813215255737
+/m/02p5f1q,Coffee cup,Coffee table,0.8484094738960266
+/m/02x8cch,Salt and pepper shakers,Cocktail shaker,0.6348881721496582
+/m/03hj559,Mixing bowl,Mixer,0.7681723833084106
+/m/03q5c7,Saucer,Hamburger,0.6355019211769104
+/m/0440zs,Cocktail shaker,Cocktail,0.7877891063690186
+/m/04dr76w,Bottle,Bottle,1.0
+/m/04kkgm,Bowl,Mixing bowl,0.7159383296966553
+/m/050gv4,Plate,Platter,0.7597761750221252
+/m/054fyh,Pitcher (Container),Waste container,0.5857175588607788
+/m/058qzx,Kitchen knife,Knife,0.7423319220542908
+/m/08hvt4,Jug,Jug,1.0
+/m/099ssp,Platter,Plate,0.7597761750221252
+/m/09tvcd,Wine glass,Wine,0.7967424988746643
+/m/0cmx8,Spoon,Spoon,1.0000001192092896
+/m/0dt3t,Fork,Fork,0.9999999403953552
+/m/0h8n27j,Serving tray,Drinking straw,0.6880654692649841
+/m/0h8n6ft,Cake stand,Cake,0.7144428491592407
+/m/029bxz,Oven,Oven,1.0000001192092896
+/m/02pjr4,Blender,Blender,1.0
+/m/02tsc9,Slow cooker,Pressure cooker,0.6988398432731628
+/m/03y6mg,Food processor,Slow cooker,0.6872106790542603
+/m/040b_t,Refrigerator,Refrigerator,1.0000001192092896
+/m/04z4wx,Waffle iron,Washing machine,0.5583434104919434
+/m/063rgb,Mixer,Mixer,1.0000001192092896
+/m/07xyvk,Coffeemaker,Coffeemaker,1.000000238418579
+/m/0fx9l,Microwave oven,Microwave oven,0.9999998807907104
+/m/0h8ntjv,Pressure cooker,Slow cooker,0.6988398432731628
+/m/0ky7b,Dishwasher,Dishwasher,0.9999998211860657
+/m/03m3pdh,Sofa bed,Infant bed,0.6833394765853882
+/m/0703r8,Loveseat,Suitcase,0.5728257894515991
+/m/061hd_,Infant bed,Sofa bed,0.6833394765853882
+/m/026qbn5,Studio couch,Sofa bed,0.6539697051048279
+/m/078n6m,Coffee table,Coffee cup,0.8484094738960266
+/m/0h8n5zk,Kitchen & dining room table,Coffee table,0.7036811709403992
+/m/046dlr,Alarm clock,Wall clock,0.7645485997200012
+/m/06_72j,Digital clock,Wall clock,0.769705057144165
+/m/0h8mzrc,Wall clock,Digital clock,0.769705057144165
+/m/0152hh,Snowman,Swan,0.5204737186431885
+/m/04yqq2,Bust,Bomb,0.605047345161438
+/m/01yx86,Bronze sculpture,Human face,0.6104669570922852
+/m/0162_1,Towel,Toilet paper,0.656453013420105
+/m/09gtd,Toilet paper,Toilet paper,1.0
+/m/0c3mkw,Soap dispenser,Hand dryer,0.6494787931442261
+/m/0h8nsvg,Facial tissue holder,Human face,0.6238558292388916
+/m/012ysf,Syringe,Syringe,1.000000238418579
+/m/02lbcq,Stretcher,Stretcher,0.9999999403953552
+/m/073g6,Stethoscope,Stethoscope,0.9999999403953552
+/m/0j496,Band-aid,Band-aid,1.0
+/m/013y1f,Organ (Musical Instrument),Organ (Musical Instrument),1.0
+/m/018j2,Banjo,Banjo,1.000000238418579
+/m/01xqw,Cello,Cello,1.0000001192092896
+/m/026t6,Drum,Drum,1.0000001192092896
+/m/0319l,French horn,French horn,1.0
+/m/0342h,Guitar,Guitar,1.0
+/m/03m5k,Harp,Harp,1.0
+/m/03q5t,Harpsichord,Harpsichord,0.9999998807907104
+/m/03qjg,Harmonica,Harmonica,1.0
+/m/057cc,Musical keyboard,Musical keyboard,1.0000001192092896
+/m/05kms,Oboe,Oboe,1.0
+/m/05r5c,Piano,Piano,1.0000001192092896
+/m/06ncr,Saxophone,Saxophone,1.0
+/m/07c6l,Trombone,Trombone,1.000000238418579
+/m/07gql,Trumpet,Trumpet,0.9999998211860657
+/m/07y_7,Violin,Violin,1.0000001192092896
+/m/0f8s22,Chime,Chime,1.0000001192092896
+/m/0l14j_,Flute,Flute,1.0000001192092896
+/m/0mkg,Accordion,Accordion,1.0000001192092896
+/m/0xzly,Maraca,Maraca,1.0
+/m/01226z,Football,Football,1.0000001192092896
+/m/02ctlc,Cricket ball,Cricket ball,1.0
+/m/02rgn06,Volleyball (Ball),Volleyball (Ball),1.000000238418579
+/m/05ctyq,Tennis ball,Tennis ball,1.0
+/m/0wdt60w,Rugby ball,Rugby ball,1.0
+/m/0h8my_4,Tennis racket,Tennis racket,1.0
+/m/05_5p_0,Table tennis racket,Table tennis racket,1.000000238418579
+/m/03p3bw,Bicycle helmet,Bicycle helmet,1.0000001192092896
+/m/07qxg_,Football helmet,Football helmet,1.000000238418579
+/m/02jnhm,Tin can,Tin can,1.0
+/m/02zn6n,Barrel,Barrel,1.0000001192092896
+/m/04dr76w,Bottle,Bottle,1.0
+/m/07kng9,Picnic basket,Picnic basket,1.0000001192092896
+/m/08hvt4,Jug,Jug,1.0
+/m/0bjyj5,Waste container,Waste container,1.0
+/m/0d20w4,Beaker,Beaker,1.0000001192092896
+/m/0fm3zh,Flowerpot,Flowerpot,1.0
+/m/01_5g,Chopsticks,Chopsticks,1.0000001192092896
+/m/027rl48,Ladle,Ladle,1.0
+/m/02d1br,Spatula,Spatula,0.9999998807907104
+/m/02mqfb,Can opener,Can opener,1.000000238418579
+/m/02pdsw,Cutting board,Cutting board,1.0000001192092896
+/m/02vwcm,Whisk,Whisk,1.000000238418579
+/m/03v5tg,Drinking straw,Drinking straw,1.0000001192092896
+/m/04ctx,Knife,Knife,0.9999999403953552
+/m/04f5ws,Bottle opener,Bottle opener,0.9999999403953552
+/m/07v9_z,Measuring cup,Measuring cup,1.0
+/m/08ks85,Pizza cutter,Pizza cutter,1.000000238418579
+/m/0cmx8,Spoon,Spoon,1.0000001192092896
+/m/0dt3t,Fork,Fork,0.9999999403953552
+/m/01g3x7,Bow and arrow,Bow and arrow,0.9999998211860657
+/m/020kz,Cannon,Cannon,1.0
+/m/02gzp,Dagger,Dagger,1.0
+/m/04ctx,Knife,Knife,0.9999999403953552
+/m/06c54,Rifle,Rifle,1.0000001192092896
+/m/06nrc,Shotgun,Shotgun,1.0000001192092896
+/m/07cmd,Tank,Tank,1.0
+/m/0c2jj,Axe,Axe,1.0000001192092896
+/m/0gxl3,Handgun,Handgun,1.000000238418579
+/m/06y5r,Sword,Sword,1.000000238418579
+/m/04ylt,Missile,Missile,0.9999997615814209
+/m/0ct4f,Bomb,Bomb,1.000000238418579
+/m/050k8,Mobile phone,Mobile phone,1.0000001192092896
+/m/0h8lkj8,Corded phone,Corded phone,1.0
+/m/014sv8,Human eye,Human eye,0.9999999403953552
+/m/016m2d,Skull,Skull,1.0
+/m/04hgtk,Human head,Human head,1.0
+/m/0dzct,Human face,Human face,1.0
+/m/0283dt1,Human mouth,Human mouth,1.000000238418579
+/m/039xj_,Human ear,Human ear,1.0
+/m/0k0pj,Human nose,Human nose,1.0
+/m/03q69,Human hair,Human hair,1.0000001192092896
+/m/0k65p,Human hand,Human hand,0.9999998807907104
+/m/031n1,Human foot,Human foot,1.0000001192092896
+/m/0dzf4,Human arm,Human arm,1.000000238418579
+/m/035r7c,Human leg,Human leg,1.0000001192092896
+/m/015h_t,Beard,Beard,1.0
+/m/01b9xk,Hot dog,Chicken,0.615660548210144
+/m/02y6n,French fries,French horn,0.5970631837844849
+/m/01f91_,Pretzel,Towel,0.5715352892875671
+/m/01hrv5,Popcorn,Hamburger,0.60313880443573
+/m/021mn,Cookie,Cookie,1.0000001192092896
+/m/01tcjp,Muffin,Dolphin,0.571192741394043
+/m/021mn,Cookie,Cookie,1.0000001192092896
+/m/0cxn2,Ice cream,Cream,0.7545046210289001
+/m/0fszt,Cake,Cookie,0.729072093963623
+/m/0gm28,Candy,Panda,0.630337655544281
+/m/014j1m,Apple,Pineapple,0.6748523712158203
+/m/0388q,Grape,Grapefruit,0.8059567213058472
+/m/043nyj,Common fig,Common sunflower,0.703921377658844
+/m/061_f,Pear,Peach,0.7207409739494324
+/m/07fbm7,Strawberry,Grapefruit,0.6302927732467651
+/m/07j87,Tomato,Tortoise,0.6231676340103149
+/m/09k_b,Lemon (plant),Lavender (Plant),0.7440101504325867
+/m/09qck,Banana,Pineapple,0.5968749523162842
+/m/0cyhj_,Orange (fruit),Lemon (plant),0.6928310990333557
+/m/0dj6p,Peach,Pear,0.7207409739494324
+/m/0fldg,Mango,Tomato,0.5970068573951721
+/m/0fp6w,Pineapple,Grapefruit,0.6965742111206055
+/m/0hqkz,Grapefruit,Grape,0.8059567213058472
+/m/0jwn_,Pomegranate,Watermelon,0.707599401473999
+/m/0kpqd,Watermelon,Pomegranate,0.707599401473999
+/m/0kpt_,Cantaloupe,Canoe,0.5318290591239929
+/m/0jy4k,Doughnut,Doll,0.5765958428382874
+/m/015wgc,Croissant,French fries,0.5828832983970642
+/m/02zvsm,Tart,Tea,0.6445881128311157
+/m/0_cp5,Oyster,Oyster,1.0000001192092896
+/m/0cjq5,Lobster,Lobster,1.0000001192092896
+/m/0ll1f78,Shrimp,Shrimp,1.0000001192092896
+/m/0n28_,Crab,Crab,0.9999998211860657
+/m/05zsy,Pumpkin,Shrimp,0.6550235748291016
+/m/027pcv,Zucchini,Pumpkin,0.5446637868881226
+/m/0cdn1,Hamburger,Saucer,0.6355019211769104
+/m/06pcq,Submarine sandwich,Shrimp,0.5748578310012817
+/m/01nkt,Cheese,Cake,0.6086447834968567
+/m/04zpv,Milk,Chicken,0.6623230576515198
+/m/025nd,Christmas tree,Palm tree,0.7696534395217896
+/m/0cdl1,Palm tree,Christmas tree,0.7696534395217896
+/m/0cffdh,Maple,Rifle,0.6189631819725037
+/m/0mw_6,Willow,Owl,0.5799357295036316
+/m/04gth,Lavender (Plant),Lemon (plant),0.7440101504325867
+/m/06m11,Rose,Lily,0.5725536346435547
+/m/0ftb8,Common sunflower,Common fig,0.703921377658844
+/m/0jqgx,Lily,Rose,0.5725536346435547
+/m/01lcw4,Limousine,Tire,0.5893186926841736
+/m/0h2r6,Van,Oven,0.5892327427864075
+/m/01jfm_,Vehicle registration plate,Vehicle registration plate,0.9999998211860657
+/m/083wq,Wheel,Wheel,1.0000001192092896
+/m/0dkzw,Seat belt,Seat belt,1.0000001192092896
+/m/0h9mv,Tire,Tire,1.0000001192092896
+/m/01btn,Barge,Barrel,0.6233790516853333
+/m/02068x,Gondola,Balloon,0.5833384394645691
+/m/0ph39,Canoe,Cannon,0.6294049620628357
+/m/09ct_,Helicopter,Heater,0.636437714099884
+/m/0cmf2,Fixed-wing aircraft,Helicopter,0.5856595635414124
+/m/09rvcxw,Rocket,Trumpet,0.7099907994270325
+/m/025rp__,Cowboy hat,Cowboy hat,1.0
+/m/02fq_6,Fedora,Fedora,1.0000001192092896
+/m/02jfl0,Sombrero,Sombrero,1.0
+/m/02wbtzl,Sun hat,Sun hat,1.0
+/m/025rp__,Cowboy hat,Cowboy hat,1.0
+/m/02fq_6,Fedora,Fedora,1.0000001192092896
+/m/02jfl0,Sombrero,Sombrero,1.0
+/m/02wbtzl,Sun hat,Sun hat,1.0
+/m/02p3w7d,Roller skates,Rays and skates,0.7223126292228699
+/m/01b638,Boot,Bomb,0.601365327835083
+/m/06k2mb,High heels,Human foot,0.7044097781181335
+/m/03nfch,Sandal,High heels,0.5907940864562988
+/m/01940j,Backpack,Handbag,0.699838399887085
+/m/01s55n,Suitcase,Briefcase,0.7250641584396362
+/m/0584n8,Briefcase,Suitcase,0.7250641584396362
+/m/080hkjn,Handbag,Handgun,0.7588627338409424
+/m/03p3bw,Bicycle helmet,Bicycle helmet,1.0000001192092896
+/m/07qxg_,Football helmet,Football helmet,1.000000238418579
+/m/012074,Magpie,Maple,0.5940868258476257
+/m/01dy8n,Woodpecker,Caterpillar,0.6269798874855042
+/m/01f8m5,Blue jay,Brown bear,0.5466302037239075
+/m/05n4y,Ostrich,Oyster,0.5363250374794006
+/m/05z6w,Penguin,Pumpkin,0.602406919002533
+/m/06j2d,Raven,Rifle,0.5758392810821533
+/m/09b5t,Chicken,Milk,0.6623230576515198
+/m/09csl,Eagle,Owl,0.5908293724060059
+/m/09d5_,Owl,Whale,0.6359613537788391
+/m/09ddx,Duck,Shark,0.6124937534332275
+/m/0ccs93,Canary,Canoe,0.5901687145233154
+/m/0dbvp,Goose,Goggles,0.5974382162094116
+/m/0dftk,Swan,Spoon,0.5892403721809387
+/m/0f6wt,Falcon,Balloon,0.5792412757873535
+/m/0gv1x,Parrot,Sparrow,0.6883619427680969
+/m/0h23m,Sparrow,Parrot,0.6883619427680969
+/m/0jly1,Turkey,Chicken,0.5799264907836914
+/m/01h8tj,Starfish,Goldfish,0.7609965801239014
+/m/035vxb,Isopod,Squid,0.542897641658783
+/m/09gys,Squid,Skull,0.6622759103775024
+/m/0cjq5,Lobster,Lobster,1.0000001192092896
+/m/0d8zb,Jellyfish,Goldfish,0.7587225437164307
+/m/0ll1f78,Shrimp,Shrimp,1.0000001192092896
+/m/0n28_,Crab,Crab,0.9999998211860657
+/m/0cydv,Caterpillar,Woodpecker,0.6269798874855042
+/m/0cyf8,Butterfly,Chicken,0.6086437702178955
+/m/01dxs,Brown bear,Polar bear,0.741139829158783
+/m/03bj1,Panda,Candy,0.630337655544281
+/m/0633h,Polar bear,Brown bear,0.741139829158783
+/m/0kmg4,Teddy bear,Teddy bear,1.0
+/m/02hj4,Dolphin,Shrimp,0.6007367968559265
+/m/084zz,Whale,Owl,0.6359613537788391
+/m/0gd36,Sea lion,Sea turtle,0.7748106122016907
+/m/02l8p9,Harbor seal,Sea lion,0.6036644577980042
+/m/011k07,Tortoise,Tomato,0.6231676340103149
+/m/0120dh,Sea turtle,Sea lion,0.7748106122016907
+/m/03fj2,Goldfish,Starfish,0.7609965801239014
+/m/0by6g,Shark,Shrimp,0.6706665754318237
+/m/0m53l,Rays and skates,Roller skates,0.7223126292228699
+/m/0nybt,Seahorse,Sea turtle,0.6579095721244812
+/m/0_cp5,Oyster,Oyster,1.0000001192092896
+/m/0cjq5,Lobster,Lobster,1.0000001192092896
+/m/0ll1f78,Shrimp,Shrimp,1.0000001192092896
+/m/0n28_,Crab,Crab,0.9999998211860657
+/m/02xb7qb,Face powder,Human face,0.6419398784637451
+/m/05w9t9,Hair spray,Human hair,0.7198246717453003
+/m/06c7f7,Lipstick,Chopsticks,0.6621546745300293
+/m/0p833,Perfume,Pomegranate,0.6217819452285767
+/m/012xff,Toothbrush,Cutting board,0.6579540371894836
+/m/017ftj,Sunglasses,Glasses,0.8600726127624512
+/m/02_n6y,Goggles,Sunglasses,0.8429244756698608
+/m/05441v,Crutch,Stretcher,0.6174414753913879
+/m/08p92x,Cream,Ice cream,0.7545046210289001
+/m/0f571,Diaper,Beaker,0.5883967280387878
+/m/0jyfg,Glasses,Sunglasses,0.8600726127624512
+/m/0qmmr,Wheelchair,Wheel,0.6901655793190002
+/m/012ysf,Syringe,Syringe,1.000000238418579
+/m/02lbcq,Stretcher,Stretcher,0.9999999403953552
+/m/073g6,Stethoscope,Stethoscope,0.9999999403953552
+/m/0j496,Band-aid,Band-aid,1.0
+/m/013y1f,Organ (Musical Instrument),Organ (Musical Instrument),1.0
+/m/018j2,Banjo,Banjo,1.000000238418579
+/m/01xqw,Cello,Cello,1.0000001192092896
+/m/026t6,Drum,Drum,1.0000001192092896
+/m/0319l,French horn,French horn,1.0
+/m/0342h,Guitar,Guitar,1.0
+/m/03m5k,Harp,Harp,1.0
+/m/03q5t,Harpsichord,Harpsichord,0.9999998807907104
+/m/03qjg,Harmonica,Harmonica,1.0
+/m/057cc,Musical keyboard,Musical keyboard,1.0000001192092896
+/m/05kms,Oboe,Oboe,1.0
+/m/05r5c,Piano,Piano,1.0000001192092896
+/m/06ncr,Saxophone,Saxophone,1.0
+/m/07c6l,Trombone,Trombone,1.000000238418579
+/m/07gql,Trumpet,Trumpet,0.9999998211860657
+/m/07y_7,Violin,Violin,1.0000001192092896
+/m/0f8s22,Chime,Chime,1.0000001192092896
+/m/0l14j_,Flute,Flute,1.0000001192092896
+/m/0mkg,Accordion,Accordion,1.0000001192092896
+/m/0xzly,Maraca,Maraca,1.0
+/m/01226z,Football,Football,1.0000001192092896
+/m/02ctlc,Cricket ball,Cricket ball,1.0
+/m/02rgn06,Volleyball (Ball),Volleyball (Ball),1.000000238418579
+/m/05ctyq,Tennis ball,Tennis ball,1.0
+/m/0wdt60w,Rugby ball,Rugby ball,1.0
+/m/0h8my_4,Tennis racket,Tennis racket,1.0
+/m/05_5p_0,Table tennis racket,Table tennis racket,1.000000238418579
+/m/03p3bw,Bicycle helmet,Bicycle helmet,1.0
+/m/07qxg_,Football helmet,Football helmet,1.000000238418579
+/m/02jnhm,Tin can,Tin can,1.0
+/m/02zn6n,Barrel,Barrel,1.0000001192092896
+/m/04dr76w,Bottle,Bottle,1.0
+/m/07kng9,Picnic basket,Picnic basket,1.0000001192092896
+/m/08hvt4,Jug,Jug,1.0
+/m/0bjyj5,Waste container,Waste container,1.0
+/m/0d20w4,Beaker,Beaker,1.0000001192092896
+/m/0fm3zh,Flowerpot,Flowerpot,1.0
+/m/01_5g,Chopsticks,Chopsticks,1.0000001192092896
+/m/027rl48,Ladle,Ladle,1.0
+/m/02d1br,Spatula,Spatula,0.9999998807907104
+/m/02mqfb,Can opener,Can opener,1.000000238418579
+/m/02pdsw,Cutting board,Cutting board,1.0000001192092896
+/m/02vwcm,Whisk,Whisk,1.000000238418579
+/m/03v5tg,Drinking straw,Drinking straw,1.0000001192092896
+/m/04ctx,Knife,Knife,0.9999999403953552
+/m/04f5ws,Bottle opener,Bottle opener,0.9999999403953552
+/m/07v9_z,Measuring cup,Measuring cup,1.0
+/m/08ks85,Pizza cutter,Pizza cutter,1.000000238418579
+/m/0cmx8,Spoon,Spoon,1.0000001192092896
+/m/0dt3t,Fork,Fork,0.9999999403953552
+/m/01g3x7,Bow and arrow,Bow and arrow,0.9999998211860657
+/m/020kz,Cannon,Cannon,1.0
+/m/02gzp,Dagger,Dagger,1.0
+/m/04ctx,Knife,Knife,0.9999999403953552
+/m/06c54,Rifle,Rifle,1.0000001192092896
+/m/06nrc,Shotgun,Shotgun,1.0000001192092896
+/m/07cmd,Tank,Tank,1.0
+/m/0c2jj,Axe,Axe,1.0000001192092896
+/m/0gxl3,Handgun,Handgun,1.000000238418579
+/m/06y5r,Sword,Sword,1.000000238418579
+/m/04ylt,Missile,Missile,0.9999997615814209
+/m/0ct4f,Bomb,Bomb,1.000000238418579
+/m/050k8,Mobile phone,Mobile phone,1.0000001192092896
+/m/0h8lkj8,Corded phone,Corded phone,1.0
+/m/01599,Beer,Tea,0.6382128000259399
+/m/024g6,Cocktail,Cocktail shaker,0.7877891063690186
+/m/02vqfm,Coffee (drink),Coffee cup,0.7624218463897705
+/m/01z1kdw,Juice,Jug,0.6809919476509094
+/m/07clx,Tea,Coffee table,0.7334243059158325
+/m/081qc,Wine,Wine glass,0.7967424988746643
+/m/014sv8,Human eye,Human eye,0.9999999403953552
+/m/016m2d,Skull,Skull,1.0
+/m/04hgtk,Human head,Human head,1.0
+/m/0dzct,Human face,Human face,1.0
+/m/0283dt1,Human mouth,Human mouth,1.000000238418579
+/m/039xj_,Human ear,Human ear,1.0
+/m/0k0pj,Human nose,Human nose,1.0
+/m/03q69,Human hair,Human hair,1.0000001192092896
+/m/0k65p,Human hand,Human hand,0.9999998807907104
+/m/031n1,Human foot,Human foot,1.0000001192092896
+/m/0dzf4,Human arm,Human arm,1.000000238418579
+/m/035r7c,Human leg,Human leg,1.0000001192092896
+/m/015h_t,Beard,Beard,1.0
+/m/01jfm_,Vehicle registration plate,Vehicle registration plate,0.9999998211860657
+/m/083wq,Wheel,Wheel,1.0000001192092896
+/m/0dkzw,Seat belt,Seat belt,1.0000001192092896
+/m/0h9mv,Tire,Tire,1.0000001192092896

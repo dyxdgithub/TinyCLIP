@@ -1,0 +1,392 @@
+{
+  "LabelName": "Extracted_Root",
+  "TextName": "提取的倒数两层分类（已去除单成员分支）",
+  "Subcategory": [
+    {
+      "LabelName": "/m/018xm",
+      "TextName": "Ball (Object)",
+      "Subcategory": [
+        {
+          "LabelName": "/m/01226z",
+          "TextName": "Football"
+        },
+        {
+          "LabelName": "/m/02ctlc",
+          "TextName": "Cricket ball"
+        },
+        {
+          "LabelName": "/m/02rgn06",
+          "TextName": "Volleyball (Ball)"
+        },
+        {
+          "LabelName": "/m/05ctyq",
+          "TextName": "Tennis ball"
+        },
+        {
+          "LabelName": "/m/0wdt60w",
+          "TextName": "Rugby ball"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0dv9c",
+      "TextName": "Racket",
+      "Subcategory": [
+        {
+          "LabelName": "/m/0h8my_4",
+          "TextName": "Tennis racket"
+        },
+        {
+          "LabelName": "/m/05_5p_0",
+          "TextName": "Table tennis racket"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0zvk5",
+      "TextName": "Helmet",
+      "Subcategory": [
+        {
+          "LabelName": "/m/03p3bw",
+          "TextName": "Bicycle helmet"
+        },
+        {
+          "LabelName": "/m/07qxg_",
+          "TextName": "Football helmet"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/011q46kg",
+      "TextName": "Container",
+      "Subcategory": [
+        {
+          "LabelName": "/m/02jnhm",
+          "TextName": "Tin can"
+        },
+        {
+          "LabelName": "/m/02zn6n",
+          "TextName": "Barrel"
+        },
+        {
+          "LabelName": "/m/04dr76w",
+          "TextName": "Bottle"
+        },
+        {
+          "LabelName": "/m/07kng9",
+          "TextName": "Picnic basket"
+        },
+        {
+          "LabelName": "/m/08hvt4",
+          "TextName": "Jug"
+        },
+        {
+          "LabelName": "/m/0bjyj5",
+          "TextName": "Waste container"
+        },
+        {
+          "LabelName": "/m/0d20w4",
+          "TextName": "Beaker"
+        },
+        {
+          "LabelName": "/m/0fm3zh",
+          "TextName": "Flowerpot"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/03hlz0c",
+      "TextName": "Kitchen utensil",
+      "Subcategory": [
+        {
+          "LabelName": "/m/01_5g",
+          "TextName": "Chopsticks"
+        },
+        {
+          "LabelName": "/m/027rl48",
+          "TextName": "Ladle"
+        },
+        {
+          "LabelName": "/m/02d1br",
+          "TextName": "Spatula"
+        },
+        {
+          "LabelName": "/m/02mqfb",
+          "TextName": "Can opener"
+        },
+        {
+          "LabelName": "/m/02pdsw",
+          "TextName": "Cutting board"
+        },
+        {
+          "LabelName": "/m/02vwcm",
+          "TextName": "Whisk"
+        },
+        {
+          "LabelName": "/m/03v5tg",
+          "TextName": "Drinking straw"
+        },
+        {
+          "LabelName": "/m/04ctx",
+          "TextName": "Knife"
+        },
+        {
+          "LabelName": "/m/04f5ws",
+          "TextName": "Bottle opener"
+        },
+        {
+          "LabelName": "/m/07v9_z",
+          "TextName": "Measuring cup"
+        },
+        {
+          "LabelName": "/m/08ks85",
+          "TextName": "Pizza cutter"
+        },
+        {
+          "LabelName": "/m/0cmx8",
+          "TextName": "Spoon"
+        },
+        {
+          "LabelName": "/m/0dt3t",
+          "TextName": "Fork"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0hnyx",
+      "TextName": "Pastry",
+      "Subcategory": [
+        {
+          "LabelName": "/m/0jy4k",
+          "TextName": "Doughnut"
+        },
+        {
+          "LabelName": "/m/015wgc",
+          "TextName": "Croissant"
+        },
+        {
+          "LabelName": "/m/02zvsm",
+          "TextName": "Tart"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0fbdv",
+      "TextName": "Shellfish",
+      "Subcategory": [
+        {
+          "LabelName": "/m/0_cp5",
+          "TextName": "Oyster"
+        },
+        {
+          "LabelName": "/m/0cjq5",
+          "TextName": "Lobster"
+        },
+        {
+          "LabelName": "/m/0ll1f78",
+          "TextName": "Shrimp"
+        },
+        {
+          "LabelName": "/m/0n28_",
+          "TextName": "Crab"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0dv77",
+      "TextName": "Squash (Plant)",
+      "Subcategory": [
+        {
+          "LabelName": "/m/05zsy",
+          "TextName": "Pumpkin"
+        },
+        {
+          "LabelName": "/m/027pcv",
+          "TextName": "Zucchini"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0k4j",
+      "TextName": "Car",
+      "Subcategory": [
+        {
+          "LabelName": "/m/01lcw4",
+          "TextName": "Limousine"
+        },
+        {
+          "LabelName": "/m/0h2r6",
+          "TextName": "Van"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/08dz3q",
+      "TextName": "Auto part",
+      "Subcategory": [
+        {
+          "LabelName": "/m/01jfm_",
+          "TextName": "Vehicle registration plate"
+        },
+        {
+          "LabelName": "/m/083wq",
+          "TextName": "Wheel"
+        },
+        {
+          "LabelName": "/m/0dkzw",
+          "TextName": "Seat belt"
+        },
+        {
+          "LabelName": "/m/0h9mv",
+          "TextName": "Tire"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/019jd",
+      "TextName": "Boat",
+      "Subcategory": [
+        {
+          "LabelName": "/m/01btn",
+          "TextName": "Barge"
+        },
+        {
+          "LabelName": "/m/02068x",
+          "TextName": "Gondola"
+        },
+        {
+          "LabelName": "/m/0ph39",
+          "TextName": "Canoe"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/02dl1y",
+      "TextName": "Hat",
+      "Subcategory": [
+        {
+          "LabelName": "/m/025rp__",
+          "TextName": "Cowboy hat"
+        },
+        {
+          "LabelName": "/m/02fq_6",
+          "TextName": "Fedora"
+        },
+        {
+          "LabelName": "/m/02jfl0",
+          "TextName": "Sombrero"
+        },
+        {
+          "LabelName": "/m/02wbtzl",
+          "TextName": "Sun hat"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/03hl4l9",
+      "TextName": "Marine invertebrates",
+      "Subcategory": [
+        {
+          "LabelName": "/m/01h8tj",
+          "TextName": "Starfish"
+        },
+        {
+          "LabelName": "/m/035vxb",
+          "TextName": "Isopod"
+        },
+        {
+          "LabelName": "/m/09gys",
+          "TextName": "Squid"
+        },
+        {
+          "LabelName": "/m/0cjq5",
+          "TextName": "Lobster"
+        },
+        {
+          "LabelName": "/m/0d8zb",
+          "TextName": "Jellyfish"
+        },
+        {
+          "LabelName": "/m/0ll1f78",
+          "TextName": "Shrimp"
+        },
+        {
+          "LabelName": "/m/0n28_",
+          "TextName": "Crab"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0d_2m",
+      "TextName": "Moths and butterflies",
+      "Subcategory": [
+        {
+          "LabelName": "/m/0cydv",
+          "TextName": "Caterpillar"
+        },
+        {
+          "LabelName": "/m/0cyf8",
+          "TextName": "Butterfly"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/01dws",
+      "TextName": "Bear",
+      "Subcategory": [
+        {
+          "LabelName": "/m/01dxs",
+          "TextName": "Brown bear"
+        },
+        {
+          "LabelName": "/m/03bj1",
+          "TextName": "Panda"
+        },
+        {
+          "LabelName": "/m/0633h",
+          "TextName": "Polar bear"
+        },
+        {
+          "LabelName": "/m/0kmg4",
+          "TextName": "Teddy bear"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/0gd2v",
+      "TextName": "Marine mammal",
+      "Subcategory": [
+        {
+          "LabelName": "/m/02hj4",
+          "TextName": "Dolphin"
+        },
+        {
+          "LabelName": "/m/084zz",
+          "TextName": "Whale"
+        },
+        {
+          "LabelName": "/m/0gd36",
+          "TextName": "Sea lion"
+        },
+        {
+          "LabelName": "/m/02l8p9",
+          "TextName": "Harbor seal"
+        }
+      ]
+    },
+    {
+      "LabelName": "/m/09dzg",
+      "TextName": "Turtle",
+      "Subcategory": [
+        {
+          "LabelName": "/m/011k07",
+          "TextName": "Tortoise"
+        },
+        {
+          "LabelName": "/m/0120dh",
+          "TextName": "Sea turtle"
+        }
+      ]
+    }
+  ]
+}
