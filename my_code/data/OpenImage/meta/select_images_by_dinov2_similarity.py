@@ -1,4 +1,4 @@
-"""Select each leaf class's images most similar to other images in its parent class."""
+"""Select each leaf class's images most similar to other small classes in its parent class."""
 
 import argparse
 import csv
@@ -263,7 +263,7 @@ def save_cached_embeddings(cache_path, signature, embeddings, records):
 
 
 def find_cross_class_neighbors(embeddings, records, device, similarity_batch_size):
-    """Find every image's highest cosine-similarity neighbor from another small class."""
+    """Find every image's nearest neighbor from another small class in its parent class."""
     if len(records) != len(embeddings):
         raise ValueError("Record and embedding counts must match")
     class_names = sorted({record.small_class for record in records})
@@ -328,14 +328,23 @@ def safe_file_name(value):
     return "".join(character if character.isalnum() or character in " ._-" else "_" for character in value)
 
 
-def write_parent_table(output_dir, parent_class, rows):
-    table_path = Path(output_dir) / "tables" / (safe_file_name(parent_class) + ".csv")
-    table_path.parent.mkdir(parents=True, exist_ok=True)
-    with table_path.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=TABLE_FIELDS)
-        writer.writeheader()
-        writer.writerows(rows)
-    return table_path
+def write_small_class_tables(output_dir, parent_class, small_classes, rows):
+    """Write one Top-N table for every small class in a parent class."""
+    rows_by_small_class = {small_class: [] for small_class in small_classes}
+    for row in rows:
+        rows_by_small_class.setdefault(row["SmallClass"], []).append(row)
+
+    parent_dir = Path(output_dir) / "tables" / safe_file_name(parent_class)
+    table_paths = []
+    for small_class in sorted(rows_by_small_class):
+        table_path = parent_dir / (safe_file_name(small_class) + ".csv")
+        table_path.parent.mkdir(parents=True, exist_ok=True)
+        with table_path.open("w", encoding="utf-8-sig", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=TABLE_FIELDS)
+            writer.writeheader()
+            writer.writerows(rows_by_small_class[small_class])
+        table_paths.append(table_path)
+    return table_paths
 
 
 def copy_retained_images(rows, retained_dir):
@@ -354,7 +363,7 @@ def parse_args():
     )
     parser.add_argument(
         "--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR,
-        help="Directory for cached embeddings and per-parent Top-N CSV tables. Default: %(default)s",
+        help="Directory for cached embeddings and per-small-class Top-N CSV tables. Default: %(default)s",
     )
     parser.add_argument(
         "--dinov2-repo", type=Path, default=None,
@@ -369,7 +378,7 @@ def parse_args():
     parser.add_argument("--device", default="cuda",
                         help="Torch device. GPU is the default; use cpu only when GPU is unavailable. Default: %(default)s")
     parser.add_argument("--top-n", type=int, default=20,
-                        help="Retain the N highest-scoring images in each small class. Default: %(default)s")
+                        help="Retain the N images with the highest cross-small-class similarity in each small class. Default: %(default)s")
     parser.add_argument("--batch-size", type=int, default=32,
                         help="DINOv2 inference batch size; reduce it for less GPU memory use. Default: %(default)s")
     parser.add_argument("--similarity-batch-size", type=int, default=1024,
@@ -427,11 +436,18 @@ def main():
             embeddings, embedded_records, device, args.similarity_batch_size
         )
         rows = select_top_n(embedded_records, neighbors, args.top_n)
-        table_path = write_parent_table(args.output_dir, parent_class, rows)
+        small_classes = {record.small_class for record in embedded_records}
+        table_paths = write_small_class_tables(
+            args.output_dir, parent_class, small_classes, rows
+        )
         if args.copy_retained:
             copy_retained_images(rows, Path(args.output_dir) / "retained_images")
         all_rows.extend(rows)
-        print("{}: wrote {} selected images to {}".format(parent_class, len(rows), table_path))
+        print(
+            "{}: wrote {} selected images to {} small-class tables".format(
+                parent_class, len(rows), len(table_paths)
+            )
+        )
 
     index_path = Path(args.output_dir) / "top_n_similarity_all_classes.csv"
     index_path.parent.mkdir(parents=True, exist_ok=True)
