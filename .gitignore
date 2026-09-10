@@ -174,3 +174,4 @@ core.*
 
 # Allow
 !src/evaluation/misc/results_dbs/*
+/my_code/data/ImageNet-200/
