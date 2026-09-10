@@ -200,7 +200,7 @@ def warmup_model(model, data_loader, device, warmup_batches):
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--image_path", type=Path, help="Image file or image directory",default="C:/Users/ASUS/Desktop/大模型代码/TinyCLIP/my_code/data/OpenImage/meta/Hierarchy/n2/audio_image/images/Clock/Wall clock")
+    parser.add_argument("--image_path", type=Path, help="Image file or image directory",default="C:/Users/ASUS/Desktop/TinyCLIP/my_code/data/OpenImage/meta/Hierarchy/n2/audio_image/images/Bear/Polar bear")
     parser.add_argument("--model", default="dinov2_vitb14", choices=sorted(MODEL_NAMES))
     parser.add_argument(
         "--dinov2-repo",
@@ -214,7 +214,7 @@ def parse_args():
     parser.add_argument("--warmup-batches", type=int, default=1)
     parser.add_argument("--recursive", action="store_true")
     parser.add_argument("--normalize", action="store_true")
-    parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument("--output", type=Path, default="C:/Users/ASUS/Desktop/TinyCLIP/my_code/test/output/images/dinov2_embeddings.pt")
     return parser.parse_args()
 
 
