@@ -274,7 +274,7 @@ def main():
         print("Audio files missing: {}".format(len(filenames) - available))
         return
 
-    print("Using ffmpeg: {}".format(configure_ffmpeg(args.ffmpeg_path)))
+    # print("Using ffmpeg: {}".format(configure_ffmpeg(args.ffmpeg_path)))
     progress_path = args.progress or args.output.with_suffix(".progress.csv")
     completed = load_completed_progress(progress_path) if args.resume else {}
     transcribed, missing = transcribe_pending(

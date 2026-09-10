@@ -249,7 +249,7 @@ def parse_args():
     parser.add_argument(
         "--concurrency",
         type=int,
-        default=20,
+        default=1,
         help="Maximum concurrent HTTP requests; must be positive. Default: %(default)s",
     )
     parser.add_argument(
