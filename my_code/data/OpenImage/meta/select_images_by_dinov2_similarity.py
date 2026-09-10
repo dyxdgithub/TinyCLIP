@@ -31,9 +31,9 @@ MODEL_NAMES = {
 TABLE_FIELDS = [
     "ParentClass",
     "SmallClass",
-    "Rank",
-    "ImagePath",
-    "MostSimilarImagePath",
+    "QueryImagePath",
+    "NeighborRank",
+    "MatchedImagePath",
     "Similarity",
     "SmallClassImageCount",
     "CrossClassCandidateCount",
@@ -262,8 +262,10 @@ def save_cached_embeddings(cache_path, signature, embeddings, records):
     )
 
 
-def find_cross_class_neighbors(embeddings, records, device, similarity_batch_size):
-    """Find every image's nearest neighbor from another small class in its parent class."""
+def find_cross_class_neighbors(
+    embeddings, records, device, similarity_batch_size, top_n
+):
+    """Find every image's Top-N neighbors from other small classes in its parent."""
     if len(records) != len(embeddings):
         raise ValueError("Record and embedding counts must match")
     class_names = sorted({record.small_class for record in records})
@@ -272,56 +274,51 @@ def find_cross_class_neighbors(embeddings, records, device, similarity_batch_siz
         [class_to_index[record.small_class] for record in records], dtype=torch.long
     )
     if len(class_names) < 2:
-        return [None] * len(records)
+        return [[] for _ in records]
 
     vectors = embeddings.to(device)
     reference_classes = class_indices.to(device)
-    neighbors = []
+    neighbors_by_record = []
     for start in range(0, len(records), similarity_batch_size):
         end = min(start + similarity_batch_size, len(records))
         query_vectors = vectors[start:end]
         scores = query_vectors @ vectors.T
         same_class = class_indices[start:end].to(device).unsqueeze(1).eq(reference_classes)
         scores.masked_fill_(same_class, float("-inf"))
-        best_scores, best_indices = scores.max(dim=1)
-        neighbors.extend(
-            (float(score), int(index))
-            for score, index in zip(best_scores.cpu(), best_indices.cpu())
-        )
-    return neighbors
+        neighbor_count = min(top_n, scores.shape[1])
+        top_scores, top_indices = scores.topk(neighbor_count, dim=1)
+        for row_scores, row_indices in zip(top_scores.cpu(), top_indices.cpu()):
+            neighbors_by_record.append(
+                [
+                    (float(score), int(index))
+                    for score, index in zip(row_scores, row_indices)
+                    if torch.isfinite(score)
+                ]
+            )
+    return neighbors_by_record
 
 
-def select_top_n(records, neighbors, top_n):
-    grouped = {}
-    for record, neighbor in zip(records, neighbors):
-        if neighbor is None:
-            continue
-        score, neighbor_index = neighbor
-        grouped.setdefault(record.small_class, []).append(
-            (score, str(record.path.resolve()), neighbor_index, record)
-        )
-
+def build_neighbor_rows(records, neighbors_by_record):
     class_counts = {}
     for record in records:
         class_counts[record.small_class] = class_counts.get(record.small_class, 0) + 1
     total_count = len(records)
-    selected = []
-    for small_class, candidates in sorted(grouped.items()):
-        candidates.sort(key=lambda item: (-item[0], item[1]))
-        for rank, (score, _, neighbor_index, record) in enumerate(candidates[:top_n], start=1):
-            selected.append(
+    rows = []
+    for record, neighbors in zip(records, neighbors_by_record):
+        for rank, (score, neighbor_index) in enumerate(neighbors, start=1):
+            rows.append(
                 {
                     "ParentClass": record.parent_class,
-                    "SmallClass": small_class,
-                    "Rank": rank,
-                    "ImagePath": str(record.path.resolve()),
-                    "MostSimilarImagePath": str(records[neighbor_index].path.resolve()),
+                    "SmallClass": record.small_class,
+                    "QueryImagePath": str(record.path.resolve()),
+                    "NeighborRank": rank,
+                    "MatchedImagePath": str(records[neighbor_index].path.resolve()),
                     "Similarity": "{:.8f}".format(score),
-                    "SmallClassImageCount": class_counts[small_class],
-                    "CrossClassCandidateCount": total_count - class_counts[small_class],
+                    "SmallClassImageCount": class_counts[record.small_class],
+                    "CrossClassCandidateCount": total_count - class_counts[record.small_class],
                 }
             )
-    return selected
+    return rows
 
 
 def safe_file_name(value):
@@ -342,14 +339,19 @@ def write_small_class_tables(output_dir, parent_class, small_classes, rows):
         with table_path.open("w", encoding="utf-8-sig", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=TABLE_FIELDS)
             writer.writeheader()
-            writer.writerows(rows_by_small_class[small_class])
+            writer.writerows(
+                sorted(
+                    rows_by_small_class[small_class],
+                    key=lambda row: (row["QueryImagePath"], row["NeighborRank"]),
+                )
+            )
         table_paths.append(table_path)
     return table_paths
 
 
 def copy_retained_images(rows, retained_dir):
     for row in rows:
-        destination = Path(retained_dir) / row["ParentClass"] / row["SmallClass"] / Path(row["ImagePath"]).name
+        destination = Path(retained_dir) / row["ParentClass"] / row["SmallClass"] / Path(row["QueryImagePath"]).name
         destination.parent.mkdir(parents=True, exist_ok=True)
         if not destination.is_file():
             shutil.copy2(row["ImagePath"], destination)
@@ -378,7 +380,7 @@ def parse_args():
     parser.add_argument("--device", default="cuda",
                         help="Torch device. GPU is the default; use cpu only when GPU is unavailable. Default: %(default)s")
     parser.add_argument("--top-n", type=int, default=20,
-                        help="Retain the N images with the highest cross-small-class similarity in each small class. Default: %(default)s")
+                        help="Keep the N most similar cross-small-class neighbors for every query image. Default: %(default)s")
     parser.add_argument("--batch-size", type=int, default=32,
                         help="DINOv2 inference batch size; reduce it for less GPU memory use. Default: %(default)s")
     parser.add_argument("--similarity-batch-size", type=int, default=1024,
@@ -433,9 +435,13 @@ def main():
             embeddings, embedded_records = cached
             print("Using embedding cache for {}".format(parent_class))
         neighbors = find_cross_class_neighbors(
-            embeddings, embedded_records, device, args.similarity_batch_size
+            embeddings,
+            embedded_records,
+            device,
+            args.similarity_batch_size,
+            args.top_n,
         )
-        rows = select_top_n(embedded_records, neighbors, args.top_n)
+        rows = build_neighbor_rows(embedded_records, neighbors)
         small_classes = {record.small_class for record in embedded_records}
         table_paths = write_small_class_tables(
             args.output_dir, parent_class, small_classes, rows
@@ -444,7 +450,7 @@ def main():
             copy_retained_images(rows, Path(args.output_dir) / "retained_images")
         all_rows.extend(rows)
         print(
-            "{}: wrote {} selected images to {} small-class tables".format(
+            "{}: wrote {} image-neighbor pairs to {} small-class tables".format(
                 parent_class, len(rows), len(table_paths)
             )
         )
@@ -455,8 +461,8 @@ def main():
         writer = csv.DictWriter(handle, fieldnames=TABLE_FIELDS)
         writer.writeheader()
         writer.writerows(all_rows)
-    print("Selected image rows: {}".format(len(all_rows)))
-    print("Combined Top-N table: {}".format(index_path.resolve()))
+    print("Image-neighbor rows: {}".format(len(all_rows)))
+    print("Combined neighbor table: {}".format(index_path.resolve()))
 
 
 if __name__ == "__main__":
