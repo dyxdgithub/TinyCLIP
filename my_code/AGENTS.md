@@ -63,7 +63,7 @@ $env:PYTHONPATH = "src"
 - For file-operation tasks under `C:\Users\ASUS\Desktop\大模型代码\TinyCLIP\my_code\data\OpenImage\meta`, treat `meta` as the script root directory. Resolve default input, output, and generated-file paths relative to `meta` unless the task explicitly specifies another location.
 - Long-running tasks that download, convert, or otherwise process a long list must persist progress and support resuming after interruption without repeating completed items.
 - Every runtime parameter that has configurable or optional values must document its accepted values, defaults, and behavior in the script's `--help` output.
-- Do not run downloads yourself. For every download task, provide the required workflow and commands so the user can download the files manually.
+- Do not execute download tasks yourself while acting in Codex. For every download task, provide the required workflow and commands so the user can run the download manually. Scripts may download their declared runtime dependencies or data when the user runs them.
 - Do not commit model weights, dataset images, downloaded archives, or cache
   files.
 - Never hardcode Hugging Face or API tokens in source.
