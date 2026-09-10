@@ -137,12 +137,10 @@ harness/checkpoints/
 .torch/
 torch/hub/
 
-# Local OpenImage and ImageNet dataset artifacts
-my_code/data/ImageNet-200/
-my_code/data/OpenImage/**/*.zip
-my_code/data/OpenImage/**/*.ogg
-my_code/data/OpenImage/**/audio/
-my_code/data/OpenImage/**/images/
+# Local dataset artifacts
+my_code/data/**/*.zip
+my_code/data/**/*.jpg
+my_code/data/**/*.ogg
 
 # Spyder project settings
 .spyderproject
