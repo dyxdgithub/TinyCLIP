@@ -406,7 +406,7 @@ def parse_args():
                         help="DINOv2 model architecture matching --checkpoint. Default: %(default)s")
     parser.add_argument("--device", default="cuda",
                         help="Torch device. GPU is the default; use cpu only when GPU is unavailable. Default: %(default)s")
-    parser.add_argument("--top-n", type=int, default=20,
+    parser.add_argument("--top-n", type=int, default=1,
                         help="Keep the N most similar cross-small-class neighbors for every query image. Default: %(default)s")
     parser.add_argument("--batch-size", type=int, default=32,
                         help="DINOv2 inference batch size; reduce it for less GPU memory use. Default: %(default)s")
