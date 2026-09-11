@@ -46,6 +46,11 @@ class ImageRecord:
     parent_class: str
     small_class: str
 
+    @property
+    def image_id(self):
+        """OpenImages ImageID stored as the image filename without its extension."""
+        return self.path.stem
+
 
 class ImageDataset(Dataset):
     def __init__(self, records, transform):
@@ -265,7 +270,7 @@ def save_cached_embeddings(cache_path, signature, embeddings, records):
 def find_cross_class_neighbors(
     embeddings, records, device, similarity_batch_size, top_n
 ):
-    """Find every image's Top-N neighbors from other small classes in its parent."""
+    """Find Top-N neighbors from other small classes with a different ImageID."""
     if len(records) != len(embeddings):
         raise ValueError("Record and embedding counts must match")
     class_names = sorted({record.small_class for record in records})
@@ -273,18 +278,26 @@ def find_cross_class_neighbors(
     class_indices = torch.tensor(
         [class_to_index[record.small_class] for record in records], dtype=torch.long
     )
+    image_id_to_index = {
+        image_id: index for index, image_id in enumerate(sorted({record.image_id for record in records}))
+    }
+    image_indices = torch.tensor(
+        [image_id_to_index[record.image_id] for record in records], dtype=torch.long
+    )
     if len(class_names) < 2:
         return [[] for _ in records]
 
     vectors = embeddings.to(device)
     reference_classes = class_indices.to(device)
+    reference_image_ids = image_indices.to(device)
     neighbors_by_record = []
     for start in range(0, len(records), similarity_batch_size):
         end = min(start + similarity_batch_size, len(records))
         query_vectors = vectors[start:end]
         scores = query_vectors @ vectors.T
         same_class = class_indices[start:end].to(device).unsqueeze(1).eq(reference_classes)
-        scores.masked_fill_(same_class, float("-inf"))
+        same_image_id = image_indices[start:end].to(device).unsqueeze(1).eq(reference_image_ids)
+        scores.masked_fill_(same_class | same_image_id, float("-inf"))
         neighbor_count = min(top_n, scores.shape[1])
         top_scores, top_indices = scores.topk(neighbor_count, dim=1)
         for row_scores, row_indices in zip(top_scores.cpu(), top_indices.cpu()):
@@ -300,11 +313,21 @@ def find_cross_class_neighbors(
 
 def build_neighbor_rows(records, neighbors_by_record):
     class_counts = {}
+    image_id_class_counts = {}
     for record in records:
         class_counts[record.small_class] = class_counts.get(record.small_class, 0) + 1
+        per_class_counts = image_id_class_counts.setdefault(record.image_id, {})
+        per_class_counts[record.small_class] = (
+            per_class_counts.get(record.small_class, 0) + 1
+        )
     total_count = len(records)
     rows = []
     for record, neighbors in zip(records, neighbors_by_record):
+        same_image_in_other_classes = sum(
+            count
+            for small_class, count in image_id_class_counts[record.image_id].items()
+            if small_class != record.small_class
+        )
         for rank, (score, neighbor_index) in enumerate(neighbors, start=1):
             rows.append(
                 {
@@ -315,7 +338,11 @@ def build_neighbor_rows(records, neighbors_by_record):
                     "MatchedImagePath": str(records[neighbor_index].path.resolve()),
                     "Similarity": "{:.8f}".format(score),
                     "SmallClassImageCount": class_counts[record.small_class],
-                    "CrossClassCandidateCount": total_count - class_counts[record.small_class],
+                    "CrossClassCandidateCount": (
+                        total_count
+                        - class_counts[record.small_class]
+                        - same_image_in_other_classes
+                    ),
                 }
             )
     return rows
