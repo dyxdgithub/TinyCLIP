@@ -62,7 +62,8 @@ $env:PYTHONPATH = "src"
 - All tasks involving models default to running on the GPU. Use CPU only when the task explicitly requires it or GPU execution is unavailable.
 - For file-operation tasks under `C:\Users\ASUS\Desktop\大模型代码\TinyCLIP\my_code\data\OpenImage\meta`, treat `meta` as the script root directory. Resolve default input, output, and generated-file paths relative to `meta` unless the task explicitly specifies another location.
 - Place data-processing code under `my_code/data/OpenImage/meta/scripts/`; do not add data-processing scripts directly in `meta`.
-- Long-running tasks that download, convert, or otherwise process a long list must persist progress and support resuming after interruption without repeating completed items.
+- For every code implementation task, Codex may run focused verification such as syntax checks, unit tests, or synthetic small-data tests. Do not run the final end-to-end code, model jobs, or full-dataset data-processing jobs; provide the user with the exact commands to run those manually instead.
+- Long-running tasks that download, convert, or otherwise process a long list must display ongoing progress, persist progress, and support resuming after interruption without repeating completed items. Progress output must include completed work and either a total count or a clearly stated indeterminate total.
 - Every runtime parameter that has configurable or optional values must document its accepted values, defaults, and behavior in the script's `--help` output.
 - Do not execute download tasks yourself while acting in Codex. For every download task, provide the required workflow and commands so the user can run the download manually. Scripts may download their declared runtime dependencies or data when the user runs them.
 - Do not commit model weights, dataset images, downloaded archives, or cache
@@ -132,11 +133,14 @@ tests, and exact task boundaries after code passes.
 
 ## 7 Test Policy
 
-- Run `make build` and `make lint-arch` before reporting any code change.
-- Run the affected entry point with local or synthetic data.
-- Do not make real paid API calls in tests. Dataset previews and fine-tuning
-  may use Hugging Face, but only when the task explicitly requires it.
-- On Windows, optionally keep bytecode out of the worktree:
+- Codex may run focused syntax checks, linters, unit tests, and synthetic or
+  small-data entry-point tests while implementing code.
+- Do not run final end-to-end entry points, model jobs, or full-dataset
+  data-processing jobs in Codex. Provide the exact commands for the user to
+  run manually.
+- Do not make real paid API calls in Codex or user-run tests. Dataset previews
+  and fine-tuning may use Hugging Face only when the task explicitly requires it.
+- On Windows, Codex or users may keep bytecode out of the worktree:
 
 ```powershell
 $env:PYTHONPYCACHEPREFIX = '.local_test_tmp\pycache'

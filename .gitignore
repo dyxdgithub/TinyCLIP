@@ -182,3 +182,4 @@ core.*
 /my_code/data/OpenImage/meta/AllSet/oidv6-train-images-with-labels-with-rotation.csv
 /my_code/data/OpenImage/meta/AllSet/train-annotations-human-imagelabels-boxable.csv
 /my_code/data/OpenImage/meta/AllSet/Captions.csv
+/my_code/data/OpenImage/meta/AllSet/
