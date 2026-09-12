@@ -176,3 +176,4 @@ core.*
 !src/evaluation/misc/results_dbs/*
 /my_code/data/ImageNet-200/
 /my_code/data/OpenImage/meta/Hierarchy/n2/audio_image/dinov2_similarity/
+/my_code/data/OpenImage/meta/Hierarchy/n2/audio_image/images/image_download_by_hierarchy.progress_1.csv
