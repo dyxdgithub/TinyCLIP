@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-META_DIR = Path(__file__).resolve().parents[1] / "data" / "OpenImage" / "meta"
+META_DIR = Path(__file__).resolve().parent
 DEFAULT_INPUT_DIR = (
     META_DIR / "Hierarchy" / "n2" / "audio_image" / "dinov2_similarity" / "tables"
 )
