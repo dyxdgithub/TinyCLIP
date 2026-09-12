@@ -61,6 +61,7 @@ $env:PYTHONPATH = "src"
 - Local datasets live under `my_code/data/`.
 - All tasks involving models default to running on the GPU. Use CPU only when the task explicitly requires it or GPU execution is unavailable.
 - For file-operation tasks under `C:\Users\ASUS\Desktop\大模型代码\TinyCLIP\my_code\data\OpenImage\meta`, treat `meta` as the script root directory. Resolve default input, output, and generated-file paths relative to `meta` unless the task explicitly specifies another location.
+- Place data-processing code under `my_code/data/OpenImage/meta/scripts/`; do not add data-processing scripts directly in `meta`.
 - Long-running tasks that download, convert, or otherwise process a long list must persist progress and support resuming after interruption without repeating completed items.
 - Every runtime parameter that has configurable or optional values must document its accepted values, defaults, and behavior in the script's `--help` output.
 - Do not execute download tasks yourself while acting in Codex. For every download task, provide the required workflow and commands so the user can run the download manually. Scripts may download their declared runtime dependencies or data when the user runs them.
