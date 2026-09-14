@@ -5,7 +5,10 @@ regex
 ftfy
 tqdm
 pandas
+pyarrow
+fsspec
 braceexpand
 huggingface_hub
+modelscope
 psutil
 timm==0.4.12
