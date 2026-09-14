@@ -60,8 +60,7 @@ def parse_args():
     parser.add_argument("--retry-delay-seconds", type=float, default=1.0, help="Delay before each retry in seconds. Default: %(default)s")
     parser.add_argument("--rows-per-batch", type=int, default=1000, help="Input rows queued at one time. Default: %(default)s")
     parser.add_argument("--progress-refresh-seconds", type=float, default=0.1, help="Minimum seconds between tqdm refreshes. Default: %(default)s")
-    parser.add_argument("--resume", action="store_true", help="Reuse successful/skipped checkpoint records after interruption.")
-    parser.add_argument("--retry-errors", action="store_true", help="With --resume, retry records whose prior status is error.")
+    parser.add_argument("--resume", action="store_true", help="Reuse successful/skipped checkpoint records and retry prior error records after interruption.")
     parser.add_argument("--overwrite", action="store_true", help="Replace existing status output and checkpoint database. Existing images are retained and reported as skipped.")
     parser.add_argument("--cleanup-checkpoint", action="store_true", help="Delete the checkpoint database after successfully writing --status-output.")
     args = parser.parse_args()
@@ -343,8 +342,6 @@ class CheckpointStore:
 def process_downloads(input_path, destination_paths, checkpoint, args, total_rows):
     counts = {"downloaded": 0, "skipped": 0, "error": 0, "resumed": 0}
     completed_statuses = {"downloaded", "skipped"}
-    if not args.retry_errors:
-        completed_statuses.add("error")
     with input_path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         with ThreadPoolExecutor(max_workers=args.workers) as executor:
