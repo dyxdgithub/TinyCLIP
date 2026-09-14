@@ -13,6 +13,8 @@ import shutil
 import sqlite3
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from itertools import islice
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -56,8 +58,8 @@ def parse_args():
     parser.add_argument("--children-key", default="Subcategory", help="Child-node key in the JSON tree. Default: %(default)s")
     parser.add_argument("--workers", type=int, default=32, help="Maximum concurrent download workers. Default: %(default)s")
     parser.add_argument("--timeout-seconds", type=float, default=30.0, help="HTTP request timeout in seconds. Default: %(default)s")
-    parser.add_argument("--retries", type=int, default=2, help="Additional attempts after a failed download. Default: %(default)s")
-    parser.add_argument("--retry-delay-seconds", type=float, default=1.0, help="Delay before each retry in seconds. Default: %(default)s")
+    parser.add_argument("--retries", type=int, default=2, help="Additional attempts after a failed download, including HTTP 429. Default: %(default)s")
+    parser.add_argument("--retry-delay-seconds", type=float, default=1.0, help="Base retry delay in seconds. Each later retry doubles this delay; HTTP Retry-After is honored when longer. Default: %(default)s")
     parser.add_argument("--rows-per-batch", type=int, default=1000, help="Input rows queued at one time. Default: %(default)s")
     parser.add_argument("--progress-refresh-seconds", type=float, default=0.1, help="Minimum seconds between tqdm refreshes. Default: %(default)s")
     parser.add_argument("--resume", action="store_true", help="Reuse successful/skipped checkpoint records and retry prior error records after interruption.")
@@ -187,6 +189,30 @@ def find_existing_image(destination_dir, image_id):
     return None
 
 
+def retry_after_seconds(headers):
+    """Return a nonnegative Retry-After delay, or zero when it is unavailable."""
+    if not headers:
+        return 0.0
+    retry_after = headers.get("Retry-After")
+    if not retry_after:
+        return 0.0
+    try:
+        return max(0.0, float(retry_after))
+    except ValueError:
+        try:
+            retry_time = parsedate_to_datetime(retry_after)
+        except (TypeError, ValueError):
+            return 0.0
+        if retry_time.tzinfo is None:
+            retry_time = retry_time.replace(tzinfo=timezone.utc)
+        return max(0.0, (retry_time - datetime.now(timezone.utc)).total_seconds())
+
+
+def retry_delay_seconds(retry_after_delay, attempt, args):
+    exponential_delay = args.retry_delay_seconds * (2 ** attempt)
+    return max(retry_after_delay, exponential_delay)
+
+
 def download_record(row, input_row_number, destination_paths, args):
     image_id = safe_component(row.get(args.image_id_column, ""))
     label = (row.get(args.label_column) or "").strip()
@@ -237,6 +263,7 @@ def download_record(row, input_row_number, destination_paths, args):
     last_http_status = ""
     last_final_url = ""
     for attempt in range(args.retries + 1):
+        server_retry_after = 0.0
         try:
             request = Request(url, headers={"User-Agent": "TinyCLIP OpenImage downloader"})
             with urlopen(request, timeout=args.timeout_seconds) as response:
@@ -267,12 +294,14 @@ def download_record(row, input_row_number, destination_paths, args):
             last_http_status = str(error.code)
             last_final_url = error.geturl()
             last_error = "HTTP {}: {}".format(error.code, error.reason)
+            if error.code == 429:
+                server_retry_after = retry_after_seconds(error.headers)
         except (URLError, TimeoutError, OSError) as error:
             last_error = str(error)
         finally:
             temporary.unlink(missing_ok=True)
-        if attempt < args.retries and args.retry_delay_seconds:
-            time.sleep(args.retry_delay_seconds)
+        if attempt < args.retries:
+            time.sleep(retry_delay_seconds(server_retry_after, attempt, args))
     return {
         "DownloadStatus": "error",
         "DownloadHTTPStatus": last_http_status,
