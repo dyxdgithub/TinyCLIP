@@ -56,7 +56,7 @@ def parse_args():
     parser.add_argument("--label-key", default="LabelName", help="Class-label key in the JSON tree. Default: %(default)s")
     parser.add_argument("--text-key", default="TextName", help="Class display-name key in the JSON tree. Default: %(default)s")
     parser.add_argument("--children-key", default="Subcategory", help="Child-node key in the JSON tree. Default: %(default)s")
-    parser.add_argument("--workers", type=int, default=32, help="Maximum concurrent download workers. Default: %(default)s")
+    parser.add_argument("--workers", type=int, default=4, help="Maximum concurrent download workers. Default: %(default)s")
     parser.add_argument("--timeout-seconds", type=float, default=30.0, help="HTTP request timeout in seconds. Default: %(default)s")
     parser.add_argument("--retries", type=int, default=2, help="Additional attempts after a failed download, including HTTP 429. Default: %(default)s")
     parser.add_argument("--retry-delay-seconds", type=float, default=1.0, help="Base retry delay in seconds. Each later retry doubles this delay; HTTP Retry-After is honored when longer. Default: %(default)s")
