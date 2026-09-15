@@ -86,6 +86,7 @@ DEFAULT_MANIFEST = (
     SAMPLED_DIR
     / "Image IDs_with_last_two_layers_multi_members_n2_one_label_per_parent_sampled_300_per_class.csv"
 )
+DEFAULT_IMAGES_ROOT = SAMPLED_DIR / "images_fiftyone_sampled_300_per_class"
 DEFAULT_OUTPUT_DIR = SAMPLED_DIR / "tinyclip_fourier_hard_negative_finetune"
 PAIR_FIELDS = [
     "PairIndex",
@@ -287,6 +288,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--similarity-csv", type=Path, default=DEFAULT_SIMILARITY_CSV, help="Combined top-N cross-leaf DINOv2 similarity CSV. All valid rows are ranked by cosine similarity before global ImageID-unique pair selection. Default: %(default)s")
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST, help="CSV mapping ImageID values to captions. Default: %(default)s")
+    parser.add_argument("--images-root", type=Path, default=DEFAULT_IMAGES_ROOT, help="Local parent/leaf image root. When a CSV image path does not exist on this machine, the script rebuilds it as <images-root>/<parent>/<leaf>/<filename>. Default: %(default)s")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory for prepared pairs, logs, and checkpoints. Default: %(default)s")
     parser.add_argument("--prepared-pairs", type=Path, default=None, help="Auditable selected-pair CSV. Default: <output-dir>/prepared_pairs.csv")
     parser.add_argument("--model", default="TinyCLIP-ViT-40M-32-Text-19M", help="TinyCLIP model configuration name. Default: %(default)s")
@@ -405,6 +407,20 @@ def count_csv_rows(path, refresh_seconds):
     return count
 
 
+def resolve_image_path(recorded_path, parent, leaf, images_root):
+    """Use the CSV path when valid; otherwise rebuild it under local images root."""
+    recorded_path = recorded_path.strip()
+    direct_path = Path(recorded_path)
+    if direct_path.is_file():
+        return direct_path.resolve(), "recorded"
+    filename = Path(recorded_path.replace("\\", "/")).name
+    if filename:
+        rebuilt_path = images_root / parent / leaf / filename
+        if rebuilt_path.is_file():
+            return rebuilt_path.resolve(), "rebuilt"
+    return direct_path, "missing"
+
+
 def load_candidates(similarity_csv, args):
     headers = read_csv_header(similarity_csv)
     missing = REQUIRED_TABLE_FIELDS.difference(headers)
@@ -412,6 +428,8 @@ def load_candidates(similarity_csv, args):
         raise ValueError("Similarity CSV {} lacks columns: {}".format(similarity_csv, ", ".join(sorted(missing))))
     total_rows = count_csv_rows(similarity_csv, args.progress_refresh_seconds)
     candidates = []
+    path_resolution_counts = {"recorded": 0, "rebuilt": 0, "missing": 0}
+    images_root = args.images_root.expanduser()
     with similarity_csv.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         with tqdm(total=total_rows, desc="Reading similarity rows", unit="row", mininterval=args.progress_refresh_seconds) as progress:
@@ -425,22 +443,31 @@ def load_candidates(similarity_csv, args):
                     continue
                 anchor_id = (row.get("SourceImageID") or "").strip()
                 negative_id = (row.get("MatchedImageID") or "").strip()
-                anchor_path = Path((row.get("SourceImagePath") or "").strip())
-                negative_path = Path((row.get("MatchedImagePath") or "").strip())
-                if anchor_id and negative_id and anchor_id != negative_id and str(anchor_path) and str(negative_path):
+                parent = (row.get("ParentCategory") or "").strip()
+                anchor_leaf = (row.get("SourceLeafCategory") or "").strip()
+                negative_leaf = (row.get("MatchedLeafCategory") or "").strip()
+                anchor_path, anchor_resolution = resolve_image_path(
+                    row.get("SourceImagePath") or "", parent, anchor_leaf, images_root
+                )
+                negative_path, negative_resolution = resolve_image_path(
+                    row.get("MatchedImagePath") or "", parent, negative_leaf, images_root
+                )
+                path_resolution_counts[anchor_resolution] += 1
+                path_resolution_counts[negative_resolution] += 1
+                if anchor_id and negative_id and anchor_id != negative_id:
                     candidates.append(PairCandidate(
-                        parent=(row.get("ParentCategory") or "").strip(),
-                        anchor_leaf=(row.get("SourceLeafCategory") or "").strip(),
+                        parent=parent,
+                        anchor_leaf=anchor_leaf,
                         anchor_id=anchor_id,
                         anchor_path=anchor_path,
-                        negative_leaf=(row.get("MatchedLeafCategory") or "").strip(),
+                        negative_leaf=negative_leaf,
                         negative_id=negative_id,
                         negative_path=negative_path,
                         similarity=similarity,
                         source_table=similarity_csv,
                     ))
                 progress.update(1)
-    return candidates
+    return candidates, path_resolution_counts
 
 
 def build_unique_pairs(candidates, captions):
@@ -778,7 +805,7 @@ def main():
     device = ensure_device(args.device)
     seed_everything(args.seed)
     captions = load_captions(manifest, args)
-    candidates = load_candidates(similarity_csv, args)
+    candidates, path_resolution_counts = load_candidates(similarity_csv, args)
     pairs = build_unique_pairs(candidates, captions)
     pairs_hash = pair_signature(pairs)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -786,7 +813,7 @@ def main():
     train_pairs, validation_pairs = split_pairs(pairs, args.validation_fraction, args.seed)
     if not train_pairs:
         raise ValueError("No pairs were assigned to training")
-    run_metadata = {"arguments": vars(args), "pair_signature": pairs_hash, "candidate_rows": len(candidates), "selected_pairs": len(pairs), "train_pairs": len(train_pairs), "validation_pairs": len(validation_pairs)}
+    run_metadata = {"arguments": vars(args), "pair_signature": pairs_hash, "candidate_rows": len(candidates), "selected_pairs": len(pairs), "train_pairs": len(train_pairs), "validation_pairs": len(validation_pairs), "image_path_resolution": path_resolution_counts}
     with (output_dir / "run_config.json").open("w", encoding="utf-8") as handle:
         json.dump(run_metadata, handle, ensure_ascii=True, indent=2, default=str)
     tensorboard_writer = create_tensorboard_writer(tensorboard_dir, args, run_metadata)
@@ -819,6 +846,7 @@ def main():
     trainable_parameters = sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
     all_parameters = sum(parameter.numel() for parameter in model.parameters())
     print("Prepared pairs: {} from {} top-N candidate rows".format(len(pairs), len(candidates)), flush=True)
+    print("Image path resolution: {}".format(path_resolution_counts), flush=True)
     print("Train pairs: {}; validation pairs: {}".format(len(train_pairs), len(validation_pairs)), flush=True)
     print("Fine-tune mode: {}; adapter summary: {}".format(args.fine_tune_mode, lora_summary), flush=True)
     print("Trainable parameters: {} / {}".format(trainable_parameters, all_parameters), flush=True)
