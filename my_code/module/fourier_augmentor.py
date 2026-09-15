@@ -16,7 +16,7 @@ from PIL import Image
 ImageInput = Union[Image.Image, np.ndarray, str, Path]
 
 
-class FourierHardNegativeAugment:
+class FourierAugmentor:
     """Create a Fourier-augmented hard-negative image during preprocessing.
 
     Args:
@@ -172,7 +172,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    augmenter = FourierHardNegativeAugment(
+    augmenter = FourierAugmentor(
         phi=args.phi, size_policy=args.size_policy
     )
     output_path = augmenter.augment_to_file(
