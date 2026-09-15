@@ -17,7 +17,7 @@ from tqdm import tqdm
 
 META_DIR = Path(__file__).resolve().parent.parent
 ALL_SET_DIR = META_DIR / "AllSet"
-DEFAULT_INPUT = ALL_SET_DIR / "Image IDs_with_captions_and_labels_captioned_only_url_valid_only.csv"
+DEFAULT_INPUT = ALL_SET_DIR / "Image IDs_with_captions_and_labels_captioned_only.csv"
 DEFAULT_CLASS_MAP = META_DIR / "Hierarchy" / "all" / "class_map_hierachy_all.csv"
 DEFAULT_OUTPUT = ALL_SET_DIR / "Image IDs_with_hierarchy_labels.csv"
 

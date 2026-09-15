@@ -183,3 +183,4 @@ core.*
 /my_code/data/OpenImage/meta/AllSet/train-annotations-human-imagelabels-boxable.csv
 /my_code/data/OpenImage/meta/AllSet/Captions.csv
 /my_code/data/OpenImage/meta/AllSet/
+/my_code/data/OpenImage/meta/Hierarchy/n2/300/
