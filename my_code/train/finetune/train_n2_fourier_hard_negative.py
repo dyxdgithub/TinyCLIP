@@ -314,6 +314,7 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=42, help="Random seed for pair split, data order, and PyTorch. Default: %(default)s")
     parser.add_argument("--num-workers", type=int, default=4, help="DataLoader worker processes. Set 0 for in-process loading. Default: %(default)s")
     parser.add_argument("--device", default="cuda", help="Training device. Default: %(default)s. Use cpu only when GPU execution is intentionally unavailable.")
+    parser.add_argument("--gpu", type=int, choices=(0, 1, 2, 3), default=0, help="CUDA logical GPU index used when --device is CUDA. Available choices: 0, 1, 2, 3. Default: %(default)s")
     parser.add_argument("--precision", choices=("amp", "amp_bfloat16", "fp32"), default="amp", help="CUDA precision mode. amp uses fp16 autocast and GradScaler; amp_bfloat16 uses bf16 autocast; fp32 disables autocast. Default: %(default)s")
     parser.add_argument("--grad-clip-norm", type=float, default=1.0, help="Maximum global gradient norm. Set 0 to disable clipping. Default: %(default)s")
     parser.add_argument("--checkpoint-steps", type=int, default=500, help="Write last.pt every N optimizer steps to resume from the next batch after interruption. Default: %(default)s")
@@ -616,10 +617,24 @@ def make_scheduler(optimizer, total_steps, warmup_steps):
     return LambdaLR(optimizer, multiplier)
 
 
-def ensure_device(device_name):
+def ensure_device(device_name, gpu_index):
     device = torch.device(device_name)
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("--device {} was requested, but CUDA is unavailable".format(device_name))
+    if device.type == "cuda":
+        if device.index is not None and device.index != gpu_index:
+            raise ValueError(
+                "--device {} conflicts with --gpu {}; use --device cuda or matching values"
+                .format(device_name, gpu_index)
+            )
+        visible_count = torch.cuda.device_count()
+        if gpu_index >= visible_count:
+            raise ValueError(
+                "--gpu {} is unavailable; {} CUDA device(s) are visible to this process"
+                .format(gpu_index, visible_count)
+            )
+        device = torch.device("cuda", gpu_index)
+        torch.cuda.set_device(device)
     return device
 
 
@@ -802,7 +817,8 @@ def main():
     if args.resume is not None and not args.resume.expanduser().is_file():
         raise FileNotFoundError("Resume checkpoint does not exist: {}".format(args.resume))
 
-    device = ensure_device(args.device)
+    device = ensure_device(args.device, args.gpu)
+    print("Training device: {}".format(device), flush=True)
     seed_everything(args.seed)
     captions = load_captions(manifest, args)
     candidates, path_resolution_counts = load_candidates(similarity_csv, args)
