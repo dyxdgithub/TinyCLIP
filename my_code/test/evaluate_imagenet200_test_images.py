@@ -151,8 +151,12 @@ def load_checkpoint(model, checkpoint_path, device):
             for key, value in state_dict.items()
         }
     incompatible = model.load_state_dict(state_dict, strict=False)
-    missing = [key for key in incompatible.missing_keys if not key.endswith("num_batches_tracked")]
-    unexpected = [key for key in incompatible.unexpected_keys if not key.endswith("num_batches_tracked")]
+    # torch.nn.Module returns incompatible keys, while this TinyCLIP model
+    # implementation loads state in place and returns None.
+    missing_keys = getattr(incompatible, "missing_keys", ())
+    unexpected_keys = getattr(incompatible, "unexpected_keys", ())
+    missing = [key for key in missing_keys if not key.endswith("num_batches_tracked")]
+    unexpected = [key for key in unexpected_keys if not key.endswith("num_batches_tracked")]
     if missing or unexpected:
         raise ValueError(
             "Checkpoint is incompatible with --model {}. Missing keys: {}; unexpected keys: {}"
