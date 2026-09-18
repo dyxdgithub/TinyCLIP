@@ -133,7 +133,10 @@ def discover_images(images_dir):
 
 
 def load_checkpoint(model, checkpoint_path, device):
-    payload = torch.load(checkpoint_path, map_location=device)
+    # This checkpoint is expected to be a trusted local training artifact. It
+    # stores optimizer and RNG state in addition to model tensors, so PyTorch
+    # 2.6+ cannot load it with its default weights_only=True setting.
+    payload = torch.load(checkpoint_path, map_location=device, weights_only=False)
     if isinstance(payload, dict) and "model" in payload:
         state_dict = payload["model"]
     elif isinstance(payload, dict) and "state_dict" in payload:
