@@ -60,6 +60,8 @@ $env:PYTHONPATH = "src"
 
 - Local datasets live under `my_code/data/`.
 - All tasks involving models default to running on the GPU. Use CPU only when the task explicitly requires it or GPU execution is unavailable.
+- Every training script must provide a documented GPU-index argument so the user can select the CUDA device used for training.
+- Every training and test script must default its generated outputs to an `output/<training-mode>_<checkpoint-name>/` directory beside that script. Explicit output-path arguments may override this default.
 - For file-operation tasks under `C:\Users\ASUS\Desktop\大模型代码\TinyCLIP\my_code\data\OpenImage\meta`, treat `meta` as the script root directory. Resolve default input, output, and generated-file paths relative to `meta` unless the task explicitly specifies another location.
 - Place data-processing code under `my_code/data/OpenImage/meta/scripts/`; do not add data-processing scripts directly in `meta`.
 - For every code implementation task, Codex may run focused verification such as syntax checks, unit tests, or synthetic small-data tests. Do not run the final end-to-end code, model jobs, or full-dataset data-processing jobs; provide the user with the exact commands to run those manually instead.
