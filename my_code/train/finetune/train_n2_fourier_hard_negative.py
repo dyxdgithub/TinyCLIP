@@ -1,8 +1,8 @@
 """Fine-tune TinyCLIP with Fourier-augmented cross-leaf hard negatives.
 
-The script reads all top-N rows from one combined DINOv2 similarity CSV,
-keeps a globally unique greedy maximum-similarity matching of ImageIDs, and trains
-TinyCLIP on two image-text examples per pair:
+The script reads a prepared, globally ImageID-unique pair CSV produced by
+``select_training_pairs_from_dinov2_similarity.py`` and trains TinyCLIP on
+two image-text examples per pair:
 
 * the anchor image with its own caption; and
 * the Fourier-augmented hard-negative image with its own caption.
@@ -78,16 +78,12 @@ FourierAugmentor = load_fourier_augmentor()
 
 META_DIR = REPOSITORY_ROOT / "my_code" / "data" / "OpenImage" / "meta"
 SAMPLED_DIR = META_DIR / "Hierarchy" / "n2" / "300"
-DEFAULT_SIMILARITY_CSV = (
-    SAMPLED_DIR / "dinov2_similarity_fiftyone_sampled_300_per_class"
-    / "top_n_cross_leaf_dinov2_similarity.csv"
+DEFAULT_OUTPUT_DIR = (
+    Path(__file__).resolve().parent
+    / "output"
+    / "fourier_hard_negative_tinyclip_vit_40m_32_text_19m"
 )
-DEFAULT_MANIFEST = (
-    SAMPLED_DIR
-    / "Image IDs_with_last_two_layers_multi_members_n2_one_label_per_parent_sampled_300_per_class.csv"
-)
-DEFAULT_IMAGES_ROOT = SAMPLED_DIR / "images_fiftyone_sampled_300_per_class"
-DEFAULT_OUTPUT_DIR = SAMPLED_DIR / "tinyclip_fourier_hard_negative_finetune"
+DEFAULT_PAIRS_CSV = SAMPLED_DIR / "selected_training_pairs_from_dinov2_similarity.csv"
 PAIR_FIELDS = [
     "PairIndex",
     "ParentCategory",
@@ -101,31 +97,7 @@ PAIR_FIELDS = [
     "HardNegativeCaption",
     "CosineSimilarity",
 ]
-REQUIRED_TABLE_FIELDS = {
-    "ParentCategory",
-    "SourceLeafCategory",
-    "SourceImageID",
-    "SourceImagePath",
-    "Rank",
-    "MatchedLeafCategory",
-    "MatchedImageID",
-    "MatchedImagePath",
-    "CosineSimilarity",
-}
 CHECKPOINT_VERSION = 1
-
-
-@dataclass(frozen=True)
-class PairCandidate:
-    parent: str
-    anchor_leaf: str
-    anchor_id: str
-    anchor_path: Path
-    negative_leaf: str
-    negative_id: str
-    negative_path: Path
-    similarity: float
-    source_table: Path
 
 
 @dataclass(frozen=True)
@@ -286,11 +258,8 @@ class FourierPairDataset(Dataset):
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--similarity-csv", type=Path, default=DEFAULT_SIMILARITY_CSV, help="Combined top-N cross-leaf DINOv2 similarity CSV. All valid rows are ranked by cosine similarity before global ImageID-unique pair selection. Default: %(default)s")
-    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST, help="CSV mapping ImageID values to captions. Default: %(default)s")
-    parser.add_argument("--images-root", type=Path, default=DEFAULT_IMAGES_ROOT, help="Local parent/leaf image root. When a CSV image path does not exist on this machine, the script rebuilds it as <images-root>/<parent>/<leaf>/<filename>. Default: %(default)s")
+    parser.add_argument("--pairs-csv", type=Path, default=DEFAULT_PAIRS_CSV, help="Prepared training-pair CSV produced by select_training_pairs_from_dinov2_similarity.py. Default: %(default)s")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory for prepared pairs, logs, and checkpoints. Default: %(default)s")
-    parser.add_argument("--prepared-pairs", type=Path, default=None, help="Auditable selected-pair CSV. Default: <output-dir>/prepared_pairs.csv")
     parser.add_argument("--model", default="TinyCLIP-ViT-40M-32-Text-19M", help="TinyCLIP model configuration name. Default: %(default)s")
     parser.add_argument("--pretrained", default="LAION400M", help="Registered pretrained tag or local TinyCLIP checkpoint path. The user-run script downloads a registered tag only when it is absent from the model cache. Default: %(default)s")
     parser.add_argument("--cache-dir", type=Path, default=None, help="Optional local cache for a registered --pretrained checkpoint. Default: the open_clip cache location")
@@ -323,9 +292,6 @@ def parse_args():
     parser.add_argument("--log-every", type=int, default=20, help="Refresh loss postfix and append JSONL metrics every N optimizer steps. Default: %(default)s")
     parser.add_argument("--tensorboard-dir", type=Path, default=None, help="TensorBoard event-log directory. Default: <output-dir>/tensorboard")
     parser.add_argument("--progress-refresh-seconds", type=float, default=0.1, help="Minimum seconds between real-time tqdm progress refreshes. Default: %(default)s")
-    parser.add_argument("--caption-column", default="caption", help="Caption column in --manifest. Default: %(default)s")
-    parser.add_argument("--image-id-column", default="ImageID", help="ImageID column in --manifest. Default: %(default)s")
-    parser.add_argument("--caption-conflict", choices=("error", "first", "longest"), default="longest", help="Behavior when a manifest ImageID has nonidentical nonempty captions. longest selects the longest caption and keeps the first CSV occurrence on equal lengths. Default: %(default)s")
     parser.add_argument("--resume", type=Path, default=None, help="Checkpoint produced by this script. It restores model, optimizer, scheduler, AMP scaler, RNG, epoch, and next batch. Default: disabled")
     args = parser.parse_args()
     for name in ("lora_rank", "epochs", "batch_size", "num_workers", "warmup_steps", "checkpoint_steps", "save_every", "log_every"):
@@ -357,172 +323,68 @@ def read_csv_header(path):
         return csv.DictReader(handle).fieldnames or []
 
 
-def load_captions(path, args):
-    headers = read_csv_header(path)
-    for field in (args.image_id_column, args.caption_column):
-        if field not in headers:
-            raise ValueError("Manifest lacks required column {!r}: {}".format(field, path))
-    captions = {}
-    with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        reader = csv.DictReader(handle)
-        with tqdm(desc="Reading captions", unit="row", mininterval=args.progress_refresh_seconds) as progress:
-            for row_number, row in enumerate(reader, start=2):
-                image_id = (row.get(args.image_id_column) or "").strip()
-                caption = (row.get(args.caption_column) or "").strip()
-                if not image_id or not caption:
-                    progress.update(1)
-                    continue
-                prior = captions.get(image_id)
-                if prior is None:
-                    captions[image_id] = caption
-                elif prior != caption:
-                    if args.caption_conflict == "error":
-                        raise ValueError("Conflicting nonempty captions for ImageID {!r} at manifest row {}".format(image_id, row_number))
-                    if args.caption_conflict == "longest" and len(caption) > len(prior):
-                        captions[image_id] = caption
-                progress.update(1)
-    if not captions:
-        raise ValueError("No nonempty ImageID/caption mappings found in {}".format(path))
-    return captions
-
-
-def candidate_sort_key(candidate):
-    return (
-        -candidate.similarity,
-        candidate.anchor_id,
-        candidate.negative_id,
-        str(candidate.anchor_path),
-        str(candidate.negative_path),
-        str(candidate.source_table),
-    )
-
-
-def count_csv_rows(path, refresh_seconds):
-    count = 0
-    with path.open("r", encoding="utf-8-sig", newline="") as handle:
-        reader = csv.reader(handle)
-        next(reader, None)
-        with tqdm(desc="Counting similarity rows", unit="row", mininterval=refresh_seconds) as progress:
-            for count, _ in enumerate(reader, start=1):
-                progress.update(1)
-    return count
-
-
-def resolve_image_path(recorded_path, parent, leaf, images_root):
-    """Use the CSV path when valid; otherwise rebuild it under local images root."""
-    recorded_path = recorded_path.strip()
-    direct_path = Path(recorded_path)
-    if direct_path.is_file():
-        return direct_path.resolve(), "recorded"
-    filename = Path(recorded_path.replace("\\", "/")).name
-    if filename:
-        rebuilt_path = images_root / parent / leaf / filename
-        if rebuilt_path.is_file():
-            return rebuilt_path.resolve(), "rebuilt"
-    return direct_path, "missing"
-
-
-def load_candidates(similarity_csv, args):
-    headers = read_csv_header(similarity_csv)
-    missing = REQUIRED_TABLE_FIELDS.difference(headers)
+def load_prepared_pairs(path, args):
+    """Load the self-contained pair table without recomputing sample selection."""
+    fields = set(read_csv_header(path))
+    missing = set(PAIR_FIELDS).difference(fields)
     if missing:
-        raise ValueError("Similarity CSV {} lacks columns: {}".format(similarity_csv, ", ".join(sorted(missing))))
-    total_rows = count_csv_rows(similarity_csv, args.progress_refresh_seconds)
-    candidates = []
-    path_resolution_counts = {"recorded": 0, "rebuilt": 0, "missing": 0}
-    images_root = args.images_root.expanduser()
-    with similarity_csv.open("r", encoding="utf-8-sig", newline="") as handle:
+        raise ValueError(
+            "Prepared pair CSV lacks columns: {}".format(
+                ", ".join(sorted(missing))
+            )
+        )
+    pairs = []
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
-        with tqdm(total=total_rows, desc="Reading similarity rows", unit="row", mininterval=args.progress_refresh_seconds) as progress:
+        with tqdm(
+            desc="Reading prepared pairs",
+            unit="pair",
+            mininterval=args.progress_refresh_seconds,
+        ) as progress:
             for row_number, row in enumerate(reader, start=2):
                 try:
-                    similarity = float(row.get("CosineSimilarity") or "")
+                    similarity = float((row.get("CosineSimilarity") or "").strip())
                 except ValueError as error:
-                    raise ValueError("Invalid CosineSimilarity at {}:{}".format(similarity_csv, row_number)) from error
-                if not math.isfinite(similarity) or similarity >= 1.0:
-                    progress.update(1)
-                    continue
-                anchor_id = (row.get("SourceImageID") or "").strip()
-                negative_id = (row.get("MatchedImageID") or "").strip()
-                parent = (row.get("ParentCategory") or "").strip()
-                anchor_leaf = (row.get("SourceLeafCategory") or "").strip()
-                negative_leaf = (row.get("MatchedLeafCategory") or "").strip()
-                anchor_path, anchor_resolution = resolve_image_path(
-                    row.get("SourceImagePath") or "", parent, anchor_leaf, images_root
-                )
-                negative_path, negative_resolution = resolve_image_path(
-                    row.get("MatchedImagePath") or "", parent, negative_leaf, images_root
-                )
-                path_resolution_counts[anchor_resolution] += 1
-                path_resolution_counts[negative_resolution] += 1
-                if anchor_id and negative_id and anchor_id != negative_id:
-                    candidates.append(PairCandidate(
-                        parent=parent,
-                        anchor_leaf=anchor_leaf,
+                    raise ValueError(
+                        "Invalid CosineSimilarity at {}:{}".format(path, row_number)
+                    ) from error
+                anchor_id = (row.get("AnchorImageID") or "").strip()
+                negative_id = (row.get("HardNegativeImageID") or "").strip()
+                anchor_path = Path((row.get("AnchorImagePath") or "").strip())
+                negative_path = Path((row.get("HardNegativeImagePath") or "").strip())
+                anchor_caption = (row.get("AnchorCaption") or "").strip()
+                negative_caption = (row.get("HardNegativeCaption") or "").strip()
+                if not anchor_id or not negative_id or anchor_id == negative_id:
+                    raise ValueError("Invalid ImageID pair at {}:{}".format(path, row_number))
+                if not anchor_caption or not negative_caption:
+                    raise ValueError("Missing caption pair at {}:{}".format(path, row_number))
+                if not anchor_path.is_file() or not negative_path.is_file():
+                    raise FileNotFoundError(
+                        "Prepared pair image path does not exist at {}:{}: {} / {}".format(
+                            path, row_number, anchor_path, negative_path
+                        )
+                    )
+                pairs.append(
+                    TrainingPair(
+                        parent=(row.get("ParentCategory") or "").strip(),
+                        anchor_leaf=(row.get("AnchorLeafCategory") or "").strip(),
                         anchor_id=anchor_id,
-                        anchor_path=anchor_path,
-                        negative_leaf=negative_leaf,
+                        anchor_path=anchor_path.resolve(),
+                        anchor_caption=anchor_caption,
+                        negative_leaf=(row.get("HardNegativeLeafCategory") or "").strip(),
                         negative_id=negative_id,
-                        negative_path=negative_path,
+                        negative_path=negative_path.resolve(),
+                        negative_caption=negative_caption,
                         similarity=similarity,
-                        source_table=similarity_csv,
-                    ))
+                    )
+                )
                 progress.update(1)
-    return candidates, path_resolution_counts
-
-
-def build_unique_pairs(candidates, captions):
-    """Greedily select descending-similarity pairs with globally unique ImageIDs."""
-    pairs = []
-    used_image_ids = set()
-    for candidate in sorted(candidates, key=candidate_sort_key):
-        if candidate.anchor_id not in captions or candidate.negative_id not in captions:
-            continue
-        if not candidate.anchor_path.is_file() or not candidate.negative_path.is_file():
-            continue
-        if candidate.anchor_id in used_image_ids or candidate.negative_id in used_image_ids:
-            continue
-        used_image_ids.add(candidate.anchor_id)
-        used_image_ids.add(candidate.negative_id)
-        pairs.append(TrainingPair(
-            parent=candidate.parent,
-            anchor_leaf=candidate.anchor_leaf,
-            anchor_id=candidate.anchor_id,
-            anchor_path=candidate.anchor_path.resolve(),
-            anchor_caption=captions[candidate.anchor_id],
-            negative_leaf=candidate.negative_leaf,
-            negative_id=candidate.negative_id,
-            negative_path=candidate.negative_path.resolve(),
-            negative_caption=captions[candidate.negative_id],
-            similarity=candidate.similarity,
-        ))
     if not pairs:
-        raise ValueError("No usable pairs remain after similarity, caption, path, and ImageID-uniqueness filtering")
+        raise ValueError("Prepared pair CSV contains no rows: {}".format(path))
+    image_ids = [image_id for pair in pairs for image_id in (pair.anchor_id, pair.negative_id)]
+    if len(image_ids) != len(set(image_ids)):
+        raise ValueError("Prepared pair CSV violates the one-pair-per-ImageID rule: {}".format(path))
     return pairs
-
-
-def write_prepared_pairs(path, pairs):
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(path.name + ".inprogress")
-    temporary.unlink(missing_ok=True)
-    with temporary.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=PAIR_FIELDS)
-        writer.writeheader()
-        for index, pair in enumerate(pairs, start=1):
-            writer.writerow({
-                "PairIndex": index,
-                "ParentCategory": pair.parent,
-                "AnchorLeafCategory": pair.anchor_leaf,
-                "AnchorImageID": pair.anchor_id,
-                "AnchorImagePath": str(pair.anchor_path),
-                "AnchorCaption": pair.anchor_caption,
-                "HardNegativeLeafCategory": pair.negative_leaf,
-                "HardNegativeImageID": pair.negative_id,
-                "HardNegativeImagePath": str(pair.negative_path),
-                "HardNegativeCaption": pair.negative_caption,
-                "CosineSimilarity": "{:.8f}".format(pair.similarity),
-            })
-    temporary.replace(path)
 
 
 def pair_signature(pairs):
@@ -805,31 +667,24 @@ def run_validation(model, pairs, transform, tokenizer, clip_loss_fn, args, devic
 
 def main():
     args = parse_args()
-    similarity_csv = args.similarity_csv.expanduser()
-    manifest = args.manifest.expanduser()
+    pairs_csv = args.pairs_csv.expanduser()
     output_dir = args.output_dir.expanduser()
-    prepared_pairs_path = args.prepared_pairs.expanduser() if args.prepared_pairs else output_dir / "prepared_pairs.csv"
     tensorboard_dir = args.tensorboard_dir.expanduser() if args.tensorboard_dir else output_dir / "tensorboard"
-    if not similarity_csv.is_file():
-        raise FileNotFoundError("Combined similarity CSV does not exist: {}".format(similarity_csv))
-    if not manifest.is_file():
-        raise FileNotFoundError("Caption manifest does not exist: {}".format(manifest))
+    if not pairs_csv.is_file():
+        raise FileNotFoundError("Prepared pair CSV does not exist: {}".format(pairs_csv))
     if args.resume is not None and not args.resume.expanduser().is_file():
         raise FileNotFoundError("Resume checkpoint does not exist: {}".format(args.resume))
 
     device = ensure_device(args.device, args.gpu)
     print("Training device: {}".format(device), flush=True)
     seed_everything(args.seed)
-    captions = load_captions(manifest, args)
-    candidates, path_resolution_counts = load_candidates(similarity_csv, args)
-    pairs = build_unique_pairs(candidates, captions)
+    pairs = load_prepared_pairs(pairs_csv, args)
     pairs_hash = pair_signature(pairs)
     output_dir.mkdir(parents=True, exist_ok=True)
-    write_prepared_pairs(prepared_pairs_path, pairs)
     train_pairs, validation_pairs = split_pairs(pairs, args.validation_fraction, args.seed)
     if not train_pairs:
         raise ValueError("No pairs were assigned to training")
-    run_metadata = {"arguments": vars(args), "pair_signature": pairs_hash, "candidate_rows": len(candidates), "selected_pairs": len(pairs), "train_pairs": len(train_pairs), "validation_pairs": len(validation_pairs), "image_path_resolution": path_resolution_counts}
+    run_metadata = {"arguments": vars(args), "pair_signature": pairs_hash, "selected_pairs": len(pairs), "train_pairs": len(train_pairs), "validation_pairs": len(validation_pairs), "pairs_csv": str(pairs_csv.resolve())}
     with (output_dir / "run_config.json").open("w", encoding="utf-8") as handle:
         json.dump(run_metadata, handle, ensure_ascii=True, indent=2, default=str)
     tensorboard_writer = create_tensorboard_writer(tensorboard_dir, args, run_metadata)
@@ -861,8 +716,7 @@ def main():
 
     trainable_parameters = sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
     all_parameters = sum(parameter.numel() for parameter in model.parameters())
-    print("Prepared pairs: {} from {} top-N candidate rows".format(len(pairs), len(candidates)), flush=True)
-    print("Image path resolution: {}".format(path_resolution_counts), flush=True)
+    print("Prepared pairs: {} from {}".format(len(pairs), pairs_csv.resolve()), flush=True)
     print("Train pairs: {}; validation pairs: {}".format(len(train_pairs), len(validation_pairs)), flush=True)
     print("Fine-tune mode: {}; adapter summary: {}".format(args.fine_tune_mode, lora_summary), flush=True)
     print("Trainable parameters: {} / {}".format(trainable_parameters, all_parameters), flush=True)
@@ -955,7 +809,7 @@ def main():
     print("TensorBoard logs: {}".format(tensorboard_dir.resolve()))
     if validation_pairs:
         print("Best validation checkpoint: {}".format((output_dir / "best.pt").resolve()))
-    print("Prepared pairs: {}".format(prepared_pairs_path.resolve()))
+    print("Training pair table: {}".format(pairs_csv.resolve()))
 
 
 if __name__ == "__main__":
