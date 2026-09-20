@@ -145,7 +145,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--images-dir", type=Path, default=DEFAULT_IMAGES_DIR, help="ImageNet-200 validation root with WNID subdirectories. Default: %(default)s")
     parser.add_argument("--class-map", type=Path, default=DEFAULT_CLASS_MAP, help="ImageNet-200 class-map CSV containing label, wnid, and class_name columns. Default: %(default)s")
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory for prediction CSV, summary JSON, and optional accuracy report. Default: %(default)s")
+    parser.add_argument("--output-dir", type=Path, default=None, help="Directory for prediction CSV and summary JSON. Default: <script-dir>/output/<fine-tune-mode>_<checkpoint-name>/, resolved after loading --checkpoint metadata.")
     parser.add_argument("--output-csv", type=Path, default=None, help="Prediction CSV path. Default: <output-dir>/predictions.csv")
     parser.add_argument("--summary-json", type=Path, default=None, help="Evaluation summary JSON path. Default: <output-dir>/summary.json")
     parser.add_argument("--model", default="TinyCLIP-ViT-40M-32-Text-19M", help="TinyCLIP model configuration name. Default: %(default)s")
@@ -284,6 +284,15 @@ def resolve_lora_config(args, payload, checkpoint_path):
     if rank <= 0 or alpha <= 0.0 or not 0.0 <= dropout < 1.0:
         raise ValueError("Invalid LoRA configuration in {}".format(checkpoint_path))
     return rank, alpha, dropout
+
+
+def default_output_dir(fine_tune_mode, checkpoint_path, pretrained):
+    source_name = checkpoint_path.stem if checkpoint_path is not None else pretrained
+    safe_source_name = "".join(
+        character if character.isalnum() or character in ".-_" else "_"
+        for character in source_name
+    )
+    return DEFAULT_OUTPUT_DIR / "{}_{}".format(fine_tune_mode, safe_source_name)
 
 
 def replace_submodule(root, name, module):
@@ -455,9 +464,6 @@ def main():
     args = parse_args()
     images_dir = args.images_dir.expanduser()
     class_map_path = args.class_map.expanduser()
-    output_dir = args.output_dir.expanduser()
-    output_csv = args.output_csv.expanduser() if args.output_csv else output_dir / "predictions.csv"
-    summary_json = args.summary_json.expanduser() if args.summary_json else output_dir / "summary.json"
     checkpoint = args.checkpoint.expanduser() if args.checkpoint else None
     labels_csv = args.labels_csv.expanduser() if args.labels_csv else None
     if not images_dir.is_dir():
@@ -481,6 +487,13 @@ def main():
         if fine_tune_mode == "lora"
         else None
     )
+    output_dir = (
+        args.output_dir.expanduser()
+        if args.output_dir is not None
+        else default_output_dir(fine_tune_mode, checkpoint, args.pretrained)
+    )
+    output_csv = args.output_csv.expanduser() if args.output_csv else output_dir / "predictions.csv"
+    summary_json = args.summary_json.expanduser() if args.summary_json else output_dir / "summary.json"
     classes = load_class_map(class_map_path)
     if args.top_k > len(classes):
         raise ValueError("--top-k {} exceeds the {} classes in {}".format(args.top_k, len(classes), class_map_path))
