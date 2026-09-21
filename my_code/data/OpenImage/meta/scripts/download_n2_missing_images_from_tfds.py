@@ -1,13 +1,13 @@
-"""Supplement FiftyOne downloads from the TFDS ``open_images/v7`` builder.
+"""Supplement FiftyOne downloads from the TFDS Open Images V7 builder.
 
 Only ImageIDs whose FiftyOne status is ``not_found`` or ``error`` are scanned.
 Matches are copied into the existing n2 parent/leaf hierarchy without replacing
 FiftyOne-downloaded images. The script keeps an SQLite status checkpoint so a
 long TFDS scan can be resumed.
 
-TFDS iterates a split rather than exposing a remote ImageID lookup API. It may
-therefore need to prepare the requested Open Images V7 split before scanning.
-The script requires ``--download-tfds-data`` before it lets TFDS download data.
+TFDS iterates a split rather than exposing a remote ImageID lookup API. The
+default uses ``tfds.load("open_images/v7", split="train")``. The script
+requires ``--download-tfds-data`` before it lets TFDS prepare missing data.
 """
 
 import argparse
@@ -57,7 +57,7 @@ def parse_args():
     parser.add_argument("--tfds-data-dir", type=Path, default=DEFAULT_TFDS_DATA_DIR,
                         help="TFDS cache/prepared-dataset directory. Default: %(default)s")
     parser.add_argument("--download-tfds-data", action="store_true",
-                        help="Allow TFDS to download and prepare a missing V7 dataset. The train split is large. Default: disabled.")
+                        help="Allow TFDS to download and prepare a missing dataset. The Open Images train split is large. Default: disabled.")
     parser.add_argument("--tfds-image-id-key", default="auto",
                         help="Feature key containing the Open Images ID. auto tries image_id, image/filename, image_filename, and id; a filename value is converted to its stem. Default: %(default)s")
     parser.add_argument("--eligible-fiftyone-status", action="append", default=None,
@@ -99,6 +99,7 @@ def parse_args():
 
 def load_tfds_runtime():
     try:
+        import tensorflow as tf  # noqa: F401
         import tensorflow_datasets as tfds
     except ImportError as error:
         raise RuntimeError(
