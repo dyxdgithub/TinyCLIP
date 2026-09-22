@@ -326,25 +326,13 @@ def remove_checkpoint(path):
 
 
 def load_tfds_split(tfds, args):
-    builder_name = args.tfds_name.split("/", 1)[0]
-    registered_builders = set(tfds.list_builders())
-    if builder_name not in registered_builders:
-        open_images_builders = sorted(
-            name for name in registered_builders if "open_images" in name
-        )
-        raise RuntimeError(
-            "TFDS builder {!r} is unavailable in this environment. Registered Open Images builders: {}. "
-            "Use --tfds-name open_images_v4/200k when open_images_v4 is listed.".format(
-                builder_name,
-                ", ".join(open_images_builders) if open_images_builders else "none",
-            )
-        )
     try:
         dataset, info = tfds.load(
             args.tfds_name,
             split=args.split,
             data_dir=str(args.tfds_data_dir),
             download=args.download_tfds_data,
+            try_gcs=False,
             shuffle_files=False,
             with_info=True,
         )
