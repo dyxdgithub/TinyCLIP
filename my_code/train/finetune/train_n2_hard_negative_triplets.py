@@ -211,7 +211,12 @@ class TripletDataset(Dataset):
         ids = (triplet.anchor_id, triplet.positive_id, triplet.negative_id)
         tensors = (self.transform(images[0]), self.transform(images[1]), self.transform(augmented_negative))
         captions = tuple(self.manifest_values[image_id]["caption"] for image_id in ids)
-        labels = tuple(frozenset(self.manifest_values[image_id]["labels"]) for image_id in ids)
+        # Default PyTorch collation cannot batch frozenset objects. Keep all
+        # labels in a deterministic string form and restore sets in validation.
+        labels = tuple(
+            ";".join(sorted(self.manifest_values[image_id]["labels"]))
+            for image_id in ids
+        )
         return tensors + captions + labels + ids
 
 
@@ -275,7 +280,9 @@ def validation(model, rows, manifest_values, transform, tokenizer, clip_loss, ar
             for position, image_id in enumerate(batch_ids):
                 if image_id not in all_features:
                     all_features[image_id] = features[position].float().cpu()
-                    all_labels[image_id] = set(batch_labels[position])
+                    all_labels[image_id] = {
+                        value for value in batch_labels[position].split(";") if value
+                    }
             progress.update(1)
     feature_ids = list(all_features)
     feature_matrix = functional.normalize(torch.stack([all_features[i] for i in feature_ids]), dim=1)
