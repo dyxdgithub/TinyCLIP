@@ -92,6 +92,9 @@ def parse_args():
     parser.add_argument("--batch-size", type=int, default=16, help="Triplets per batch; three image-text items per triplet. Default: 16")
     parser.add_argument("--learning-rate", type=float, default=None, help="AdamW learning rate. Default: 1e-5 full, 1e-4 lora")
     parser.add_argument("--weight-decay", type=float, default=0.2, help="AdamW weight decay. Default: 0.2")
+    parser.add_argument("--beta1", type=float, default=0.9, help="AdamW beta1. Default: 0.9")
+    parser.add_argument("--beta2", type=float, default=0.98, help="AdamW beta2. Default: 0.98")
+    parser.add_argument("--eps", type=float, default=1e-6, help="AdamW epsilon. Default: 1e-6")
     parser.add_argument("--warmup-steps", type=int, default=200, help="Linear warmup steps. Default: 200")
     parser.add_argument("--clip-loss-weight", type=float, default=1.0, help="Weight of TinyCLIP ClipLoss. Default: 1")
     parser.add_argument("--sct-loss-weight", type=float, default=1.0, help="Weight of paper SCT loss. Default: 1")
@@ -116,6 +119,8 @@ def parse_args():
         parser.error("batch-size and epochs must be positive; num-workers and validate-every must be nonnegative")
     if args.sct_lambda < 0 or args.sct_loss_weight < 0 or args.clip_loss_weight < 0 or args.temperature <= 0:
         parser.error("loss weights must be nonnegative and temperature must be positive")
+    if not 0.0 < args.beta1 < 1.0 or not 0.0 < args.beta2 < 1.0 or args.eps <= 0.0:
+        parser.error("beta1 and beta2 must be in (0, 1), and eps must be positive")
     return args
 
 
