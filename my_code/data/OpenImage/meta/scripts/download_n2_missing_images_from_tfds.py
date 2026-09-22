@@ -1,4 +1,4 @@
-"""Supplement FiftyOne downloads from the TFDS Open Images V7 builder.
+"""Supplement FiftyOne downloads from the TFDS Open Images V4 builder.
 
 Only ImageIDs whose FiftyOne status is ``not_found`` or ``error`` are scanned.
 Matches are copied into the existing n2 parent/leaf hierarchy without replacing
@@ -6,8 +6,9 @@ FiftyOne-downloaded images. The script keeps an SQLite status checkpoint so a
 long TFDS scan can be resumed.
 
 TFDS iterates a split rather than exposing a remote ImageID lookup API. The
-default uses ``tfds.load("open_images/v7", split="train")``. The script
-requires ``--download-tfds-data`` before it lets TFDS prepare missing data.
+official TFDS catalog registers ``open_images_v4``; this script therefore uses
+its ``200k`` configuration by default. The script requires
+``--download-tfds-data`` before it lets TFDS prepare missing data.
 """
 
 import argparse
@@ -28,7 +29,7 @@ DEFAULT_INPUT = N2_DIR / "Image_IDs_n2_all_fiftyone_download_status.csv"
 DEFAULT_CLASS_TREE = N2_DIR / "Last_Two_Layers_Multi_Members_n2.json"
 DEFAULT_OUTPUT_DIR = N2_DIR / "images_fiftyone_all"
 DEFAULT_STATUS_OUTPUT = N2_DIR / "Image_IDs_n2_all_fiftyone_tfds_download_status.csv"
-DEFAULT_TFDS_DATA_DIR = N2_DIR / "tfds_open_images_v7"
+DEFAULT_TFDS_DATA_DIR = N2_DIR / "tfds_open_images_v4"
 INVALID_PATH_CHARS = '<>:"/\\|?*'
 STATUS_FIELDS = [
     "TFDSDownloadStatus",
@@ -50,7 +51,7 @@ def parse_args():
                         help="Combined input plus TFDS status fields. Default: %(default)s")
     parser.add_argument("--checkpoint-db", type=Path, default=None,
                         help="SQLite resume checkpoint. Default: hidden database beside --status-output.")
-    parser.add_argument("--tfds-name", default="open_images/v7",
+    parser.add_argument("--tfds-name", default="open_images_v4/200k",
                         help="TFDS builder/configuration. Default: %(default)s")
     parser.add_argument("--split", default="train",
                         help="TFDS split to scan. Default: %(default)s")
@@ -100,12 +101,15 @@ def parse_args():
 def load_tfds_runtime():
     try:
         import tensorflow as tf  # noqa: F401
+    except (ImportError, ModuleNotFoundError) as error:
+        raise RuntimeError(
+            "TensorFlow is missing or incomplete. The installed package could not import tensorflow.python. "
+            "Reinstall a compatible TensorFlow package in this environment before running TFDS."
+        ) from error
+    try:
         import tensorflow_datasets as tfds
     except ImportError as error:
-        raise RuntimeError(
-            "This script requires TensorFlow Datasets. Install a TensorFlow build compatible with the server, "
-            "then install tensorflow-datasets."
-        ) from error
+        raise RuntimeError("tensorflow-datasets is missing. Install it in the same environment as TensorFlow.") from error
     return tfds
 
 
@@ -322,6 +326,19 @@ def remove_checkpoint(path):
 
 
 def load_tfds_split(tfds, args):
+    builder_name = args.tfds_name.split("/", 1)[0]
+    registered_builders = set(tfds.list_builders())
+    if builder_name not in registered_builders:
+        open_images_builders = sorted(
+            name for name in registered_builders if "open_images" in name
+        )
+        raise RuntimeError(
+            "TFDS builder {!r} is unavailable in this environment. Registered Open Images builders: {}. "
+            "Use --tfds-name open_images_v4/200k when open_images_v4 is listed.".format(
+                builder_name,
+                ", ".join(open_images_builders) if open_images_builders else "none",
+            )
+        )
     try:
         dataset, info = tfds.load(
             args.tfds_name,
