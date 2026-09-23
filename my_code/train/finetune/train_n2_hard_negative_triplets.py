@@ -275,8 +275,8 @@ def validation(model, rows, manifest_values, transform, tokenizer, clip_loss, ar
             total, clip_value, sct_value, accuracy, separation, features, _, labels, ids = compute_losses(model, clip_loss, tokenizer, batch, device, autocast, args)
             losses.append((total.item(), clip_value.item(), sct_value.item()))
             triplet_acc.append((accuracy.item(), separation.item()))
-            batch_ids = sum(ids, ())
-            batch_labels = sum(labels, ())
+            batch_ids = [image_id for group in ids for image_id in group]
+            batch_labels = [label_text for group in labels for label_text in group]
             for position, image_id in enumerate(batch_ids):
                 if image_id not in all_features:
                     all_features[image_id] = features[position].float().cpu()
