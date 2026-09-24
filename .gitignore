@@ -185,5 +185,5 @@ core.*
 /my_code/data/OpenImage/meta/AllSet/
 /my_code/data/OpenImage/meta/Hierarchy/n2/300/
 /my_code/test/output/
-/my_code/train/ouput/
 /my_code/data/OpenImage/meta/Hierarchy/n2/hard_negative_triplets/
+/my_code/train/output/
