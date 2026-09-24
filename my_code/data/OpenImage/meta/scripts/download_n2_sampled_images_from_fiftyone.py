@@ -2,8 +2,10 @@
 
 The script requests only ImageIDs present in the sampled n2 manifest, copies
 the downloaded files into the n2 parent/leaf hierarchy, and records one status
-per manifest row. FiftyOne keeps its own Zoo cache; a SQLite checkpoint keeps
-the hierarchy-copy step resumable.
+per manifest row. If FiftyOne does not return an image, the manifest's
+OriginalURL and Thumbnail300KURL columns are tried as a direct-download
+fallback. FiftyOne keeps its own Zoo cache; a SQLite checkpoint keeps the
+hierarchy-copy step resumable.
 """
 
 import argparse
@@ -11,8 +13,13 @@ import csv
 import json
 import shutil
 import sqlite3
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
+from PIL import Image
 from tqdm import tqdm
 
 
@@ -49,6 +56,11 @@ def parse_args():
     parser.add_argument("--image-id-column", default="ImageID", help="Target ImageID column in --input. Default: %(default)s")
     parser.add_argument("--label-column", default="LabelName", help="Target leaf-label column in --input. Default: %(default)s")
     parser.add_argument("--parent-label-column", default="ParentLabelName", help="Target parent-label column in --input. Default: %(default)s")
+    parser.add_argument("--original-url-column", default="OriginalURL", help="Full-size image URL column used when FiftyOne has no image. Default: %(default)s")
+    parser.add_argument("--thumbnail-url-column", default="Thumbnail300KURL", help="Fallback thumbnail URL column used when OriginalURL fails. Default: %(default)s")
+    parser.add_argument("--url-timeout", type=float, default=30.0, help="Timeout in seconds for each direct URL request. Default: %(default)s")
+    parser.add_argument("--url-retries", type=int, default=3, help="Maximum attempts per candidate URL, including the first attempt. Default: %(default)s")
+    parser.add_argument("--url-backoff", type=float, default=1.0, help="Base exponential delay in seconds between URL retries. Default: %(default)s")
     parser.add_argument("--label-key", default="LabelName", help="Class-label key in --class-tree. Default: %(default)s")
     parser.add_argument("--text-key", default="TextName", help="Class display-name key in --class-tree. Default: %(default)s")
     parser.add_argument("--children-key", default="Subcategory", help="Child-node key in --class-tree. Default: %(default)s")
@@ -60,6 +72,8 @@ def parse_args():
     args = parser.parse_args()
     if args.workers <= 0:
         parser.error("--workers must be positive")
+    if args.url_timeout <= 0 or args.url_retries <= 0 or args.url_backoff < 0:
+        parser.error("--url-timeout and --url-retries must be positive; --url-backoff must be nonnegative")
     if args.max_image_ids is not None and args.max_image_ids <= 0:
         parser.error("--max-image-ids must be positive")
     if args.progress_refresh_seconds <= 0:
@@ -150,6 +164,82 @@ def copy_image(source_path, destination):
         raise
 
 
+def load_image_urls(input_path, args):
+    """Index original and thumbnail URLs by ImageID for the fallback path."""
+    available_fields = set(read_header(input_path))
+    url_fields = [
+        field for field in (args.original_url_column, args.thumbnail_url_column)
+        if field in available_fields
+    ]
+    if not url_fields:
+        raise ValueError(
+            "Input CSV must contain at least one configured URL column: {} or {}".format(
+                args.original_url_column, args.thumbnail_url_column
+            )
+        )
+    image_urls = {}
+    with input_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        with tqdm(desc="Indexing fallback URLs", unit="row", mininterval=args.progress_refresh_seconds) as progress:
+            for row in reader:
+                image_id = (row.get(args.image_id_column) or "").strip()
+                if image_id:
+                    urls = image_urls.setdefault(image_id, [])
+                    for field in url_fields:
+                        url = (row.get(field) or "").strip()
+                        if url and url not in urls:
+                            urls.append(url)
+                progress.update(1)
+    return image_urls
+
+
+def download_url_fallback(image_id, urls, temp_dir, args):
+    """Download and validate one image, trying each available URL with retries."""
+    Path(temp_dir).mkdir(parents=True, exist_ok=True)
+    errors = []
+    for url in urls:
+        parsed = urllib.parse.urlparse(url)
+        suffix = Path(parsed.path).suffix.lower()
+        if suffix not in IMAGE_SUFFIXES:
+            suffix = ".jpg"
+        destination = Path(temp_dir) / (safe_component(image_id) + suffix)
+        for attempt in range(args.url_retries):
+            temporary = destination.with_name(destination.name + ".inprogress")
+            temporary.unlink(missing_ok=True)
+            request = urllib.request.Request(
+                url,
+                headers={"User-Agent": "TinyCLIP-OpenImages-downloader/1.0"},
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=args.url_timeout) as response:
+                    content_type = response.headers.get_content_type()
+                    if content_type and not content_type.startswith("image/"):
+                        raise ValueError("URL returned non-image content type: {}".format(content_type))
+                    with temporary.open("wb") as handle:
+                        shutil.copyfileobj(response, handle)
+                if temporary.stat().st_size == 0:
+                    raise ValueError("URL returned an empty response")
+                with Image.open(temporary) as image:
+                    image.verify()
+                    detected_suffix = {
+                        "JPEG": ".jpg",
+                        "PNG": ".png",
+                        "WEBP": ".webp",
+                        "BMP": ".bmp",
+                    }.get(image.format)
+                if detected_suffix in IMAGE_SUFFIXES and suffix == ".jpg":
+                    destination = destination.with_suffix(detected_suffix)
+                temporary.replace(destination)
+                return destination, url
+            except (OSError, ValueError, urllib.error.URLError, urllib.error.HTTPError) as error:
+                temporary.unlink(missing_ok=True)
+                errors.append("{} (attempt {}/{}): {}".format(url, attempt + 1, args.url_retries, error))
+                if attempt + 1 < args.url_retries and args.url_backoff:
+                    time.sleep(args.url_backoff * (2 ** attempt))
+        destination.unlink(missing_ok=True)
+    raise RuntimeError("All fallback URLs failed: {}".format(" | ".join(errors) if errors else "no URL was present"))
+
+
 class DownloadStore:
     def __init__(self, path):
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -173,7 +263,7 @@ class DownloadStore:
         self.connection.commit()
 
     def pending_by_image_id(self):
-        rows = self.connection.execute("SELECT input_row_number, image_id, parent_label, leaf_label FROM rows WHERE status NOT IN ('downloaded', 'existing') ORDER BY input_row_number").fetchall()
+        rows = self.connection.execute("SELECT input_row_number, image_id, parent_label, leaf_label FROM rows WHERE status NOT IN ('downloaded', 'downloaded_url', 'existing') ORDER BY input_row_number").fetchall()
         targets = {}
         for row in rows:
             targets.setdefault(row[1], []).append(row)
@@ -184,7 +274,7 @@ class DownloadStore:
         self.connection.commit()
 
     def mark_not_found(self, image_ids):
-        self.connection.executemany("UPDATE rows SET status = 'not_found', source_path = '', image_path = '', error_text = 'ImageID was not found in the FiftyOne Open Images dataset' WHERE image_id = ? AND status NOT IN ('downloaded', 'existing')", ((image_id,) for image_id in image_ids))
+        self.connection.executemany("UPDATE rows SET status = 'not_found', source_path = '', image_path = '', error_text = 'ImageID was not found in the FiftyOne Open Images dataset' WHERE image_id = ? AND status NOT IN ('downloaded', 'downloaded_url', 'existing')", ((image_id,) for image_id in image_ids))
         self.connection.commit()
 
     def status_for_row(self, row_number):
@@ -262,6 +352,9 @@ def main():
     for field in (args.image_id_column, args.parent_label_column, args.label_column):
         if field not in header:
             raise ValueError("Input CSV is missing required column '{}': {}".format(field, input_path))
+    url_fields = {args.original_url_column, args.thumbnail_url_column}
+    if not url_fields.intersection(header):
+        raise ValueError("Input CSV needs at least one fallback URL column: {} or {}".format(args.original_url_column, args.thumbnail_url_column))
     if args.overwrite:
         remove_state(checkpoint_db, status_output)
     elif (checkpoint_db.exists() or status_output.exists()) and not args.resume:
@@ -269,6 +362,7 @@ def main():
 
     paths = load_leaf_paths(class_tree_path, args)
     input_count = count_rows(input_path, args.progress_refresh_seconds)
+    image_urls = load_image_urls(input_path, args)
     store = DownloadStore(checkpoint_db)
     try:
         store.seed_rows(input_path, args)
@@ -293,44 +387,69 @@ def main():
                     source_paths.setdefault(image_id, filepath)
                 progress.update(1)
         selected_targets = {image_id: targets[image_id] for image_id in requested_ids}
-        counts = {"downloaded": 0, "existing": 0, "error": 0, "not_found": 0}
+        counts = {"downloaded": 0, "downloaded_url": 0, "existing": 0, "error": 0, "not_found": 0}
+        temp_dir = output_dir / ".url_fallback_cache"
+        temp_dir.mkdir(parents=True, exist_ok=True)
         total_rows = sum(len(rows) for rows in selected_targets.values())
         with tqdm(total=total_rows, desc="Writing n2 hierarchy images", unit="row", mininterval=args.progress_refresh_seconds) as progress:
             for image_id, rows in selected_targets.items():
                 source_path = source_paths.get(image_id)
+                source_url = ""
                 if source_path is None:
-                    for row_number, _, _, _ in rows:
-                        store.record_result(row_number, "not_found", error_text="ImageID was not returned by FiftyOne")
-                        counts["not_found"] += 1
-                        progress.update(1)
-                    continue
-                for row_number, _, parent_label, leaf_label in rows:
-                    hierarchy_path = paths.get((parent_label, leaf_label))
-                    if hierarchy_path is None:
-                        store.record_result(row_number, "error", str(source_path), error_text="Input parent/leaf pair ({!r}, {!r}) is absent from the class tree".format(parent_label, leaf_label))
-                        counts["error"] += 1
-                        progress.update(1)
-                        continue
-                    parent_name, leaf_name = hierarchy_path
-                    destination_dir = output_dir / parent_name / leaf_name
-                    existing = find_existing_image(destination_dir, image_id)
-                    if existing:
-                        store.record_result(row_number, "existing", str(source_path), str(existing))
-                        counts["existing"] += 1
-                        progress.update(1)
-                        continue
-                    suffix = source_path.suffix.lower()
-                    suffix = suffix if suffix in IMAGE_SUFFIXES else ".jpg"
-                    destination = destination_dir / (image_id + suffix)
                     try:
-                        copy_image(source_path, destination)
-                        store.record_result(row_number, "downloaded", str(source_path), str(destination))
-                        counts["downloaded"] += 1
+                        source_path, source_url = download_url_fallback(
+                            image_id,
+                            image_urls.get(image_id, []),
+                            temp_dir,
+                            args,
+                        )
                     except Exception as error:
-                        store.record_result(row_number, "error", str(source_path), error_text=str(error))
-                        counts["error"] += 1
-                    progress.update(1)
-                    progress.set_postfix(**counts)
+                        for row_number, _, _, _ in rows:
+                            store.record_result(
+                                row_number,
+                                "error",
+                                error_text="ImageID was not returned by FiftyOne; URL fallback failed: {}".format(error),
+                            )
+                            counts["error"] += 1
+                            progress.update(1)
+                        progress.set_postfix(**counts)
+                        continue
+                try:
+                    for row_number, _, parent_label, leaf_label in rows:
+                        hierarchy_path = paths.get((parent_label, leaf_label))
+                        if hierarchy_path is None:
+                            store.record_result(row_number, "error", str(source_url or source_path), error_text="Input parent/leaf pair ({!r}, {!r}) is absent from the class tree".format(parent_label, leaf_label))
+                            counts["error"] += 1
+                            progress.update(1)
+                            continue
+                        parent_name, leaf_name = hierarchy_path
+                        destination_dir = output_dir / parent_name / leaf_name
+                        existing = find_existing_image(destination_dir, image_id)
+                        if existing:
+                            store.record_result(row_number, "existing", str(source_url or source_path), str(existing))
+                            counts["existing"] += 1
+                            progress.update(1)
+                            continue
+                        suffix = source_path.suffix.lower()
+                        suffix = suffix if suffix in IMAGE_SUFFIXES else ".jpg"
+                        destination = destination_dir / (image_id + suffix)
+                        try:
+                            copy_image(source_path, destination)
+                            status = "downloaded_url" if source_url else "downloaded"
+                            store.record_result(row_number, status, str(source_url or source_path), str(destination))
+                            counts[status] += 1
+                        except Exception as error:
+                            store.record_result(row_number, "error", str(source_url or source_path), error_text=str(error))
+                            counts["error"] += 1
+                        progress.update(1)
+                        progress.set_postfix(**counts)
+                finally:
+                    if source_url and source_path is not None:
+                        source_path.unlink(missing_ok=True)
+        try:
+            temp_dir.rmdir()
+        except OSError:
+            pass
         if args.max_image_ids is None:
             store.mark_not_found(set(targets).difference(requested_ids))
         else:
