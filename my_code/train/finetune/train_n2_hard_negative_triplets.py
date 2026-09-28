@@ -50,6 +50,7 @@ from train_n2_fourier_hard_negative import (
     make_scheduler,
     replace_submodule,
     seed_everything,
+    write_tensorboard_scalars,
 )
 
 
@@ -111,12 +112,15 @@ def parse_args():
     parser.add_argument("--seed", type=int, default=42, help="Random seed. Default: 42")
     parser.add_argument("--resume", type=Path, default=None, help="Checkpoint to resume. Default: disabled")
     parser.add_argument("--tensorboard-dir", type=Path, default=None, help="TensorBoard directory. Default: <output-dir>/tensorboard")
+    parser.add_argument("--log-every", type=int, default=20, help="Write batch metrics to TensorBoard every N optimizer steps. Default: 20")
     parser.add_argument("--progress-refresh-seconds", type=float, default=0.1, help="tqdm refresh interval. Default: 0.1")
     args = parser.parse_args()
     if args.learning_rate is None:
         args.learning_rate = 1e-5 if args.fine_tune_mode == "full" else 1e-4
     if args.batch_size <= 0 or args.epochs <= 0 or args.num_workers < 0 or args.validate_every < 0:
         parser.error("batch-size and epochs must be positive; num-workers and validate-every must be nonnegative")
+    if args.log_every <= 0:
+        parser.error("--log-every must be positive")
     if args.sct_lambda < 0 or args.sct_loss_weight < 0 or args.clip_loss_weight < 0 or args.temperature <= 0:
         parser.error("loss weights must be nonnegative and temperature must be positive")
     if not 0.0 < args.beta1 < 1.0 or not 0.0 < args.beta2 < 1.0 or args.eps <= 0.0:
@@ -303,6 +307,8 @@ def validation(model, rows, manifest_values, transform, tokenizer, clip_loss, ar
 
 def main():
     args = parse_args()
+    if args.resume is not None and not args.resume.expanduser().is_file():
+        raise FileNotFoundError("Resume checkpoint does not exist: {}".format(args.resume.expanduser()))
     device = ensure_device(args.device, args.gpu)
     seed_everything(args.seed)
     manifest_values = longest_caption_manifest(args.manifest.expanduser())
@@ -326,34 +332,69 @@ def main():
     clip_loss = ClipLoss(cache_labels=True)
     autocast = autocast_context(args.precision, device)
     best_accuracy = -1.0
-    for epoch in range(args.epochs):
+    start_epoch = 0
+    global_step = 0
+    if args.resume is not None:
+        checkpoint = torch.load(args.resume.expanduser(), map_location=device)
+        model.load_state_dict(checkpoint["model"], strict=True)
+        optimizer.load_state_dict(checkpoint["optimizer"])
+        scheduler.load_state_dict(checkpoint["scheduler"])
+        scaler.load_state_dict(checkpoint["scaler"])
+        start_epoch = int(checkpoint.get("epoch", 0))
+        global_step = int(checkpoint.get("global_step", start_epoch * len(train_loader)))
+        validation_metrics = checkpoint.get("validation") or {}
+        best_accuracy = float(checkpoint.get(
+            "best_accuracy",
+            validation_metrics.get("label_retrieval_accuracy", best_accuracy),
+        ))
+        print(
+            "Resumed from {} at epoch {}, global step {}".format(
+                args.resume.expanduser(), start_epoch + 1, global_step
+            ),
+            flush=True,
+        )
+    for epoch in range(start_epoch, args.epochs):
         model.train()
         totals = np.zeros(5, dtype=np.float64)
         with tqdm(total=len(train_loader), desc="Epoch {}/{}".format(epoch + 1, args.epochs), unit="batch") as progress:
-            for batch in train_loader:
+            for batch_index, batch in enumerate(train_loader):
                 optimizer.zero_grad(set_to_none=True)
                 total, clip_value, sct_value, accuracy, separation, _, _, _, _ = compute_losses(model, clip_loss, tokenizer, batch, device, autocast, args)
                 scaler.scale(total).backward()
                 scaler.step(optimizer)
                 scaler.update()
                 scheduler.step()
+                global_step += 1
                 values = [total.item(), clip_value.item(), sct_value.item(), accuracy.item(), separation.item()]
                 totals += values
                 progress.set_postfix(loss="{:.4f}".format(values[0]), triplet_acc="{:.3f}".format(values[3]))
                 progress.update(1)
+                if global_step == 1 or global_step % args.log_every == 0 or batch_index + 1 == len(train_loader):
+                    step_metrics = {
+                        "loss": values[0],
+                        "clip_loss": values[1],
+                        "sct_loss": values[2],
+                        "triplet_accuracy": values[3],
+                        "negative_separation_accuracy": values[4],
+                        "learning_rate": optimizer.param_groups[0]["lr"],
+                        "epoch": epoch + 1,
+                    }
+                    write_tensorboard_scalars(writer, "train_step", step_metrics, global_step)
         train_metrics = {"loss": totals[0] / len(train_loader), "clip_loss": totals[1] / len(train_loader), "sct_loss": totals[2] / len(train_loader), "triplet_accuracy": totals[3] / len(train_loader), "negative_separation_accuracy": totals[4] / len(train_loader)}
         for name, value in train_metrics.items():
-            writer.add_scalar("train/{}".format(name), value, epoch + 1)
+            writer.add_scalar("train/{}".format(name), value, global_step)
+        writer.add_scalar("progress/epoch", epoch + 1, global_step)
         if validation_rows and args.validate_every and (epoch + 1) % args.validate_every == 0:
             validation_metrics = validation(model, validation_rows, manifest_values, validation_transform, tokenizer, clip_loss, args, device, autocast)
             for name, value in validation_metrics.items():
-                writer.add_scalar("validation/{}".format(name), value, epoch + 1)
+                writer.add_scalar("validation/{}".format(name), value, global_step)
             writer.flush()
             print("Epoch {} validation: {}".format(epoch + 1, validation_metrics), flush=True)
             if validation_metrics["label_retrieval_accuracy"] > best_accuracy:
                 best_accuracy = validation_metrics["label_retrieval_accuracy"]
-                torch.save({"model": model.state_dict(), "epoch": epoch + 1, "validation": validation_metrics, "args": vars(args)}, output_dir / "best.pt")
-        torch.save({"model": model.state_dict(), "optimizer": optimizer.state_dict(), "scheduler": scheduler.state_dict(), "scaler": scaler.state_dict(), "epoch": epoch + 1, "args": vars(args)}, output_dir / "last.pt")
+                torch.save({"model": model.state_dict(), "optimizer": optimizer.state_dict(), "scheduler": scheduler.state_dict(), "scaler": scaler.state_dict(), "epoch": epoch + 1, "global_step": global_step, "best_accuracy": best_accuracy, "validation": validation_metrics, "args": vars(args)}, output_dir / "best.pt")
+        writer.flush()
+        torch.save({"model": model.state_dict(), "optimizer": optimizer.state_dict(), "scheduler": scheduler.state_dict(), "scaler": scaler.state_dict(), "epoch": epoch + 1, "global_step": global_step, "best_accuracy": best_accuracy, "args": vars(args)}, output_dir / "last.pt")
     writer.close()
     print("Training complete. Output: {}".format(output_dir.resolve()))
 
