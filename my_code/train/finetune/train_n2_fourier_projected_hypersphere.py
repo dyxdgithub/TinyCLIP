@@ -242,6 +242,22 @@ def projected_hypersphere_supcon_loss(
     return loss, distances.detach(), int(valid_anchors.sum().item())
 
 
+def projected_hypersphere_1nn_accuracy(distances, label_equal):
+    """Measure leave-one-out 1-NN label accuracy in projected-hypersphere space."""
+    if distances.ndim != 2 or distances.shape[0] != distances.shape[1]:
+        raise ValueError("distances must be a square matrix")
+    if label_equal.shape != distances.shape:
+        raise ValueError("label_equal must have the same shape as distances")
+    identity = torch.eye(
+        distances.shape[0], device=distances.device, dtype=torch.bool
+    )
+    nearest_indices = distances.masked_fill(identity, float("inf")).argmin(dim=1)
+    nearest_matches = label_equal.gather(
+        1, nearest_indices.unsqueeze(1)
+    ).squeeze(1)
+    return nearest_matches.float().mean().item()
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pairs-csv", type=Path, default=base.DEFAULT_PAIRS_CSV, help="Prepared globally ImageID-unique pair CSV. Default: %(default)s")
@@ -390,6 +406,9 @@ def batch_losses(model, clip_loss_fn, tokenizer, batch, args, device, autocast):
     metrics = {
         "positive_distance": positive_distances.mean().item(),
         "negative_distance": negative_distances.mean().item(),
+        "projected_hypersphere_1nn_accuracy": projected_hypersphere_1nn_accuracy(
+            distances, label_equal
+        ),
         "valid_supcon_anchors": valid_anchors,
         "sample_count": len(labels),
     }
@@ -433,6 +452,9 @@ def aggregate_metrics(total, clip_loss, supcon_loss, metrics, weight):
     total["supcon_loss"] += supcon_loss.item() * count
     total["positive_distance"] += metrics["positive_distance"] * count
     total["negative_distance"] += metrics["negative_distance"] * count
+    total["projected_hypersphere_1nn_accuracy"] += (
+        metrics["projected_hypersphere_1nn_accuracy"] * count
+    )
     total["valid_supcon_anchors"] += metrics["valid_supcon_anchors"]
 
 
@@ -444,6 +466,9 @@ def finish_metrics(total):
         "supcon_loss": total["supcon_loss"] / samples,
         "positive_distance": total["positive_distance"] / samples,
         "negative_distance": total["negative_distance"] / samples,
+        "projected_hypersphere_1nn_accuracy": (
+            total["projected_hypersphere_1nn_accuracy"] / samples
+        ),
         "valid_supcon_anchor_fraction": total["valid_supcon_anchors"] / samples,
     }
 
@@ -456,6 +481,7 @@ def empty_totals():
         "supcon_loss": 0.0,
         "positive_distance": 0.0,
         "negative_distance": 0.0,
+        "projected_hypersphere_1nn_accuracy": 0.0,
         "valid_supcon_anchors": 0,
     }
 
@@ -613,6 +639,7 @@ def main():
                             "supcon_loss": supcon_loss.item(),
                             "positive_distance": batch_metrics["positive_distance"],
                             "negative_distance": batch_metrics["negative_distance"],
+                            "projected_hypersphere_1nn_accuracy": batch_metrics["projected_hypersphere_1nn_accuracy"],
                             "valid_supcon_anchor_fraction": batch_metrics["valid_supcon_anchors"] / batch_metrics["sample_count"],
                             "learning_rate": optimizer.param_groups[0]["lr"],
                         }
@@ -620,6 +647,7 @@ def main():
                             loss="{:.4f}".format(step_metrics["loss"]),
                             clip="{:.4f}".format(step_metrics["clip_loss"]),
                             supcon="{:.4f}".format(step_metrics["supcon_loss"]),
+                            acc="{:.3f}".format(step_metrics["projected_hypersphere_1nn_accuracy"]),
                             pos_d="{:.3f}".format(step_metrics["positive_distance"]),
                             neg_d="{:.3f}".format(step_metrics["negative_distance"]),
                         )
