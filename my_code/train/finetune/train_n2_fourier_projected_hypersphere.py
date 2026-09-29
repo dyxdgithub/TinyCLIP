@@ -1,19 +1,23 @@
-"""Fine-tune TinyCLIP with Fourier samples and projected-hypersphere SupCon.
+"""Fine-tune TinyCLIP on an Open Images manifest with Fourier augmentation.
 
-The prepared pair table and Fourier preprocessing follow
-``train_n2_fourier_hard_negative.py``. Each pair is expanded into two labeled
-image-text samples: the original anchor and the Fourier-augmented hard
-negative. Training batches contain exactly two images per selected leaf class,
-as in DPHM. The objective is TinyCLIP ClipLoss plus a weighted supervised
-contrastive loss whose logits are negative projected-hypersphere distances.
+Images are resolved recursively below ``--images-root`` by ImageID. For every
+target sample, a deterministic Fourier donor is selected from a different leaf
+class under the same parent class. The donor contributes low-frequency
+amplitude while the target keeps its phase, caption, and label. Training
+batches contain exactly two images per selected leaf class, as in DPHM. The
+objective is TinyCLIP ClipLoss plus weighted projected-hypersphere SupCon.
 """
 
 import argparse
+import csv
 import functools
+import hashlib
 import json
 import math
 import random
+from collections import Counter
 from contextlib import nullcontext
+from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import torch
@@ -31,24 +35,225 @@ DEFAULT_OUTPUT_DIR = (
     / "output"
     / "fourier_projected_hypersphere_tinyclip_vit_40m_32_text_19m"
 )
+N2_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "data"
+    / "OpenImage"
+    / "meta"
+    / "Hierarchy"
+    / "n2"
+)
+DEFAULT_MANIFEST = (
+    N2_DIR
+    / "Image IDs_with_last_two_layers_multi_members_n2_one_label_per_parent.csv"
+)
+DEFAULT_IMAGES_ROOT = Path(
+    "/media/xyycyc/Elements/dyx/TinyCLIP/my_code/data/OpenImage/meta/"
+    "Hierarchy/n2/images_all"
+)
 CHECKPOINT_OBJECTIVE = "clip_plus_projected_hypersphere_supcon_v1"
+IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
+REQUIRED_MANIFEST_COLUMNS = {
+    "ImageID", "caption", "LabelName", "ParentLabelName"
+}
+
+
+@dataclass(frozen=True)
+class ManifestSample:
+    """One manifest row joined to its local image."""
+
+    image_id: str
+    image_path: Path
+    caption: str
+    leaf_label: str
+    parent_label: str
+
+
+def image_id_from_path(path):
+    """Accept either ``<ImageID>.jpg`` or a prefixed Open Images filename."""
+    stem = path.stem
+    candidate = stem.rsplit("_", 1)[-1]
+    if len(candidate) == 16 and all(
+        character in "0123456789abcdefABCDEF" for character in candidate
+    ):
+        return candidate.lower()
+    return stem.lower()
+
+
+def index_images(images_root, progress_refresh_seconds):
+    """Recursively index supported images by ImageID with deterministic ties."""
+    if not images_root.is_dir():
+        raise FileNotFoundError("Image root directory does not exist: {}".format(images_root))
+    image_paths = {}
+    duplicate_image_ids = 0
+    with tqdm(
+        desc="Indexing images",
+        unit="image",
+        mininterval=progress_refresh_seconds,
+    ) as progress:
+        for path in images_root.rglob("*"):
+            if not path.is_file() or path.suffix.lower() not in IMAGE_SUFFIXES:
+                continue
+            image_id = image_id_from_path(path)
+            resolved = path.resolve()
+            existing = image_paths.get(image_id)
+            if existing is not None:
+                duplicate_image_ids += 1
+            if existing is None or str(resolved).lower() < str(existing).lower():
+                image_paths[image_id] = resolved
+            progress.update(1)
+    if not image_paths:
+        raise ValueError("No supported images were found below: {}".format(images_root))
+    return image_paths, duplicate_image_ids
+
+
+def load_manifest_samples(manifest, image_paths, progress_refresh_seconds):
+    """Join valid manifest rows to the indexed images."""
+    if not manifest.is_file():
+        raise FileNotFoundError("Manifest CSV does not exist: {}".format(manifest))
+    samples_by_row_key = {}
+    missing_image_ids = set()
+    skipped_incomplete_rows = 0
+    with manifest.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        missing_columns = REQUIRED_MANIFEST_COLUMNS.difference(reader.fieldnames or ())
+        if missing_columns:
+            raise ValueError(
+                "Manifest lacks required columns: {}".format(
+                    ", ".join(sorted(missing_columns))
+                )
+            )
+        with tqdm(
+            desc="Reading manifest",
+            unit="row",
+            mininterval=progress_refresh_seconds,
+        ) as progress:
+            for row in reader:
+                image_id = (row.get("ImageID") or "").strip().lower()
+                caption = (row.get("caption") or "").strip()
+                leaf_label = (row.get("LabelName") or "").strip()
+                parent_label = (row.get("ParentLabelName") or "").strip()
+                if not image_id or not caption or not leaf_label or not parent_label:
+                    skipped_incomplete_rows += 1
+                    progress.update(1)
+                    continue
+                image_path = image_paths.get(image_id)
+                if image_path is None:
+                    missing_image_ids.add(image_id)
+                    progress.update(1)
+                    continue
+                row_key = (image_id, leaf_label, parent_label)
+                existing = samples_by_row_key.get(row_key)
+                if existing is None or len(caption) > len(existing.caption):
+                    samples_by_row_key[row_key] = ManifestSample(
+                        image_id=image_id,
+                        image_path=image_path,
+                        caption=caption,
+                        leaf_label=leaf_label,
+                        parent_label=parent_label,
+                    )
+                progress.update(1)
+    samples = list(samples_by_row_key.values())
+    if not samples:
+        raise ValueError("No usable manifest rows have matching images under --images-root")
+    return samples, missing_image_ids, skipped_incomplete_rows
+
+
+def split_samples_by_image_id(samples, validation_fraction, seed):
+    """Split whole ImageID groups so one physical image cannot leak across sets."""
+    image_ids = sorted({sample.image_id for sample in samples})
+    random.Random(seed).shuffle(image_ids)
+    if validation_fraction == 0.0 or len(image_ids) < 2:
+        return list(samples), []
+    validation_count = max(1, int(round(len(image_ids) * validation_fraction)))
+    validation_count = min(validation_count, len(image_ids) - 1)
+    validation_ids = set(image_ids[:validation_count])
+    train_samples = [sample for sample in samples if sample.image_id not in validation_ids]
+    validation_samples = [sample for sample in samples if sample.image_id in validation_ids]
+    return train_samples, validation_samples
+
+
+def assign_fourier_donors(samples, seed):
+    """Assign each sample a same-parent, cross-leaf donor in linear space."""
+    indices_by_parent_leaf = {}
+    for index, sample in enumerate(samples):
+        indices_by_parent_leaf.setdefault(sample.parent_label, {}).setdefault(
+            sample.leaf_label, []
+        ).append(index)
+
+    donor_indices = {}
+    excluded_samples = 0
+    for parent_label, indices_by_leaf in indices_by_parent_leaf.items():
+        leaves = sorted(indices_by_leaf)
+        if len(leaves) < 2:
+            excluded_samples += sum(len(indices) for indices in indices_by_leaf.values())
+            continue
+        for leaf_position, leaf_label in enumerate(leaves):
+            for target_index in indices_by_leaf[leaf_label]:
+                sample = samples[target_index]
+                digest = hashlib.sha256(
+                    "{}:{}:{}:{}".format(
+                        seed, parent_label, leaf_label, sample.image_id
+                    ).encode("utf-8")
+                ).digest()
+                selection_value = int.from_bytes(digest[:8], "big")
+                donor_index = None
+                for leaf_offset in range(1, len(leaves)):
+                    donor_leaf = leaves[(leaf_position + leaf_offset) % len(leaves)]
+                    donor_candidates = indices_by_leaf[donor_leaf]
+                    start = selection_value % len(donor_candidates)
+                    for candidate_offset in range(len(donor_candidates)):
+                        candidate_index = donor_candidates[
+                            (start + candidate_offset) % len(donor_candidates)
+                        ]
+                        if samples[candidate_index].image_id != sample.image_id:
+                            donor_index = candidate_index
+                            break
+                    if donor_index is not None:
+                        break
+                if donor_index is None:
+                    excluded_samples += 1
+                else:
+                    donor_indices[target_index] = donor_index
+    retained_indices = sorted(donor_indices)
+    retained_samples = [samples[index] for index in retained_indices]
+    old_to_new = {old_index: new_index for new_index, old_index in enumerate(retained_indices)}
+    retained_donors = [
+        old_to_new[donor_indices[old_index]] for old_index in retained_indices
+    ]
+    return retained_samples, retained_donors, excluded_samples
+
+
+def sample_signature(samples, donor_indices):
+    encoded = json.dumps(
+        [
+            {
+                **asdict(sample),
+                "image_path": str(sample.image_path),
+                "donor_image_id": samples[donor_indices[index]].image_id,
+            }
+            for index, sample in enumerate(samples)
+        ],
+        ensure_ascii=True,
+        sort_keys=True,
+    ).encode("utf-8")
+    return hashlib.sha256(encoded).hexdigest()
 
 
 class FourierLabeledSampleDataset(Dataset):
-    """Expose both sides of each pair as independent labeled samples."""
+    """Apply a cross-leaf donor's low frequencies to every target sample."""
 
-    def __init__(self, pairs, transform, phi, size_policy):
-        self.pairs = pairs
+    def __init__(self, samples, donor_indices, transform, phi, size_policy):
+        self.samples = samples
+        self.donor_indices = donor_indices
         self.transform = transform
         self.phi = phi
         self.size_policy = size_policy
         self._augmentor = None
-        self.labels = []
-        for pair in pairs:
-            self.labels.extend((pair.anchor_leaf, pair.negative_leaf))
+        self.labels = [sample.leaf_label for sample in samples]
 
     def __len__(self):
-        return 2 * len(self.pairs)
+        return len(self.samples)
 
     def __getstate__(self):
         state = self.__dict__.copy()
@@ -64,21 +269,17 @@ class FourierLabeledSampleDataset(Dataset):
         return self._augmentor
 
     def __getitem__(self, index):
-        pair = self.pairs[index // 2]
-        if index % 2 == 0:
-            with Image.open(pair.anchor_path) as image_file:
-                image = image_file.convert("RGB")
-            return self.transform(image), pair.anchor_caption, pair.anchor_leaf
-
-        with Image.open(pair.anchor_path) as anchor_file:
-            anchor = anchor_file.convert("RGB")
-        with Image.open(pair.negative_path) as negative_file:
-            negative = negative_file.convert("RGB")
-        augmented_negative = self._get_augmentor()(anchor, negative)
+        target = self.samples[index]
+        donor = self.samples[self.donor_indices[index]]
+        with Image.open(donor.image_path) as donor_file:
+            donor_image = donor_file.convert("RGB")
+        with Image.open(target.image_path) as target_file:
+            target_image = target_file.convert("RGB")
+        augmented_target = self._get_augmentor()(donor_image, target_image)
         return (
-            self.transform(augmented_negative),
-            pair.negative_caption,
-            pair.negative_leaf,
+            self.transform(augmented_target),
+            target.caption,
+            target.leaf_label,
         )
 
 
@@ -260,7 +461,8 @@ def projected_hypersphere_1nn_accuracy(distances, label_equal):
 
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--pairs-csv", type=Path, default=base.DEFAULT_PAIRS_CSV, help="Prepared globally ImageID-unique pair CSV. Default: %(default)s")
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST, help="Open Images metadata CSV containing ImageID, caption, LabelName, and ParentLabelName. Default: %(default)s")
+    parser.add_argument("--images-root", type=Path, default=DEFAULT_IMAGES_ROOT, help="Server image root recursively organized like the n2/300 hierarchy. Images are matched by filename ImageID. Default: %(default)s")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Directory for logs and checkpoints. Default: %(default)s")
     parser.add_argument("--model", default="TinyCLIP-ViT-40M-32-Text-19M", help="TinyCLIP model configuration name. Default: %(default)s")
     parser.add_argument("--pretrained", default="LAION400M", help="Registered pretrained tag or local checkpoint. Default: %(default)s")
@@ -285,7 +487,7 @@ def parse_args():
     parser.add_argument("--geometry-epsilon", type=float, default=1e-6, help="Numerical clamp used by tan and acos operations. Default: %(default)s")
     parser.add_argument("--fourier-phi", type=float, default=0.1, help="Centered low-frequency side-length proportion. Range: (0, 1]. Default: %(default)s")
     parser.add_argument("--fourier-size-policy", choices=("anchor-to-negative", "error"), default="anchor-to-negative", help="Fourier behavior for unequal image sizes. Default: %(default)s")
-    parser.add_argument("--validation-fraction", type=float, default=0.1, help="Fraction of pairs reserved for validation. Range: [0, 1). Default: %(default)s")
+    parser.add_argument("--validation-fraction", type=float, default=0.1, help="Fraction of unique ImageIDs reserved for validation. All labels of an ImageID stay in one split. Range: [0, 1). Default: %(default)s")
     parser.add_argument("--seed", type=int, default=42, help="Random seed. Default: %(default)s")
     parser.add_argument("--num-workers", type=int, default=4, help="DataLoader workers; use 0 for in-process loading. Default: %(default)s")
     parser.add_argument("--device", default="cuda", help="Training device. Default: %(default)s")
@@ -337,16 +539,17 @@ def parse_args():
     return args
 
 
-def make_loader(pairs, transform, args, epoch, validation=False):
+def make_loader(samples, donor_indices, transform, args, epoch, validation=False):
     dataset = FourierLabeledSampleDataset(
-        pairs, transform, args.fourier_phi, args.fourier_size_policy
+        samples,
+        donor_indices,
+        transform,
+        args.fourier_phi,
+        args.fourier_size_policy,
     )
+    label_counts = Counter(dataset.labels)
     eligible_class_count = len(
-        {
-            label
-            for label in dataset.labels
-            if dataset.labels.count(label) >= 2
-        }
+        {label for label, count in label_counts.items() if count >= 2}
     )
     if validation and eligible_class_count == 0:
         return None
@@ -426,21 +629,24 @@ def geometry_config(args):
     }
 
 
-def checkpoint_payload(model, optimizer, scheduler, scaler, epoch, next_batch, global_step, pairs_hash, args):
+def checkpoint_payload(model, optimizer, scheduler, scaler, epoch, next_batch, global_step, data_hash, args):
     payload = base.checkpoint_payload(
         model, optimizer, scheduler, scaler, epoch, next_batch,
-        global_step, pairs_hash, args
+        global_step, data_hash, args
     )
+    payload["data_signature"] = data_hash
     payload["geometry_config"] = geometry_config(args)
     return payload
 
 
-def restore_checkpoint(path, model, optimizer, scheduler, scaler, pairs_hash, args, device):
+def restore_checkpoint(path, model, optimizer, scheduler, scaler, data_hash, args, device):
     checkpoint = torch.load(path, map_location=device)
     if checkpoint.get("geometry_config") != geometry_config(args):
         raise ValueError("Checkpoint geometry configuration does not match current arguments")
+    if checkpoint.get("data_signature") != data_hash:
+        raise ValueError("Checkpoint data signature does not match current manifest and images")
     return base.restore_checkpoint(
-        path, model, optimizer, scheduler, scaler, pairs_hash, args, device
+        path, model, optimizer, scheduler, scaler, data_hash, args, device
     )
 
 
@@ -487,10 +693,12 @@ def empty_totals():
 
 
 @torch.no_grad()
-def run_validation(model, pairs, transform, tokenizer, clip_loss_fn, args, device, autocast):
-    if not pairs:
+def run_validation(model, samples, donor_indices, transform, tokenizer, clip_loss_fn, args, device, autocast):
+    if not samples:
         return None
-    loader = make_loader(pairs, transform, args, epoch=0, validation=True)
+    loader = make_loader(
+        samples, donor_indices, transform, args, epoch=0, validation=True
+    )
     if loader is None:
         return None
     totals = empty_totals()
@@ -507,35 +715,68 @@ def run_validation(model, pairs, transform, tokenizer, clip_loss_fn, args, devic
 
 def main():
     args = parse_args()
-    pairs_csv = args.pairs_csv.expanduser()
+    manifest = args.manifest.expanduser()
+    images_root = args.images_root.expanduser()
     output_dir = args.output_dir.expanduser()
     tensorboard_dir = (
         args.tensorboard_dir.expanduser()
         if args.tensorboard_dir
         else output_dir / "tensorboard"
     )
-    if not pairs_csv.is_file():
-        raise FileNotFoundError("Prepared pair CSV does not exist: {}".format(pairs_csv))
+    if not manifest.is_file():
+        raise FileNotFoundError("Manifest CSV does not exist: {}".format(manifest))
+    if not images_root.is_dir():
+        raise FileNotFoundError("Image root directory does not exist: {}".format(images_root))
     if args.resume is not None and not args.resume.expanduser().is_file():
         raise FileNotFoundError("Resume checkpoint does not exist: {}".format(args.resume))
 
     device = base.ensure_device(args.device, args.gpu)
     print("Training device: {}".format(device), flush=True)
     base.seed_everything(args.seed)
-    pairs = base.load_prepared_pairs(pairs_csv, args)
-    pairs_hash = base.pair_signature(pairs)
-    train_pairs, validation_pairs = base.split_pairs(
-        pairs, args.validation_fraction, args.seed
+    image_paths, duplicate_image_ids = index_images(
+        images_root, args.progress_refresh_seconds
     )
+    samples, missing_image_ids, skipped_incomplete_rows = load_manifest_samples(
+        manifest, image_paths, args.progress_refresh_seconds
+    )
+    train_samples, validation_samples = split_samples_by_image_id(
+        samples, args.validation_fraction, args.seed
+    )
+    train_samples, train_donor_indices, excluded_train_samples = assign_fourier_donors(
+        train_samples, args.seed
+    )
+    (
+        validation_samples,
+        validation_donor_indices,
+        excluded_validation_samples,
+    ) = assign_fourier_donors(
+        validation_samples, args.seed + 1
+    )
+    if not train_samples:
+        raise ValueError(
+            "No training samples have a same-parent donor from a different leaf class"
+        )
+    signature_payload = "{}:{}".format(
+        sample_signature(train_samples, train_donor_indices),
+        sample_signature(validation_samples, validation_donor_indices),
+    ).encode("ascii")
+    data_hash = hashlib.sha256(signature_payload).hexdigest()
     output_dir.mkdir(parents=True, exist_ok=True)
     run_metadata = {
         "arguments": vars(args),
         "objective": CHECKPOINT_OBJECTIVE,
-        "pair_signature": pairs_hash,
-        "selected_pairs": len(pairs),
-        "train_pairs": len(train_pairs),
-        "validation_pairs": len(validation_pairs),
-        "pairs_csv": str(pairs_csv.resolve()),
+        "data_signature": data_hash,
+        "indexed_unique_images": len(image_paths),
+        "duplicate_image_files": duplicate_image_ids,
+        "manifest_samples_with_images": len(samples),
+        "missing_unique_image_ids": len(missing_image_ids),
+        "skipped_incomplete_manifest_rows": skipped_incomplete_rows,
+        "train_samples": len(train_samples),
+        "validation_samples": len(validation_samples),
+        "excluded_train_samples_without_cross_leaf_donor": excluded_train_samples,
+        "excluded_validation_samples_without_cross_leaf_donor": excluded_validation_samples,
+        "manifest": str(manifest.resolve()),
+        "images_root": str(images_root.resolve()),
     }
     with (output_dir / "run_config.json").open("w", encoding="utf-8") as handle:
         json.dump(run_metadata, handle, ensure_ascii=True, indent=2, default=str)
@@ -556,7 +797,12 @@ def main():
     ).to(device)
     optimizer = base.make_optimizer(model, args)
     initial_loader = make_loader(
-        train_pairs, train_transform, args, epoch=0, validation=False
+        train_samples,
+        train_donor_indices,
+        train_transform,
+        args,
+        epoch=0,
+        validation=False,
     )
     total_steps = max(1, len(initial_loader) * args.epochs)
     scheduler = base.make_scheduler(optimizer, total_steps, args.warmup_steps)
@@ -571,7 +817,7 @@ def main():
     if args.resume is not None:
         start_epoch, start_batch, global_step = restore_checkpoint(
             args.resume.expanduser(), model, optimizer, scheduler, scaler,
-            pairs_hash, args, device
+            data_hash, args, device
         )
         print(
             "Resumed from {} at epoch {}, next batch {}, global step {}".format(
@@ -586,8 +832,22 @@ def main():
         if parameter.requires_grad
     )
     all_parameters = sum(parameter.numel() for parameter in model.parameters())
-    print("Prepared pairs: {}".format(len(pairs)), flush=True)
-    print("Train pairs: {}; validation pairs: {}".format(len(train_pairs), len(validation_pairs)), flush=True)
+    print("Indexed unique images: {}".format(len(image_paths)), flush=True)
+    print("Duplicate image files: {}".format(duplicate_image_ids), flush=True)
+    print("Manifest samples with images: {}".format(len(samples)), flush=True)
+    print("Missing unique ImageIDs: {}".format(len(missing_image_ids)), flush=True)
+    print(
+        "Train samples: {}; validation samples: {}".format(
+            len(train_samples), len(validation_samples)
+        ),
+        flush=True,
+    )
+    print(
+        "Excluded without cross-leaf Fourier donor: train={}, validation={}".format(
+            excluded_train_samples, excluded_validation_samples
+        ),
+        flush=True,
+    )
     print("Balanced batch: {} classes x 2 images".format(args.batch_size // 2), flush=True)
     print("Curvature: {}; temperature: {}; projection dim: {}".format(args.curvature, args.temperature, args.projection_dim), flush=True)
     print("Fine-tune mode: {}; adapter summary: {}".format(args.fine_tune_mode, lora_summary), flush=True)
@@ -598,7 +858,11 @@ def main():
     try:
         for epoch in range(start_epoch, args.epochs):
             loader = make_loader(
-                train_pairs, train_transform, args, epoch=epoch,
+                train_samples,
+                train_donor_indices,
+                train_transform,
+                args,
+                epoch=epoch,
                 validation=False
             )
             model.train()
@@ -665,7 +929,7 @@ def main():
                             last_checkpoint,
                             checkpoint_payload(
                                 model, optimizer, scheduler, scaler, epoch,
-                                batch_index + 1, global_step, pairs_hash, args
+                                batch_index + 1, global_step, data_hash, args
                             ),
                         )
 
@@ -679,10 +943,17 @@ def main():
                 writer, "train_epoch", train_metrics, epoch + 1
             )
             validation_metrics = None
-            if validation_pairs and args.validate_every and (epoch + 1) % args.validate_every == 0:
+            if validation_samples and args.validate_every and (epoch + 1) % args.validate_every == 0:
                 validation_metrics = run_validation(
-                    model, validation_pairs, validation_transform, tokenizer,
-                    clip_loss_fn, args, device, autocast
+                    model,
+                    validation_samples,
+                    validation_donor_indices,
+                    validation_transform,
+                    tokenizer,
+                    clip_loss_fn,
+                    args,
+                    device,
+                    autocast,
                 )
                 if validation_metrics is not None:
                     base.append_metric(metrics_path, {
@@ -699,7 +970,7 @@ def main():
                             output_dir / "best.pt",
                             checkpoint_payload(
                                 model, optimizer, scheduler, scaler, epoch + 1,
-                                0, global_step, pairs_hash, args
+                                0, global_step, data_hash, args
                             ),
                         )
             if (epoch + 1) % args.save_every == 0:
@@ -707,14 +978,14 @@ def main():
                     output_dir / "checkpoints" / "epoch_{:03d}.pt".format(epoch + 1),
                     checkpoint_payload(
                         model, optimizer, scheduler, scaler, epoch + 1,
-                        0, global_step, pairs_hash, args
+                        0, global_step, data_hash, args
                     ),
                 )
             base.save_checkpoint(
                 last_checkpoint,
                 checkpoint_payload(
                     model, optimizer, scheduler, scaler, epoch + 1,
-                    0, global_step, pairs_hash, args
+                    0, global_step, data_hash, args
                 ),
             )
             print("Epoch {} train: {}".format(epoch + 1, train_metrics), flush=True)
@@ -723,9 +994,10 @@ def main():
 
     print("Training complete. Last checkpoint: {}".format(last_checkpoint.resolve()))
     print("TensorBoard logs: {}".format(tensorboard_dir.resolve()))
-    if validation_pairs:
+    if validation_samples:
         print("Best validation checkpoint: {}".format((output_dir / "best.pt").resolve()))
-    print("Training pair table: {}".format(pairs_csv.resolve()))
+    print("Training manifest: {}".format(manifest.resolve()))
+    print("Training image root: {}".format(images_root.resolve()))
 
 
 if __name__ == "__main__":
