@@ -22,7 +22,7 @@ from pathlib import Path
 
 import torch
 import torch.nn.functional as functional
-from PIL import Image
+from PIL import Image, ImageFile
 from torch import nn
 from torch.utils.data import DataLoader, Dataset, Sampler
 from tqdm import tqdm
@@ -56,6 +56,38 @@ IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tif", ".tiff"}
 REQUIRED_MANIFEST_COLUMNS = {
     "ImageID", "caption", "LabelName", "ParentLabelName"
 }
+
+
+def load_rgb_image(path):
+    """Load an RGB image and tolerate truncated Open Images JPEG files.
+
+    Open Images contains occasional partially written JPEGs. PIL raises while
+    decoding those files unless ``LOAD_TRUNCATED_IMAGES`` is enabled. We keep
+    the fallback local to the data path so unrelated decoding errors still
+    fail with the offending filename.
+    """
+    try:
+        with Image.open(path) as image_file:
+            return image_file.convert("RGB")
+    except OSError as error:
+        message = str(error).lower()
+        if "truncated" not in message and "image file" not in message:
+            raise OSError("Failed to decode image {}: {}".format(path, error)) from error
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
+        try:
+            with Image.open(path) as image_file:
+                image = image_file.convert("RGB")
+            print(
+                "Warning: loaded truncated image with PIL fallback: {}".format(path),
+                flush=True,
+            )
+            return image
+        except OSError as fallback_error:
+            raise OSError(
+                "Unable to decode image {} even with truncated-image fallback: {}".format(
+                    path, fallback_error
+                )
+            ) from fallback_error
 
 
 @dataclass(frozen=True)
@@ -271,10 +303,8 @@ class FourierLabeledSampleDataset(Dataset):
     def __getitem__(self, index):
         target = self.samples[index]
         donor = self.samples[self.donor_indices[index]]
-        with Image.open(donor.image_path) as donor_file:
-            donor_image = donor_file.convert("RGB")
-        with Image.open(target.image_path) as target_file:
-            target_image = target_file.convert("RGB")
+        donor_image = load_rgb_image(donor.image_path)
+        target_image = load_rgb_image(target.image_path)
         augmented_target = self._get_augmentor()(donor_image, target_image)
         return (
             self.transform(augmented_target),
