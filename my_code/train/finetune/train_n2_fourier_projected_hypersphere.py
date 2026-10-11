@@ -670,7 +670,10 @@ def checkpoint_payload(model, optimizer, scheduler, scaler, epoch, next_batch, g
 
 
 def restore_checkpoint(path, model, optimizer, scheduler, scaler, data_hash, args, device):
-    checkpoint = torch.load(path, map_location=device)
+    # This project checkpoint stores optimizer, scheduler, scaler, and RNG
+    # state in addition to tensors. PyTorch 2.6 changed torch.load's default
+    # to weights_only=True, which cannot restore this full trusted payload.
+    checkpoint = torch.load(path, map_location=device, weights_only=False)
     if checkpoint.get("geometry_config") != geometry_config(args):
         raise ValueError("Checkpoint geometry configuration does not match current arguments")
     if checkpoint.get("data_signature") != data_hash:

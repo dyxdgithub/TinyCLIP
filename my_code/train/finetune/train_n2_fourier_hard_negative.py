@@ -592,7 +592,10 @@ def save_checkpoint(path, payload):
 
 
 def restore_checkpoint(path, model, optimizer, scheduler, scaler, pairs_hash, args, device):
-    checkpoint = torch.load(path, map_location=device)
+    # Resumable checkpoints contain optimizer and RNG state, not only tensors.
+    # Explicitly restore the full payload for checkpoints produced by this
+    # trusted training script.
+    checkpoint = torch.load(path, map_location=device, weights_only=False)
     if checkpoint.get("checkpoint_version") != CHECKPOINT_VERSION:
         raise ValueError("Unsupported checkpoint version in {}".format(path))
     for key, expected in (("pair_signature", pairs_hash), ("fine_tune_mode", args.fine_tune_mode), ("model_name", args.model)):
