@@ -611,9 +611,29 @@ def restore_checkpoint(path, model, optimizer, scheduler, scaler, pairs_hash, ar
     if rng.get("numpy") is not None:
         np.random.set_state(rng["numpy"])
     if rng.get("torch") is not None:
-        torch.set_rng_state(rng["torch"])
+        cpu_rng_state = rng["torch"]
+        if isinstance(cpu_rng_state, torch.Tensor):
+            cpu_rng_state = cpu_rng_state.detach().to(
+                device="cpu", dtype=torch.uint8
+            )
+        else:
+            cpu_rng_state = torch.as_tensor(
+                cpu_rng_state, dtype=torch.uint8, device="cpu"
+            )
+        torch.set_rng_state(cpu_rng_state)
     if torch.cuda.is_available() and rng.get("cuda") is not None:
-        torch.cuda.set_rng_state_all(rng["cuda"])
+        for device_index, cuda_rng_state in enumerate(
+            rng["cuda"][: torch.cuda.device_count()]
+        ):
+            if isinstance(cuda_rng_state, torch.Tensor):
+                cuda_rng_state = cuda_rng_state.detach().to(
+                    device="cpu", dtype=torch.uint8
+                )
+            else:
+                cuda_rng_state = torch.as_tensor(
+                    cuda_rng_state, dtype=torch.uint8, device="cpu"
+                )
+            torch.cuda.set_rng_state(cuda_rng_state, device=device_index)
     return checkpoint["epoch"], checkpoint["next_batch"], checkpoint["global_step"]
 
 
