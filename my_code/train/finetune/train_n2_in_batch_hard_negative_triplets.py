@@ -185,7 +185,7 @@ def parse_args():
     parser.add_argument("--validate-every", type=int, default=1, help="Validate every N epochs; 0 disables validation. Default: %(default)s")
     parser.add_argument("--num-workers", type=int, default=4, help="DataLoader workers; use 0 for in-process loading. Default: %(default)s")
     parser.add_argument("--device", default="cuda", help="Training device, such as cuda or cpu. Default: %(default)s")
-    parser.add_argument("--gpu", type=int, default=0, help="Nonnegative CUDA device index used when --device is cuda. Default: %(default)s")
+    parser.add_argument("--gpu", type=int, default=2, help="Nonnegative CUDA device index used when --device is cuda. Default: %(default)s")
     parser.add_argument("--precision", choices=("amp", "amp_bfloat16", "fp32"), default="amp", help="Training precision. Choices: amp, amp_bfloat16, fp32. Default: %(default)s")
     parser.add_argument("--grad-clip-norm", type=float, default=1.0, help="Maximum gradient norm; 0 disables clipping. Default: %(default)s")
     parser.add_argument("--checkpoint-steps", type=int, default=500, help="Persist last.pt every N optimizer steps. Default: %(default)s")

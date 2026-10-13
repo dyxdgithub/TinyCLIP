@@ -488,6 +488,8 @@ def main():
     summary_path = output_dir / "summary.json"
     coordinates_path = output_dir / "cluster_coordinates.csv"
     plot_path = output_dir / "cluster_scatter.png"
+    correct_plot_path = output_dir / "cluster_scatter_correct.png"
+    incorrect_plot_path = output_dir / "cluster_scatter_incorrect.png"
 
     classes = imagenet_eval.load_class_map(class_map_path)
     if args.top_k > len(classes):
@@ -620,6 +622,8 @@ def main():
         "predictions_csv": str(predictions_path.resolve()),
         "cluster_coordinates_csv": str(coordinates_path.resolve()),
         "cluster_scatter_png": str(plot_path.resolve()),
+        "cluster_scatter_correct_png": str(correct_plot_path.resolve()),
+        "cluster_scatter_incorrect_png": str(incorrect_plot_path.resolve()),
         "tensorboard_dir": str(tensorboard_dir.resolve()),
     }
     with summary_path.open("w", encoding="utf-8") as handle:
@@ -633,6 +637,8 @@ def main():
     print("Projected-hypersphere Recall@{}: {:.4%}".format(metrics["effective_retrieval_k"], metrics["projected_hypersphere_recall_at_{}".format(metrics["effective_retrieval_k"])]))
     print("Predictions: {}".format(predictions_path.resolve()))
     print("Cluster plot: {}".format(plot_path.resolve()))
+    print("Correct cluster plot: {}".format(correct_plot_path.resolve()))
+    print("Incorrect cluster plot: {}".format(incorrect_plot_path.resolve()))
     print("Summary: {}".format(summary_path.resolve()))
     print("TensorBoard: {}".format(tensorboard_dir.resolve()))
 
