@@ -263,7 +263,7 @@ def write_cluster_coordinates(path, coordinates, records, classes):
     temporary.replace(path)
 
 
-def plot_clusters(path, coordinates, records, class_count, method, dpi):
+def plot_clusters(path, coordinates, records, class_count, method, dpi, selection="all"):
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -276,41 +276,43 @@ def plot_clusters(path, coordinates, records, class_count, method, dpi):
     correct = np.asarray([
         record["truth"] == record["prediction"] for record in records
     ])
+    if selection not in ("all", "correct", "incorrect"):
+        raise ValueError("Unknown cluster selection: {}".format(selection))
     figure, axis = plt.subplots(figsize=(13, 10), constrained_layout=True)
-    scatter = axis.scatter(
-        coordinates[correct, 0],
-        coordinates[correct, 1],
-        c=labels[correct],
-        cmap="turbo",
-        vmin=0,
-        vmax=max(1, class_count - 1),
-        s=10,
-        alpha=0.72,
-        marker="o",
-        linewidths=0,
-        label="Top-1 correct",
+    for kind, mask, label, marker, size, alpha, linewidth in (
+        ("correct", correct, "Top-1 correct", "o", 10, 0.72, 0),
+        ("incorrect", ~correct, "Top-1 incorrect", "x", 18, 0.85, 0.6),
+    ):
+        if selection != "all" and selection != kind:
+            continue
+        if mask.any():
+            axis.scatter(
+                coordinates[mask, 0], coordinates[mask, 1],
+                c=labels[mask], cmap="turbo", vmin=0,
+                vmax=max(1, class_count - 1), s=size, alpha=alpha,
+                marker=marker, linewidths=linewidth, label=label,
+            )
+    if selection != "all" and not (correct if selection == "correct" else ~correct).any():
+        axis.text(0.5, 0.5, "No {} samples".format(selection),
+                  transform=axis.transAxes, ha="center", va="center")
+    color_scale = plt.cm.ScalarMappable(
+        norm=plt.Normalize(vmin=0, vmax=max(1, class_count - 1)), cmap="turbo"
     )
-    if (~correct).any():
-        axis.scatter(
-            coordinates[~correct, 0],
-            coordinates[~correct, 1],
-            c=labels[~correct],
-            cmap="turbo",
-            vmin=0,
-            vmax=max(1, class_count - 1),
-            s=18,
-            alpha=0.85,
-            marker="x",
-            linewidths=0.6,
-            label="Top-1 incorrect",
-        )
-    colorbar = figure.colorbar(scatter, ax=axis, pad=0.01)
+    colorbar = figure.colorbar(color_scale, ax=axis, pad=0.01)
     colorbar.set_label("ImageNet-200 class index")
-    axis.set_title("SCT TinyCLIP ImageNet-200 validation embeddings ({})".format(method.upper()))
+    axis.set_title("SCT TinyCLIP ImageNet-200 validation embeddings ({}, {})".format(
+        method.upper(), selection
+    ))
+    for set_limits, values in ((axis.set_xlim, coordinates[:, 0]),
+                               (axis.set_ylim, coordinates[:, 1])):
+        low, high = float(values.min()), float(values.max())
+        padding = (high - low) * 0.05 or 1.0
+        set_limits(low - padding, high + padding)
     axis.set_xlabel("Component 1")
     axis.set_ylabel("Component 2")
     axis.grid(alpha=0.15, linewidth=0.5)
-    axis.legend(loc="best", frameon=True)
+    if axis.get_legend_handles_labels()[0]:
+        axis.legend(loc="best", frameon=True)
     path.parent.mkdir(parents=True, exist_ok=True)
     figure.savefig(path, dpi=dpi, bbox_inches="tight")
     plt.close(figure)
@@ -356,6 +358,8 @@ def main():
     summary_path = output_dir / "summary.json"
     coordinates_path = output_dir / "cluster_coordinates.csv"
     plot_path = output_dir / "cluster_scatter.png"
+    correct_plot_path = output_dir / "cluster_scatter_correct.png"
+    incorrect_plot_path = output_dir / "cluster_scatter_incorrect.png"
 
     classes = imagenet_eval.load_class_map(class_map_path)
     if args.top_k > len(classes):
@@ -490,6 +494,10 @@ def main():
         args.plot_method,
         args.plot_dpi,
     )
+    for selection, path in (("correct", correct_plot_path),
+                            ("incorrect", incorrect_plot_path)):
+        plot_clusters(path, coordinates, selected_records, len(classes),
+                      args.plot_method, args.plot_dpi, selection)
 
     sample_count = len(dataset)
     summary = {
@@ -512,6 +520,8 @@ def main():
         "predictions_csv": str(predictions_path.resolve()),
         "cluster_coordinates_csv": str(coordinates_path.resolve()),
         "cluster_scatter_png": str(plot_path.resolve()),
+        "cluster_scatter_correct_png": str(correct_plot_path.resolve()),
+        "cluster_scatter_incorrect_png": str(incorrect_plot_path.resolve()),
     }
     with summary_path.open("w", encoding="utf-8") as handle:
         json.dump(summary, handle, ensure_ascii=True, indent=2, default=str)
@@ -528,6 +538,8 @@ def main():
     print("Predictions: {}".format(predictions_path.resolve()))
     print("Cluster coordinates: {}".format(coordinates_path.resolve()))
     print("Cluster scatter plot: {}".format(plot_path.resolve()))
+    print("Correct cluster plot: {}".format(correct_plot_path.resolve()))
+    print("Incorrect cluster plot: {}".format(incorrect_plot_path.resolve()))
     print("Summary: {}".format(summary_path.resolve()))
 
 
