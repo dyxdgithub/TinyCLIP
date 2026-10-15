@@ -187,3 +187,4 @@ core.*
 /my_code/test/output/
 /my_code/data/OpenImage/meta/Hierarchy/n2/hard_negative_triplets/
 /my_code/train/output/
+/my_code/data/OpenImage/meta/Hierarchy/n2/sync_images_fiftyone_all_status.csv
