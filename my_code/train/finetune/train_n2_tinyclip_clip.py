@@ -136,9 +136,10 @@ def record_bad_images(bad, report_path, seen):
     new = []
     pending = set()
     for item in bad:
-        if item[:2] not in seen and item[:2] not in pending:
+        key = (item[0], item[1])
+        if key not in seen and key not in pending:
             new.append(item)
-            pending.add(item[:2])
+            pending.add(key)
     if not new:
         return
     report_path.parent.mkdir(parents=True, exist_ok=True)
