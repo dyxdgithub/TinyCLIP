@@ -27,6 +27,7 @@ epsilon="${N2_EPS:-1e-6}"
 warmup_steps="${N2_WARMUP_STEPS:-8000}"
 seed="${N2_SEED:-0}"
 checkpoint_steps="${N2_CHECKPOINT_STEPS:-500}"
+bad_image_policy="${N2_BAD_IMAGE_POLICY:-skip}"
 
 resume_args=()
 if [[ -n "${N2_RESUME_CHECKPOINT:-}" ]]; then
@@ -54,4 +55,5 @@ fi
     --warmup-steps "${warmup_steps}" \
     --seed "${seed}" \
     --checkpoint-steps "${checkpoint_steps}" \
+    --bad-image-policy "${bad_image_policy}" \
     "${resume_args[@]}"

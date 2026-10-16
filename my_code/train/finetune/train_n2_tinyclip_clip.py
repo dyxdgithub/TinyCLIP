@@ -50,6 +50,7 @@ def arguments(argv=None):
     parser.add_argument("--warmup-steps", type=int, default=8000, help="Optimizer steps of linear warmup, capped at total steps; followed by cosine decay.")
     parser.add_argument("--seed", type=int, default=0, help="Random seed for batch order and model operations.")
     parser.add_argument("--checkpoint-steps", type=int, default=500, help="Save resumable last.pt after this many optimizer steps.")
+    parser.add_argument("--bad-image-policy", choices=("skip", "error"), default="skip", help="Skip unreadable images and record them in <output-dir>/skipped_images.csv, or stop at the first error.")
     parser.add_argument("--resume", type=Path, default=None, help="Resume from this script's last.pt, including the next unprocessed batch; default is a new run.")
     args = parser.parse_args(argv)
     for name in ("epochs", "batch_size", "checkpoint_steps"):
@@ -101,18 +102,62 @@ def read_rows(split_csv, caption_csv):
 
 
 class ImageCaptionDataset(Dataset):
-    def __init__(self, entries, images_dir, transform):
+    def __init__(self, entries, images_dir, transform, split, bad_image_policy):
         self.entries = entries
         self.images_dir = images_dir
         self.transform = transform
+        self.split = split
+        self.bad_image_policy = bad_image_policy
 
     def __len__(self):
         return len(self.entries)
 
     def __getitem__(self, index):
         relative, caption = self.entries[index]
-        with Image.open(self.images_dir / relative) as image:
-            return self.transform(image.convert("RGB")), caption
+        try:
+            with Image.open(self.images_dir / relative) as image:
+                return self.transform(image.convert("RGB")), caption, None
+        except OSError as error:
+            if self.bad_image_policy == "error":
+                raise OSError("Cannot load image {}: {}".format(self.images_dir / relative, error)) from error
+            return None, None, (self.split, relative.as_posix(), str(error))
+
+
+def collate_image_captions(samples):
+    valid = [(image, caption) for image, caption, error in samples if error is None]
+    bad = [error for _, _, error in samples if error is not None]
+    if not valid:
+        return None, [], bad
+    images, captions = zip(*valid)
+    return torch.stack(images), list(captions), bad
+
+
+def record_bad_images(bad, report_path, seen):
+    new = []
+    pending = set()
+    for item in bad:
+        if item[:2] not in seen and item[:2] not in pending:
+            new.append(item)
+            pending.add(item[:2])
+    if not new:
+        return
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    write_header = not report_path.exists() or report_path.stat().st_size == 0
+    with report_path.open("a", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        if write_header:
+            writer.writerow(("Split", "RelativePath", "Error"))
+        for split, relative, error in new:
+            writer.writerow((split, relative, error))
+            seen.add((split, relative))
+            tqdm.write("Skipping unreadable image [{}] {}: {}".format(split, relative, error))
+
+
+def known_bad_images(report_path):
+    if not report_path.exists():
+        return set()
+    with report_path.open(encoding="utf-8", newline="") as handle:
+        return {(row["Split"], row["RelativePath"]) for row in csv.DictReader(handle)}
 
 
 def optimizer_for(model, args):
@@ -140,7 +185,7 @@ def batches_for_epoch(size, batch_size, seed, epoch):
 
 def loader(dataset, batch_indices, args):
     # A batch sampler avoids decoding batches already completed before --resume.
-    return DataLoader(dataset, batch_sampler=batch_indices, num_workers=args.workers, pin_memory=args.device == "cuda")
+    return DataLoader(dataset, batch_sampler=batch_indices, num_workers=args.workers, pin_memory=args.device == "cuda", collate_fn=collate_image_captions)
 
 
 def context(args):
@@ -163,19 +208,26 @@ def forward(model, tokenizer, loss_fn, images, captions, device, args):
     return loss, correct_i2t, correct_t2i
 
 
-def evaluate(model, dataset, tokenizer, loss_fn, device, args, label, writer, step):
+def evaluate(model, dataset, tokenizer, loss_fn, device, args, label, writer, step, report_path, seen):
     model.eval()
     total_loss = total_i2t = total_t2i = count = 0
+    skipped = 0
     indices = [list(range(start, min(start + args.batch_size, len(dataset)))) for start in range(0, len(dataset), args.batch_size)]
     with torch.no_grad():
-        for images, captions in tqdm(loader(dataset, indices, args), total=len(indices), desc=label, unit="batch"):
+        for images, captions, bad in tqdm(loader(dataset, indices, args), total=len(indices), desc=label, unit="batch"):
+            record_bad_images(bad, report_path, seen)
+            skipped += len(bad)
+            if len(captions) < 2:
+                continue
             loss, i2t, t2i = forward(model, tokenizer, loss_fn, images, captions, device, args)
             n = len(captions)
             total_loss += loss.item() * n
             total_i2t += i2t
             total_t2i += t2i
             count += n
-    metrics = {"clip_loss": total_loss / count, "image_to_text_recall_at_1": total_i2t / count, "text_to_image_recall_at_1": total_t2i / count}
+    if not count:
+        raise RuntimeError("No usable {} image-text batches; see {}".format(label, report_path))
+    metrics = {"clip_loss": total_loss / count, "image_to_text_recall_at_1": total_i2t / count, "text_to_image_recall_at_1": total_t2i / count, "skipped_images": skipped}
     for key, value in metrics.items():
         writer.add_scalar(label + "/" + key, value, step)
     print("{}: {}".format(label, metrics), flush=True)
@@ -210,7 +262,9 @@ def main(argv=None):
     print("Samples: " + ", ".join("{}={}".format(key, len(value)) for key, value in rows.items()), flush=True)
     model, train_transform, val_transform = create_model_and_transforms(MODEL_NAME, pretrained="" if args.resume else args.pretrained, precision="fp32", device=device, cache_dir=str(args.cache_dir) if args.cache_dir else None)
     tokenizer = get_tokenizer(MODEL_NAME)
-    datasets = {key: ImageCaptionDataset(value, args.images_dir, train_transform if key == "train" else val_transform) for key, value in rows.items()}
+    datasets = {key: ImageCaptionDataset(value, args.images_dir, train_transform if key == "train" else val_transform, key, args.bad_image_policy) for key, value in rows.items()}
+    bad_image_report = args.output_dir / "skipped_images.csv"
+    seen_bad_images = known_bad_images(bad_image_report)
     loss_fn = ClipLoss(cache_labels=True)
     optimizer = optimizer_for(model, args)
     batches_per_epoch = math.ceil(len(datasets["train"]) / args.batch_size)
@@ -245,7 +299,12 @@ def main(argv=None):
         loss_sum = resumed_loss_sum if epoch == start_epoch else 0
         count = resumed_count if epoch == start_epoch else 0
         progress = tqdm(enumerate(loader(datasets["train"], batches[first:], args), start=first), total=len(batches), initial=first, desc="train epoch {}/{}".format(epoch + 1, args.epochs), unit="batch")
-        for batch_index, (images, captions) in progress:
+        skipped = 0
+        for batch_index, (images, captions, bad) in progress:
+            record_bad_images(bad, bad_image_report, seen_bad_images)
+            skipped += len(bad)
+            if len(captions) < 2:
+                continue
             factor = learning_rate(step, total_steps, args.warmup_steps)
             for group in optimizer.param_groups:
                 group["lr"] = args.lr * factor
@@ -267,7 +326,10 @@ def main(argv=None):
         if count:
             writer.add_scalar("train_epoch/clip_loss", loss_sum / count, epoch + 1)
             writer.add_scalar("train_epoch/total_loss", loss_sum / count, epoch + 1)
-        metrics = evaluate(model, datasets["validation"], tokenizer, loss_fn, device, args, "validation", writer, epoch + 1)
+        writer.add_scalar("train_epoch/skipped_images", skipped, epoch + 1)
+        if not count:
+            raise RuntimeError("No usable training batches; see {}".format(bad_image_report))
+        metrics = evaluate(model, datasets["validation"], tokenizer, loss_fn, device, args, "validation", writer, epoch + 1, bad_image_report, seen_bad_images)
         if metrics["clip_loss"] < best_loss:
             best_loss = metrics["clip_loss"]
             save_checkpoint(args.output_dir / "best.pt", state(epoch + 1, 0))
@@ -276,7 +338,7 @@ def main(argv=None):
 
     best = torch.load(args.output_dir / "best.pt", map_location="cpu", weights_only=False)
     model.load_state_dict(best["model"])
-    evaluate(model, datasets["test"], tokenizer, loss_fn, device, args, "test", writer, step)
+    evaluate(model, datasets["test"], tokenizer, loss_fn, device, args, "test", writer, step, bad_image_report, seen_bad_images)
     writer.close()
     print("Saved checkpoints and TensorBoard logs to {}".format(args.output_dir), flush=True)
 
