@@ -64,6 +64,7 @@ $env:PYTHONPATH = "src"
 - Every training script must log losses to TensorBoard at both step and epoch granularity. Record step losses and epoch-aggregated losses under distinct namespaces such as `train_step/*` and `train_epoch/*`, including the total loss and each separately reported loss component.
 - Every validation process must compute task-relevant evaluation metrics in addition to validation loss and write them to TensorBoard under a distinct validation namespace. Use metrics appropriate to the task, such as classification accuracy, Top-K accuracy, retrieval accuracy, Recall@K, or triplet accuracy.
 - Every training and test script must default its generated outputs to an `output/<training-mode>_<checkpoint-name>/` directory beside that script. Explicit output-path arguments may override this default.
+- After writing or modifying a training or test script, add a companion `.sh` launcher beside it in the same code task. The launcher must set up `PYTHONPATH`, invoke the script from the repository root, and pass every parameter needed to reproduce the intended run explicitly, including input paths, model/checkpoint, output path, device/GPU, and training or evaluation settings that apply. Do not rely on Python argument defaults for those settings; use clearly named shell variables for machine-specific paths. Include the `bash <launcher>.sh` command in the handoff, and syntax-check the launcher without running the full job.
 - For file-operation tasks under `C:\Users\ASUS\Desktop\大模型代码\TinyCLIP\my_code\data\OpenImage\meta`, treat `meta` as the script root directory. Resolve default input, output, and generated-file paths relative to `meta` unless the task explicitly specifies another location.
 - Place data-processing code under `my_code/data/OpenImage/meta/scripts/`; do not add data-processing scripts directly in `meta`.
 - For every code implementation task, Codex may run focused verification such as syntax checks, unit tests, or synthetic small-data tests. Do not run the final end-to-end code, model jobs, or full-dataset data-processing jobs; provide the user with the exact commands to run those manually instead.
@@ -105,7 +106,7 @@ Purpose: create or revise task specs, rules, indexes, or planning docs.
 Allowed:
 
 ```text
-Only code and data files explicitly listed by the active task detail.
+Only code and data files explicitly listed by the active task detail, plus the companion `.sh` launcher required for each training or test script.
 ```
 
 Forbidden:
