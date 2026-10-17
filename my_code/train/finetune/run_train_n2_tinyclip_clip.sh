@@ -10,9 +10,14 @@ n2_dir="${repo_root}/my_code/data/OpenImage/meta/Hierarchy/n2"
 split_csv="${N2_SPLIT_CSV:-${n2_dir}/Image_IDs_n2_all_downloaded_split_8_1_1.csv}"
 caption_csv="${N2_CAPTION_CSV:-${n2_dir}/Image IDs_with_last_two_layers_multi_members_n2_one_label_per_parent.csv}"
 images_dir="${N2_IMAGES_DIR:-${n2_dir}/images_all}"
-output_dir="${N2_OUTPUT_DIR:-${script_dir}/output/clip_full_TinyCLIP-auto-ViT-45M-32-Text-18M-LAION400M}"
+output_dir="${N2_OUTPUT_DIR:-${script_dir}/output/clip_lora_TinyCLIP-auto-ViT-45M-32-Text-18M-LAION400M}"
 cache_dir="${N2_CACHE_DIR:-${HOME}/.cache/clip}"
 pretrained="${N2_PRETRAINED:-LAION400M}"
+lora_rank="${N2_LORA_RANK:-16}"
+lora_alpha="${N2_LORA_ALPHA:-32.0}"
+default_class_prompt_template='a photo of {label}'
+class_prompt_template="${N2_CLASS_PROMPT_TEMPLATE:-${default_class_prompt_template}}"
+class_text_batch_size="${N2_CLASS_TEXT_BATCH_SIZE:-256}"
 gpu="${N2_GPU:-0}"
 device="${N2_DEVICE:-cuda}"
 precision="${N2_PRECISION:-amp}"
@@ -41,6 +46,10 @@ fi
     --output-dir "${output_dir}" \
     --pretrained "${pretrained}" \
     --cache-dir "${cache_dir}" \
+    --lora-rank "${lora_rank}" \
+    --lora-alpha "${lora_alpha}" \
+    --class-prompt-template "${class_prompt_template}" \
+    --class-text-batch-size "${class_text_batch_size}" \
     --gpu "${gpu}" \
     --device "${device}" \
     --precision "${precision}" \

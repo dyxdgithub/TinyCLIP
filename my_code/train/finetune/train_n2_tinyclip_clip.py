@@ -1,8 +1,9 @@
-"""Fine-tune TinyCLIP with the original symmetric CLIP image-text loss.
+"""Fine-tune TinyCLIP with LoRA and the symmetric CLIP image-text loss.
 
 The split table supplies image paths and split names. Captions are joined from
 the n2 metadata table by (ImageID, ParentLabelName, LabelName). The first
-nonempty caption for a repeated key is used deterministically.
+nonempty caption for a repeated key is used deterministically. Validation and
+test Top1Acc classify each unique image against all n2 DisplayName prompts.
 """
 
 import argparse
@@ -14,6 +15,7 @@ from pathlib import Path
 
 import torch
 from PIL import Image
+from torch import nn
 from torch.optim import AdamW
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
@@ -24,8 +26,44 @@ from open_clip import ClipLoss, create_model_and_transforms, get_tokenizer
 SCRIPT_DIR = Path(__file__).resolve().parent
 N2_DIR = SCRIPT_DIR.parents[1] / "data/OpenImage/meta/Hierarchy/n2"
 MODEL_NAME = "TinyCLIP-auto-ViT-45M-32-Text-18M"
-DEFAULT_OUTPUT = SCRIPT_DIR / "output/clip_full_TinyCLIP-auto-ViT-45M-32-Text-18M-LAION400M"
+DEFAULT_OUTPUT = SCRIPT_DIR / "output/clip_lora_TinyCLIP-auto-ViT-45M-32-Text-18M-LAION400M"
 JOIN_FIELDS = ("ImageID", "ParentLabelName", "LabelName")
+
+
+class LoRAWeight(nn.Module):
+    """Add a trainable low-rank update to a frozen linear weight matrix."""
+
+    def __init__(self, weight, rank, alpha):
+        super().__init__()
+        self.scaling = alpha / rank
+        self.lora_a = nn.Parameter(torch.empty(rank, weight.shape[1], device=weight.device, dtype=weight.dtype))
+        self.lora_b = nn.Parameter(torch.zeros(weight.shape[0], rank, device=weight.device, dtype=weight.dtype))
+        nn.init.kaiming_uniform_(self.lora_a, a=math.sqrt(5))
+
+    def forward(self, weight):
+        return weight + (self.lora_b @ self.lora_a) * self.scaling
+
+
+def add_lora_adapters(model, rank, alpha):
+    for parameter in model.parameters():
+        parameter.requires_grad = False
+    counts = {"image_attention": 0, "text_attention": 0, "image_linear": 0, "text_linear": 0}
+    towers = (("image", model.image_encoder_without_ddp), ("text", model.text_encoder_without_ddp))
+    for tower_name, tower in towers:
+        modules = list(tower.named_modules())
+        for _, module in modules:
+            if isinstance(module, nn.MultiheadAttention):
+                if not module._qkv_same_embed_dim:
+                    raise ValueError("LoRA requires shared QKV dimensions in MultiheadAttention")
+                nn.utils.parametrize.register_parametrization(module, "in_proj_weight", LoRAWeight(module.in_proj_weight, rank, alpha))
+                counts[tower_name + "_attention"] += 1
+            elif isinstance(module, nn.Linear):
+                nn.utils.parametrize.register_parametrization(module, "weight", LoRAWeight(module.weight, rank, alpha))
+                counts[tower_name + "_linear"] += 1
+    if counts["image_attention"] == 0 or counts["text_attention"] == 0:
+        raise RuntimeError("LoRA did not find attention blocks in both TinyCLIP towers")
+    model.logit_scale.requires_grad = True
+    return counts
 
 
 def arguments(argv=None):
@@ -36,6 +74,10 @@ def arguments(argv=None):
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT, help="Checkpoint and TensorBoard output directory.")
     parser.add_argument("--pretrained", default="LAION400M", help="Registered TinyCLIP pretrained tag or local checkpoint; a registered tag may download when user runs this script.")
     parser.add_argument("--cache-dir", type=Path, default=None, help="Optional pretrained weight cache; default is open_clip's cache.")
+    parser.add_argument("--lora-rank", type=int, default=16, help="Rank of each LoRA update in both encoders; must be positive.")
+    parser.add_argument("--lora-alpha", type=float, default=32.0, help="LoRA scale numerator, divided by rank; must be positive.")
+    parser.add_argument("--class-prompt-template", default="a photo of {label}", help="Text prompt for each DisplayName; must contain {label}.")
+    parser.add_argument("--class-text-batch-size", type=int, default=256, help="Number of class prompts encoded together during validation/test.")
     parser.add_argument("--gpu", type=int, default=0, help="Nonnegative logical CUDA GPU index; default 0. Use --device cpu only if CUDA is unavailable.")
     parser.add_argument("--device", choices=("cuda", "cpu"), default="cuda", help="Training device.")
     parser.add_argument("--precision", choices=("amp", "amp_bfloat16", "fp32"), default="amp", help="CUDA autocast mode; CPU uses fp32.")
@@ -53,13 +95,19 @@ def arguments(argv=None):
     parser.add_argument("--bad-image-policy", choices=("skip", "error"), default="skip", help="Skip unreadable images and record them in <output-dir>/skipped_images.csv, or stop at the first error.")
     parser.add_argument("--resume", type=Path, default=None, help="Resume from this script's last.pt, including the next unprocessed batch; default is a new run.")
     args = parser.parse_args(argv)
-    for name in ("epochs", "batch_size", "checkpoint_steps"):
+    for name in ("epochs", "batch_size", "checkpoint_steps", "lora_rank", "class_text_batch_size"):
         if getattr(args, name) < 1:
             parser.error("--{} must be positive".format(name.replace("_", "-")))
     if args.workers < 0 or args.gpu < 0 or args.warmup_steps < 0 or args.weight_decay < 0 or args.lr <= 0:
         parser.error("workers, gpu, warmup-steps and weight-decay must be nonnegative; lr must be positive")
     if not (0 <= args.beta1 < 1 and 0 <= args.beta2 < 1 and args.eps > 0):
         parser.error("beta1/beta2 must be in [0, 1), and eps must be positive")
+    if args.lora_alpha <= 0 or "{label}" not in args.class_prompt_template:
+        parser.error("--lora-alpha must be positive and --class-prompt-template must contain {label}")
+    try:
+        args.class_prompt_template.format(label="example")
+    except (KeyError, ValueError) as error:
+        parser.error("invalid --class-prompt-template: {}".format(error))
     return args
 
 
@@ -77,9 +125,10 @@ def read_rows(split_csv, caption_csv):
                 captions[key] = caption
 
     rows = {"train": [], "validation": [], "test": []}
+    class_names = {}
     with split_csv.open(encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
-        required = set(JOIN_FIELDS) | {"RelativePath", "Split"}
+        required = set(JOIN_FIELDS) | {"RelativePath", "Split", "DisplayName"}
         if not required.issubset(reader.fieldnames or []):
             raise ValueError("Split CSV lacks: " + ", ".join(sorted(required - set(reader.fieldnames or []))))
         for number, row in enumerate(tqdm(reader, desc="Joining samples", unit="row"), 2):
@@ -91,14 +140,34 @@ def read_rows(split_csv, caption_csv):
                 split = "validation"
             if split not in rows:
                 raise ValueError("Unknown Split at row {}: {}".format(number, split))
+            image_id, _, label_id = key
+            display_name = (row["DisplayName"] or "").strip()
+            if not image_id or not label_id or not display_name:
+                raise ValueError("Missing ImageID, LabelName or DisplayName at row {}".format(number))
+            if label_id in class_names and class_names[label_id] != display_name:
+                raise ValueError("Conflicting DisplayName for LabelName {}".format(label_id))
+            class_names[label_id] = display_name
             relative = Path((row["RelativePath"] or "").strip().replace("\\", "/"))
             if relative.is_absolute() or not relative.parts or ".." in relative.parts:
                 raise ValueError("Unsafe RelativePath at row {}: {}".format(number, relative))
-            rows[split].append((relative, captions[key]))
+            rows[split].append((relative, captions[key], image_id, (label_id,)))
     for split, entries in rows.items():
         if not entries:
             raise ValueError("Split {} has no samples".format(split))
-    return rows
+    return rows, class_names
+
+
+def unique_images(entries):
+    """Count each validation/test ImageID once and accept any of its labels."""
+    positions = {}
+    grouped = []
+    for relative, caption, image_id, labels in entries:
+        if image_id not in positions:
+            positions[image_id] = len(grouped)
+            grouped.append((relative, caption, image_id, set(labels)))
+        else:
+            grouped[positions[image_id]][3].update(labels)
+    return [(relative, caption, image_id, tuple(sorted(labels))) for relative, caption, image_id, labels in grouped]
 
 
 class ImageCaptionDataset(Dataset):
@@ -113,23 +182,23 @@ class ImageCaptionDataset(Dataset):
         return len(self.entries)
 
     def __getitem__(self, index):
-        relative, caption = self.entries[index]
+        relative, caption, _, labels = self.entries[index]
         try:
             with Image.open(self.images_dir / relative) as image:
-                return self.transform(image.convert("RGB")), caption, None
+                return self.transform(image.convert("RGB")), caption, labels, None
         except OSError as error:
             if self.bad_image_policy == "error":
                 raise OSError("Cannot load image {}: {}".format(self.images_dir / relative, error)) from error
-            return None, None, (self.split, relative.as_posix(), str(error))
+            return None, None, None, (self.split, relative.as_posix(), str(error))
 
 
 def collate_image_captions(samples):
-    valid = [(image, caption) for image, caption, error in samples if error is None]
-    bad = [error for _, _, error in samples if error is not None]
+    valid = [(image, caption, labels) for image, caption, labels, error in samples if error is None]
+    bad = [error for _, _, _, error in samples if error is not None]
     if not valid:
-        return None, [], bad
-    images, captions = zip(*valid)
-    return torch.stack(images), list(captions), bad
+        return None, [], [], bad
+    images, captions, labels = zip(*valid)
+    return torch.stack(images), list(captions), list(labels), bad
 
 
 def record_bad_images(bad, report_path, seen):
@@ -202,33 +271,43 @@ def forward(model, tokenizer, loss_fn, images, captions, device, args):
     with context(args):
         image_features, text_features, scale = model(images, tokens, normalized=True)
         loss = loss_fn(image_features, text_features, scale)
-    logits = scale.detach().float() * image_features.detach().float() @ text_features.detach().float().T
-    labels = torch.arange(logits.size(0), device=device)
-    correct_i2t = (logits.argmax(dim=1) == labels).sum().item()
-    correct_t2i = (logits.argmax(dim=0) == labels).sum().item()
-    return loss, correct_i2t, correct_t2i
+    return loss, image_features
 
 
-def evaluate(model, dataset, tokenizer, loss_fn, device, args, label, writer, step, report_path, seen):
+def encode_class_text(model, tokenizer, class_ids, class_names, device, args):
+    prompts = [args.class_prompt_template.format(label=class_names[class_id]) for class_id in class_ids]
+    features = []
+    with torch.no_grad():
+        for start in range(0, len(prompts), args.class_text_batch_size):
+            tokens = tokenizer(prompts[start:start + args.class_text_batch_size]).to(device)
+            with context(args):
+                features.append(model.encode_text(tokens, normalized=True).float())
+    return torch.cat(features)
+
+
+def evaluate(model, dataset, tokenizer, loss_fn, class_ids, class_names, device, args, label, writer, step, report_path, seen):
     model.eval()
-    total_loss = total_i2t = total_t2i = count = 0
+    class_features = encode_class_text(model, tokenizer, class_ids, class_names, device, args)
+    total_loss = loss_count = correct = count = 0
     skipped = 0
     indices = [list(range(start, min(start + args.batch_size, len(dataset)))) for start in range(0, len(dataset), args.batch_size)]
     with torch.no_grad():
-        for images, captions, bad in tqdm(loader(dataset, indices, args), total=len(indices), desc=label, unit="batch"):
+        for images, captions, targets, bad in tqdm(loader(dataset, indices, args), total=len(indices), desc=label, unit="batch"):
             record_bad_images(bad, report_path, seen)
             skipped += len(bad)
-            if len(captions) < 2:
+            if not captions:
                 continue
-            loss, i2t, t2i = forward(model, tokenizer, loss_fn, images, captions, device, args)
+            loss, image_features = forward(model, tokenizer, loss_fn, images, captions, device, args)
             n = len(captions)
-            total_loss += loss.item() * n
-            total_i2t += i2t
-            total_t2i += t2i
+            if n > 1:
+                total_loss += loss.item() * n
+                loss_count += n
+            predictions = (image_features.float() @ class_features.T).argmax(dim=1).tolist()
+            correct += sum(class_ids[index] in labels for index, labels in zip(predictions, targets))
             count += n
     if not count:
         raise RuntimeError("No usable {} image-text batches; see {}".format(label, report_path))
-    metrics = {"clip_loss": total_loss / count, "image_to_text_recall_at_1": total_i2t / count, "text_to_image_recall_at_1": total_t2i / count, "skipped_images": skipped}
+    metrics = {"clip_loss": total_loss / loss_count if loss_count else float("nan"), "Top1Acc": correct / count, "skipped_images": skipped}
     for key, value in metrics.items():
         writer.add_scalar(label + "/" + key, value, step)
     print("{}: {}".format(label, metrics), flush=True)
@@ -257,11 +336,20 @@ def main(argv=None):
     if device.type == "cuda":
         torch.cuda.manual_seed_all(args.seed)
 
-    rows = read_rows(args.split_csv, args.caption_csv)
+    rows, class_names = read_rows(args.split_csv, args.caption_csv)
+    class_ids = tuple(sorted(class_names))
+    rows["validation"] = unique_images(rows["validation"])
+    rows["test"] = unique_images(rows["test"])
     data_signature = tuple((str(path.resolve()), path.stat().st_size, path.stat().st_mtime_ns) for path in (args.split_csv, args.caption_csv))
     args.output_dir.mkdir(parents=True, exist_ok=True)
-    print("Samples: " + ", ".join("{}={}".format(key, len(value)) for key, value in rows.items()), flush=True)
-    model, train_transform, val_transform = create_model_and_transforms(MODEL_NAME, pretrained="" if args.resume else args.pretrained, precision="fp32", device=device, cache_dir=str(args.cache_dir) if args.cache_dir else None)
+    print("Samples: " + ", ".join("{}={}".format(key, len(value)) for key, value in rows.items()) + "; classes={}".format(len(class_ids)), flush=True)
+    # This auto model is pruned while loading LAION weights. Resume must build
+    # the same pruned structure before restoring its LoRA state dictionary.
+    model, train_transform, val_transform = create_model_and_transforms(MODEL_NAME, pretrained=args.pretrained, precision="fp32", device=device, cache_dir=str(args.cache_dir) if args.cache_dir else None)
+    adapter_counts = add_lora_adapters(model, args.lora_rank, args.lora_alpha)
+    trainable = sum(parameter.numel() for parameter in model.parameters() if parameter.requires_grad)
+    total = sum(parameter.numel() for parameter in model.parameters())
+    print("LoRA adapters: {}; trainable parameters: {:,}/{:,}".format(adapter_counts, trainable, total), flush=True)
     tokenizer = get_tokenizer(MODEL_NAME)
     datasets = {key: ImageCaptionDataset(value, args.images_dir, train_transform if key == "train" else val_transform, key, args.bad_image_policy) for key, value in rows.items()}
     bad_image_report = args.output_dir / "skipped_images.csv"
@@ -273,17 +361,19 @@ def main(argv=None):
     scaler = torch.amp.GradScaler("cuda", enabled=device.type == "cuda" and args.precision == "amp")
     start_epoch = start_batch = step = 0
     resumed_loss_sum = resumed_count = 0
-    best_loss = float("inf")
+    best_top1 = -1.0
     if args.resume:
         checkpoint = torch.load(args.resume, map_location="cpu", weights_only=False)
-        if checkpoint.get("model_name") != MODEL_NAME or checkpoint.get("batch_size") != args.batch_size or checkpoint.get("seed") != args.seed or checkpoint.get("train_size") != len(datasets["train"]) or checkpoint.get("data_signature") != data_signature:
-            raise ValueError("Resume checkpoint model, batch size, seed or input CSV files differ")
+        if checkpoint.get("fine_tune_mode") != "lora":
+            raise ValueError("--resume requires a LoRA checkpoint from this script; full fine-tuning checkpoints cannot be resumed")
+        if checkpoint.get("model_name") != MODEL_NAME or checkpoint.get("pretrained") != args.pretrained or checkpoint.get("batch_size") != args.batch_size or checkpoint.get("seed") != args.seed or checkpoint.get("train_size") != len(datasets["train"]) or checkpoint.get("data_signature") != data_signature or checkpoint.get("lora_rank") != args.lora_rank or checkpoint.get("lora_alpha") != args.lora_alpha or checkpoint.get("class_ids") != class_ids or checkpoint.get("class_prompt_template") != args.class_prompt_template:
+            raise ValueError("Resume checkpoint model, LoRA settings, class prompts, batch size, seed or input CSV files differ")
         model.load_state_dict(checkpoint["model"])
         optimizer.load_state_dict(checkpoint["optimizer"])
         scaler.load_state_dict(checkpoint["scaler"])
         start_epoch, start_batch, step = checkpoint["epoch"], checkpoint["next_batch"], checkpoint["step"]
         resumed_loss_sum, resumed_count = checkpoint.get("epoch_loss_sum", 0), checkpoint.get("epoch_count", 0)
-        best_loss = checkpoint["best_loss"]
+        best_top1 = checkpoint["best_top1"]
         random.setstate(checkpoint["python_rng"])
         torch.set_rng_state(checkpoint["torch_rng"])
         if device.type == "cuda" and checkpoint.get("cuda_rng") is not None:
@@ -291,7 +381,7 @@ def main(argv=None):
     writer = SummaryWriter(args.output_dir / "tensorboard", purge_step=step if args.resume else None)
 
     def state(epoch, next_batch, epoch_loss_sum=0, epoch_count=0):
-        return {"model_name": MODEL_NAME, "batch_size": args.batch_size, "seed": args.seed, "train_size": len(datasets["train"]), "data_signature": data_signature, "model": model.state_dict(), "optimizer": optimizer.state_dict(), "scaler": scaler.state_dict(), "epoch": epoch, "next_batch": next_batch, "epoch_loss_sum": epoch_loss_sum, "epoch_count": epoch_count, "step": step, "best_loss": best_loss, "python_rng": random.getstate(), "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(device) if device.type == "cuda" else None}
+        return {"fine_tune_mode": "lora", "lora_rank": args.lora_rank, "lora_alpha": args.lora_alpha, "class_ids": class_ids, "class_prompt_template": args.class_prompt_template, "model_name": MODEL_NAME, "pretrained": args.pretrained, "batch_size": args.batch_size, "seed": args.seed, "train_size": len(datasets["train"]), "data_signature": data_signature, "model": model.state_dict(), "optimizer": optimizer.state_dict(), "scaler": scaler.state_dict(), "epoch": epoch, "next_batch": next_batch, "epoch_loss_sum": epoch_loss_sum, "epoch_count": epoch_count, "step": step, "best_top1": best_top1, "python_rng": random.getstate(), "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state(device) if device.type == "cuda" else None}
 
     for epoch in range(start_epoch, args.epochs):
         model.train()
@@ -301,7 +391,7 @@ def main(argv=None):
         count = resumed_count if epoch == start_epoch else 0
         progress = tqdm(enumerate(loader(datasets["train"], batches[first:], args), start=first), total=len(batches), initial=first, desc="train epoch {}/{}".format(epoch + 1, args.epochs), unit="batch")
         skipped = 0
-        for batch_index, (images, captions, bad) in progress:
+        for batch_index, (images, captions, _, bad) in progress:
             record_bad_images(bad, bad_image_report, seen_bad_images)
             skipped += len(bad)
             if len(captions) < 2:
@@ -310,7 +400,7 @@ def main(argv=None):
             for group in optimizer.param_groups:
                 group["lr"] = args.lr * factor
             optimizer.zero_grad(set_to_none=True)
-            loss, _, _ = forward(model, tokenizer, loss_fn, images, captions, device, args)
+            loss, _ = forward(model, tokenizer, loss_fn, images, captions, device, args)
             scaler.scale(loss).backward()
             scaler.step(optimizer)
             scaler.update()
@@ -330,16 +420,16 @@ def main(argv=None):
         writer.add_scalar("train_epoch/skipped_images", skipped, epoch + 1)
         if not count:
             raise RuntimeError("No usable training batches; see {}".format(bad_image_report))
-        metrics = evaluate(model, datasets["validation"], tokenizer, loss_fn, device, args, "validation", writer, epoch + 1, bad_image_report, seen_bad_images)
-        if metrics["clip_loss"] < best_loss:
-            best_loss = metrics["clip_loss"]
+        metrics = evaluate(model, datasets["validation"], tokenizer, loss_fn, class_ids, class_names, device, args, "validation", writer, epoch + 1, bad_image_report, seen_bad_images)
+        if metrics["Top1Acc"] > best_top1:
+            best_top1 = metrics["Top1Acc"]
             save_checkpoint(args.output_dir / "best.pt", state(epoch + 1, 0))
         save_checkpoint(args.output_dir / "last.pt", state(epoch + 1, 0))
         writer.flush()
 
     best = torch.load(args.output_dir / "best.pt", map_location="cpu", weights_only=False)
     model.load_state_dict(best["model"])
-    evaluate(model, datasets["test"], tokenizer, loss_fn, device, args, "test", writer, step, bad_image_report, seen_bad_images)
+    evaluate(model, datasets["test"], tokenizer, loss_fn, class_ids, class_names, device, args, "test", writer, step, bad_image_report, seen_bad_images)
     writer.close()
     print("Saved checkpoints and TensorBoard logs to {}".format(args.output_dir), flush=True)
 
