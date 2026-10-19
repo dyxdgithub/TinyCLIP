@@ -1,10 +1,10 @@
 """Download Open Images in order: FiftyOne, TFDS, then ImageID URLs.
 
-The input is the original manifest, not a status CSV from another downloader.
+By default, the three AllSet captioned manifests are processed separately.
 Hierarchy layout places each row in its parent/leaf folder. Flat layout saves
-one image per ImageID and accepts the AllSet captioned manifest. A SQLite
-checkpoint records progress; the final CSV identifies the source or failure.
-Run again to retry incomplete rows.
+one image per ImageID in a split folder. A SQLite checkpoint records progress;
+each final CSV identifies the source or failure. Run again to retry incomplete
+rows.
 """
 
 import argparse
@@ -33,7 +33,10 @@ DEFAULT_INPUT = SAMPLED_DIR / "Image IDs_with_last_two_layers_multi_members_n2_o
 DEFAULT_TREE = N2_DIR / "Last_Two_Layers_Multi_Members_n2.json"
 DEFAULT_OUTPUT = SAMPLED_DIR / "images_fiftyone_sampled_300_per_class"
 DEFAULT_STATUS = SAMPLED_DIR / "n2_sampled_download_status.csv"
-ALLSET_INPUT = ALLSET_DIR / "Image IDs_with_captions_and_labels_captioned_only.csv"
+ALLSET_INPUTS = {
+    split: ALLSET_DIR / "Image IDs_with_captions_and_labels_captioned_only_{}.csv".format(split)
+    for split in ("train", "test", "validation")
+}
 ALLSET_OUTPUT = ALLSET_DIR / "images_captioned_only"
 ALLSET_STATUS = ALLSET_DIR / "captioned_only_download_status.csv"
 DEFAULT_S3 = "https://open-images-dataset.s3.amazonaws.com/{split}/{image_id}.jpg"
@@ -44,13 +47,13 @@ DONE = {"existing", "fiftyone", "tfds", "s3", "original_url", "thumbnail_url"}
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--layout", choices=("hierarchy", "flat"), default="hierarchy", help="hierarchy requires parent/leaf labels; flat saves images by ImageID and accepts AllSet. Default: %(default)s")
-    parser.add_argument("--input", type=Path, help="Original manifest CSV. Default: sampled n2 for hierarchy; captioned AllSet for flat.")
+    parser.add_argument("--layout", choices=("hierarchy", "flat"), default="flat", help="flat downloads AllSet by ImageID; hierarchy requires parent/leaf labels. Default: %(default)s")
+    parser.add_argument("--input", type=Path, help="Single original manifest CSV. If omitted, flat processes the train, test, and validation AllSet CSVs; hierarchy uses sampled n2.")
     parser.add_argument("--class-tree", type=Path, default=DEFAULT_TREE, help="n2 class-tree JSON; ignored for flat layout. Default: %(default)s")
-    parser.add_argument("--output-dir", type=Path, help="Image directory. Default: sampled n2 hierarchy or AllSet/images_captioned_only for flat.")
-    parser.add_argument("--status-output", type=Path, help="Combined manifest and final status CSV. Default: n2 sampled or AllSet status path for the selected layout.")
-    parser.add_argument("--checkpoint-db", type=Path, help="SQLite checkpoint. Default: hidden database beside --status-output.")
-    parser.add_argument("--split", choices=("auto", "train", "validation", "test"), help="FiftyOne, TFDS, and S3 split. auto reads --subset-column; default: train for hierarchy, auto for flat.")
+    parser.add_argument("--output-dir", type=Path, help="Image directory. Flat three-file mode uses train/, test/, validation/ subdirectories. Default: sampled n2 hierarchy or AllSet/images_captioned_only for flat.")
+    parser.add_argument("--status-output", type=Path, help="Status CSV path. Flat three-file mode adds _train, _test, or _validation before the suffix. Default: n2 sampled or AllSet status path.")
+    parser.add_argument("--checkpoint-db", type=Path, help="SQLite checkpoint. Flat three-file mode adds a split suffix; default: hidden database beside each status CSV.")
+    parser.add_argument("--split", choices=("auto", "train", "validation", "test"), help="FiftyOne, TFDS, and S3 split. auto reads --subset-column and is required for flat three-file mode; default: train for hierarchy, auto for flat.")
     parser.add_argument("--subset-column", default="Subset", help="Split column when --split auto is used; accepts train, validation, test. Default: %(default)s")
     parser.add_argument("--zoo-dataset", default="open-images-v7", help="FiftyOne Zoo dataset. Default: %(default)s")
     parser.add_argument("--fiftyone-dataset-name", default="tinyclip_n2_fallback", help="Prefix for per-batch FiftyOne dataset names. Default: %(default)s")
@@ -73,11 +76,11 @@ def parse_args(argv=None):
     parser.add_argument("--url-timeout", type=float, default=30, help="Seconds per URL request. Default: %(default)s")
     parser.add_argument("--url-retries", type=int, default=3, help="Attempts per URL. Default: %(default)s")
     parser.add_argument("--url-backoff", type=float, default=1, help="Base exponential retry delay in seconds. Default: %(default)s")
-    parser.add_argument("--max-image-ids", type=int, help="Process only the first N pending unique IDs; remaining IDs stay pending. Default: all.")
+    parser.add_argument("--max-image-ids", type=int, help="Process only the first N pending unique IDs per manifest; remaining IDs stay pending. Default: all.")
     parser.add_argument("--progress-refresh-seconds", type=float, default=0.1, help="Minimum tqdm refresh interval in seconds. Default: %(default)s")
     args = parser.parse_args(argv)
-    if args.input is None:
-        args.input = ALLSET_INPUT if args.layout == "flat" else DEFAULT_INPUT
+    if args.input is None and args.layout == "hierarchy":
+        args.input = DEFAULT_INPUT
     if args.output_dir is None:
         args.output_dir = ALLSET_OUTPUT if args.layout == "flat" else DEFAULT_OUTPUT
     if args.status_output is None:
@@ -86,6 +89,8 @@ def parse_args(argv=None):
         args.tfds_data_dir = (ALLSET_DIR if args.layout == "flat" else N2_DIR) / "tfds_open_images_v4"
     if args.split is None:
         args.split = "auto" if args.layout == "flat" else "train"
+    if args.layout == "flat" and args.input is None and args.split != "auto":
+        parser.error("--split must be auto when processing all three AllSet manifests")
     for name in ("fiftyone_batch_size", "workers", "url_retries"):
         if getattr(args, name) <= 0:
             parser.error("--{} must be positive".format(name.replace("_", "-")))
@@ -451,8 +456,7 @@ def url_stage(ids, metadata_urls, store, paths, output_dir, args):
                     submit_next()
 
 
-def main(argv=None):
-    args = parse_args(argv)
+def process_manifest(args, expected_split=None):
     input_path = args.input.expanduser().resolve()
     tree_path = args.class_tree.expanduser().resolve()
     output_dir = args.output_dir.expanduser().resolve()
@@ -464,6 +468,8 @@ def main(argv=None):
     if args.dataset_dir is not None:
         args.dataset_dir = args.dataset_dir.expanduser().resolve()
     fields, manifest_rows, metadata_urls, splits = read_manifest(input_path, args)
+    if expected_split is not None and any(split != expected_split for split in splits.values()):
+        raise ValueError("{} contains an ImageID outside the {} split".format(input_path, expected_split))
     paths = load_leaf_paths(tree_path, args) if args.layout == "hierarchy" else None
     store = DownloadStore(checkpoint)
     try:
@@ -506,6 +512,27 @@ def main(argv=None):
         return 1 if summary.get("failed", 0) or (summary.get("pending", 0) and args.max_image_ids is None) else 0
     finally:
         store.db.close()
+
+
+def split_path(path, split):
+    return path.with_name("{}_{}{}".format(path.stem, split, path.suffix))
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    if args.input is not None:
+        return process_manifest(args)
+    result = 0
+    for split, input_path in ALLSET_INPUTS.items():
+        task = argparse.Namespace(**vars(args))
+        task.input = input_path
+        task.output_dir = args.output_dir / split
+        task.status_output = split_path(args.status_output, split)
+        if args.checkpoint_db is not None:
+            task.checkpoint_db = split_path(args.checkpoint_db, split)
+        print("Processing AllSet {}: {}".format(split, input_path), flush=True)
+        result = max(result, process_manifest(task, expected_split=split))
+    return result
 
 
 if __name__ == "__main__":
