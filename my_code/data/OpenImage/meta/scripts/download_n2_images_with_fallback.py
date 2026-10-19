@@ -1,9 +1,10 @@
-"""Download n2 images in order: FiftyOne, TFDS, then ImageID URLs.
+"""Download Open Images in order: FiftyOne, TFDS, then ImageID URLs.
 
 The input is the original manifest, not a status CSV from another downloader.
-Each manifest row is placed in its parent/leaf folder. A SQLite checkpoint is
-updated as images finish, and the final CSV identifies the actual source or
-the reason all sources failed. Run again to retry incomplete rows.
+Hierarchy layout places each row in its parent/leaf folder. Flat layout saves
+one image per ImageID and accepts the AllSet captioned manifest. A SQLite
+checkpoint records progress; the final CSV identifies the source or failure.
+Run again to retry incomplete rows.
 """
 
 import argparse
@@ -27,10 +28,14 @@ from tqdm import tqdm
 META_DIR = Path(__file__).resolve().parent.parent
 N2_DIR = META_DIR / "Hierarchy" / "n2"
 SAMPLED_DIR = N2_DIR / "300"
+ALLSET_DIR = META_DIR / "AllSet"
 DEFAULT_INPUT = SAMPLED_DIR / "Image IDs_with_last_two_layers_multi_members_n2_one_label_per_parent_sampled_300_per_class.csv"
 DEFAULT_TREE = N2_DIR / "Last_Two_Layers_Multi_Members_n2.json"
 DEFAULT_OUTPUT = SAMPLED_DIR / "images_fiftyone_sampled_300_per_class"
 DEFAULT_STATUS = SAMPLED_DIR / "n2_sampled_download_status.csv"
+ALLSET_INPUT = ALLSET_DIR / "Image IDs_with_captions_and_labels_captioned_only.csv"
+ALLSET_OUTPUT = ALLSET_DIR / "images_captioned_only"
+ALLSET_STATUS = ALLSET_DIR / "captioned_only_download_status.csv"
 DEFAULT_S3 = "https://open-images-dataset.s3.amazonaws.com/{split}/{image_id}.jpg"
 SUFFIXES = {"JPEG": ".jpg", "PNG": ".png", "WEBP": ".webp", "BMP": ".bmp"}
 STATUS_FIELDS = ("DownloadStatus", "DownloadSource", "DownloadedImagePath", "DownloadError")
@@ -39,19 +44,21 @@ DONE = {"existing", "fiftyone", "tfds", "s3", "original_url", "thumbnail_url"}
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help="Original n2 manifest CSV. Default: %(default)s")
-    parser.add_argument("--class-tree", type=Path, default=DEFAULT_TREE, help="n2 class-tree JSON. Default: %(default)s")
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT, help="Parent/leaf image directory. Default: %(default)s")
-    parser.add_argument("--status-output", type=Path, default=DEFAULT_STATUS, help="Combined manifest and final status CSV. Default: %(default)s")
+    parser.add_argument("--layout", choices=("hierarchy", "flat"), default="hierarchy", help="hierarchy requires parent/leaf labels; flat saves images by ImageID and accepts AllSet. Default: %(default)s")
+    parser.add_argument("--input", type=Path, help="Original manifest CSV. Default: sampled n2 for hierarchy; captioned AllSet for flat.")
+    parser.add_argument("--class-tree", type=Path, default=DEFAULT_TREE, help="n2 class-tree JSON; ignored for flat layout. Default: %(default)s")
+    parser.add_argument("--output-dir", type=Path, help="Image directory. Default: sampled n2 hierarchy or AllSet/images_captioned_only for flat.")
+    parser.add_argument("--status-output", type=Path, help="Combined manifest and final status CSV. Default: n2 sampled or AllSet status path for the selected layout.")
     parser.add_argument("--checkpoint-db", type=Path, help="SQLite checkpoint. Default: hidden database beside --status-output.")
-    parser.add_argument("--split", choices=("train", "validation", "test"), default="train", help="FiftyOne, TFDS, and S3 split. Default: %(default)s")
+    parser.add_argument("--split", choices=("auto", "train", "validation", "test"), help="FiftyOne, TFDS, and S3 split. auto reads --subset-column; default: train for hierarchy, auto for flat.")
+    parser.add_argument("--subset-column", default="Subset", help="Split column when --split auto is used; accepts train, validation, test. Default: %(default)s")
     parser.add_argument("--zoo-dataset", default="open-images-v7", help="FiftyOne Zoo dataset. Default: %(default)s")
     parser.add_argument("--fiftyone-dataset-name", default="tinyclip_n2_fallback", help="Prefix for per-batch FiftyOne dataset names. Default: %(default)s")
     parser.add_argument("--dataset-dir", type=Path, help="FiftyOne cache directory. Default: FiftyOne's configured directory.")
     parser.add_argument("--fiftyone-batch-size", type=int, default=500, help="Unique IDs requested per FiftyOne call. Default: %(default)s")
     parser.add_argument("--workers", type=int, default=16, help="FiftyOne and URL download workers. Default: %(default)s")
     parser.add_argument("--tfds-name", default="open_images_v4/200k", help="TFDS builder/configuration. Default: %(default)s")
-    parser.add_argument("--tfds-data-dir", type=Path, default=N2_DIR / "tfds_open_images_v4", help="TFDS prepared-data directory. Default: %(default)s")
+    parser.add_argument("--tfds-data-dir", type=Path, help="TFDS prepared-data directory. Default: n2/tfds_open_images_v4 for hierarchy; AllSet/tfds_open_images_v4 for flat.")
     parser.add_argument("--download-tfds-data", action="store_true", help="Allow TFDS to prepare/download missing data; this may require substantial disk space. Default: false.")
     parser.add_argument("--tfds-image-id-key", default="auto", help="TFDS ID feature; auto tries image_id, image/filename, image_filename, id. Default: %(default)s")
     parser.add_argument("--source-url-template", action="append", help="ImageID URL template; repeatable, with {split} and {image_id}. Default: Open Images S3 URL.")
@@ -69,6 +76,16 @@ def parse_args(argv=None):
     parser.add_argument("--max-image-ids", type=int, help="Process only the first N pending unique IDs; remaining IDs stay pending. Default: all.")
     parser.add_argument("--progress-refresh-seconds", type=float, default=0.1, help="Minimum tqdm refresh interval in seconds. Default: %(default)s")
     args = parser.parse_args(argv)
+    if args.input is None:
+        args.input = ALLSET_INPUT if args.layout == "flat" else DEFAULT_INPUT
+    if args.output_dir is None:
+        args.output_dir = ALLSET_OUTPUT if args.layout == "flat" else DEFAULT_OUTPUT
+    if args.status_output is None:
+        args.status_output = ALLSET_STATUS if args.layout == "flat" else DEFAULT_STATUS
+    if args.tfds_data_dir is None:
+        args.tfds_data_dir = (ALLSET_DIR if args.layout == "flat" else N2_DIR) / "tfds_open_images_v4"
+    if args.split is None:
+        args.split = "auto" if args.layout == "flat" else "train"
     for name in ("fiftyone_batch_size", "workers", "url_retries"):
         if getattr(args, name) <= 0:
             parser.error("--{} must be positive".format(name.replace("_", "-")))
@@ -144,20 +161,33 @@ class DownloadStore:
         self.db.execute("CREATE TABLE IF NOT EXISTS rows (number INTEGER PRIMARY KEY, image_id TEXT NOT NULL, parent TEXT NOT NULL, leaf TEXT NOT NULL, status TEXT NOT NULL, source TEXT NOT NULL, path TEXT NOT NULL, error TEXT NOT NULL)")
         self.db.commit()
 
-    def seed(self, manifest_rows):
-        previous = {row[0]: row[1:4] for row in self.db.execute("SELECT number, image_id, parent, leaf FROM rows")}
-        if previous and (len(previous) != len(manifest_rows) or any(previous.get(number) != (image_id, parent, leaf) for number, image_id, parent, leaf in manifest_rows)):
-            raise ValueError("Checkpoint does not match the input manifest; use a different --checkpoint-db/--status-output")
-        self.db.executemany("INSERT OR IGNORE INTO rows VALUES (?, ?, ?, ?, 'pending', '', '', '')", manifest_rows)
-        for number, _, _, _ in manifest_rows:
-            status, path = self.db.execute("SELECT status, path FROM rows WHERE number = ?", (number,)).fetchone()
-            if status in DONE:
-                try:
-                    image_suffix(Path(path))
-                except (OSError, ValueError):
-                    self.db.execute("UPDATE rows SET status = 'pending', source = '', path = '', error = '' WHERE number = ?", (number,))
-            elif status == "failed":
-                self.db.execute("UPDATE rows SET status = 'pending', error = '' WHERE number = ?", (number,))
+    def seed(self, manifest_rows, refresh_seconds):
+        prior_count = self.db.execute("SELECT COUNT(*) FROM rows").fetchone()[0]
+        if prior_count:
+            if prior_count != len(manifest_rows):
+                raise ValueError("Checkpoint does not match the input manifest; use a different --checkpoint-db/--status-output")
+            saved_rows = self.db.execute("SELECT number, image_id, parent, leaf FROM rows ORDER BY number")
+            with tqdm(total=prior_count, desc="Matching checkpoint", unit="row", mininterval=refresh_seconds) as progress:
+                for saved, current in zip(saved_rows, manifest_rows):
+                    if tuple(saved) != current:
+                        raise ValueError("Checkpoint does not match the input manifest; use a different --checkpoint-db/--status-output")
+                    progress.update(1)
+        with tqdm(total=len(manifest_rows), desc="Seeding checkpoint", unit="row", mininterval=refresh_seconds) as progress:
+            for offset in range(0, len(manifest_rows), 5000):
+                batch = manifest_rows[offset:offset + 5000]
+                self.db.executemany("INSERT OR IGNORE INTO rows VALUES (?, ?, ?, ?, 'pending', '', '', '')", batch)
+                progress.update(len(batch))
+        with tqdm(total=len(manifest_rows), desc="Checking checkpoint", unit="row", mininterval=refresh_seconds) as progress:
+            for number, _, _, _ in manifest_rows:
+                status, path = self.db.execute("SELECT status, path FROM rows WHERE number = ?", (number,)).fetchone()
+                if status in DONE:
+                    try:
+                        image_suffix(Path(path))
+                    except (OSError, ValueError):
+                        self.db.execute("UPDATE rows SET status = 'pending', source = '', path = '', error = '' WHERE number = ?", (number,))
+                elif status == "failed":
+                    self.db.execute("UPDATE rows SET status = 'pending', error = '' WHERE number = ?", (number,))
+                progress.update(1)
         self.db.commit()
 
     def pending_rows(self, image_id):
@@ -183,28 +213,40 @@ def read_manifest(path, args):
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
         fields = reader.fieldnames or []
-        required = {args.image_id_column, args.parent_label_column, args.label_column}
+        required = {args.image_id_column}
+        if args.layout == "hierarchy":
+            required.update((args.parent_label_column, args.label_column))
+        if args.split == "auto":
+            required.add(args.subset_column)
         if not required.issubset(fields):
             raise ValueError("Missing input columns: {}".format(", ".join(sorted(required - set(fields)))))
         if set(STATUS_FIELDS).intersection(fields):
             raise ValueError("Input already contains final status columns")
-        rows, urls = [], {}
-        for number, row in enumerate(reader, start=2):
-            image_id = (row[args.image_id_column] or "").strip()
-            parent = (row[args.parent_label_column] or "").strip()
-            leaf = (row[args.label_column] or "").strip()
-            if not re.fullmatch(r"[A-Za-z0-9_-]+", image_id) or not parent or not leaf:
-                raise ValueError("Invalid ImageID or labels at CSV row {}".format(number))
-            rows.append((number, image_id, parent, leaf))
-            choices = urls.setdefault(image_id, [])
-            for kind, field in (("original_url", args.original_url_column), ("thumbnail_url", args.thumbnail_url_column)):
-                url = (row.get(field) or "").strip()
-                if url and url not in [item[1] for item in choices]:
-                    choices.append((kind, url))
-    return fields, rows, urls
+        rows, urls, splits = [], {}, {}
+        with tqdm(desc="Reading manifest (total unknown)", unit="row", mininterval=args.progress_refresh_seconds) as progress:
+            for number, row in enumerate(reader, start=2):
+                image_id = (row[args.image_id_column] or "").strip()
+                parent = (row.get(args.parent_label_column) or "").strip() if args.layout == "hierarchy" else ""
+                leaf = (row.get(args.label_column) or "").strip() if args.layout == "hierarchy" else ""
+                split = (row[args.subset_column] or "").strip().lower() if args.split == "auto" else args.split
+                if not re.fullmatch(r"[A-Za-z0-9_-]+", image_id) or (args.layout == "hierarchy" and (not parent or not leaf)):
+                    raise ValueError("Invalid ImageID or labels at CSV row {}".format(number))
+                if split not in ("train", "validation", "test"):
+                    raise ValueError("Invalid split {!r} at CSV row {}".format(split, number))
+                if image_id in splits and splits[image_id] != split:
+                    raise ValueError("ImageID {} occurs in multiple splits".format(image_id))
+                splits[image_id] = split
+                rows.append((number, image_id, parent, leaf))
+                choices = urls.setdefault(image_id, [])
+                for kind, field in (("original_url", args.original_url_column), ("thumbnail_url", args.thumbnail_url_column)):
+                    url = (row.get(field) or "").strip()
+                    if url and url not in [item[1] for item in choices]:
+                        choices.append((kind, url))
+                progress.update(1)
+    return fields, rows, urls, splits
 
 
-def write_status(input_path, output_path, fields, store):
+def write_status(input_path, output_path, fields, store, refresh_seconds):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     temporary = output_path.with_name(output_path.name + ".inprogress")
     with input_path.open("r", encoding="utf-8-sig", newline="") as source, temporary.open("w", encoding="utf-8-sig", newline="") as target:
@@ -212,13 +254,20 @@ def write_status(input_path, output_path, fields, store):
         writer = csv.DictWriter(target, fieldnames=fields + list(STATUS_FIELDS))
         writer.writeheader()
         statuses = iter(store.db.execute("SELECT number, status, source, path, error FROM rows ORDER BY number"))
-        for number, row in enumerate(reader, start=2):
-            saved_number, status, saved_source, path, error = next(statuses)
-            if number != saved_number:
-                raise RuntimeError("Checkpoint row order differs from manifest")
-            row.update(zip(STATUS_FIELDS, (status, saved_source, path, error)))
-            writer.writerow(row)
+        total = store.db.execute("SELECT COUNT(*) FROM rows").fetchone()[0]
+        with tqdm(total=total, desc="Writing status CSV", unit="row", mininterval=refresh_seconds) as progress:
+            for number, row in enumerate(reader, start=2):
+                saved_number, status, saved_source, path, error = next(statuses)
+                if number != saved_number:
+                    raise RuntimeError("Checkpoint row order differs from manifest")
+                row.update(zip(STATUS_FIELDS, (status, saved_source, path, error)))
+                writer.writerow(row)
+                progress.update(1)
     temporary.replace(output_path)
+
+
+def destination_folder(paths, output_dir, parent, leaf):
+    return output_dir if paths is None else output_dir.joinpath(*paths[(parent, leaf)])
 
 
 def apply_source(image_id, source_path, source_kind, source_label, store, paths, output_dir):
@@ -228,7 +277,7 @@ def apply_source(image_id, source_path, source_kind, source_label, store, paths,
         store.add_error(image_id, "{}: {}".format(source_kind, error))
         return
     for number, parent, leaf in store.pending_rows(image_id):
-        folder = output_dir.joinpath(*paths[(parent, leaf)])
+        folder = destination_folder(paths, output_dir, parent, leaf)
         existing = existing_image(folder, image_id)
         if existing is not None:
             store.record(number, "existing", str(existing), str(existing))
@@ -257,7 +306,7 @@ def fiftyone_stage(ids, store, paths, output_dir, args):
             if not batch:
                 progress.update(min(args.fiftyone_batch_size, len(ids) - offset))
                 continue
-            batch_hash = hashlib.sha1("\n".join(batch).encode("utf-8")).hexdigest()[:12]
+            batch_hash = hashlib.sha1((args.split + "\n" + "\n".join(batch)).encode("utf-8")).hexdigest()[:12]
             kwargs = dict(split=args.split, label_types=[], image_ids=batch, num_workers=args.workers,
                           dataset_name="{}_{}".format(args.fiftyone_dataset_name, batch_hash),
                           drop_existing_dataset=True)
@@ -414,34 +463,42 @@ def main(argv=None):
     args.tfds_data_dir = args.tfds_data_dir.expanduser().resolve()
     if args.dataset_dir is not None:
         args.dataset_dir = args.dataset_dir.expanduser().resolve()
-    fields, manifest_rows, metadata_urls = read_manifest(input_path, args)
-    paths = load_leaf_paths(tree_path, args)
+    fields, manifest_rows, metadata_urls, splits = read_manifest(input_path, args)
+    paths = load_leaf_paths(tree_path, args) if args.layout == "hierarchy" else None
     store = DownloadStore(checkpoint)
     try:
-        store.seed(manifest_rows)
+        store.seed(manifest_rows, args.progress_refresh_seconds)
         ids = list(dict.fromkeys(row[1] for row in manifest_rows))
-        for image_id in ids:
-            for number, parent, leaf in store.db.execute("SELECT number, parent, leaf FROM rows WHERE image_id = ? AND status != 'pending'", (image_id,)).fetchall():
-                if (parent, leaf) in paths:
-                    saved_path = store.db.execute("SELECT path FROM rows WHERE number = ?", (number,)).fetchone()[0]
-                    expected_folder = output_dir.joinpath(*paths[(parent, leaf)])
-                    if saved_path and Path(saved_path).parent != expected_folder:
-                        store.record(number, "pending")
-            for number, parent, leaf in store.pending_rows(image_id):
-                if (parent, leaf) not in paths:
-                    store.record(number, "failed", error="Parent/leaf label pair absent from class tree")
-                    continue
-                existing = existing_image(output_dir.joinpath(*paths[(parent, leaf)]), image_id)
-                if existing is not None:
-                    store.record(number, "existing", str(existing), str(existing))
+        with tqdm(total=len(ids), desc="Checking existing images", unit="ID", mininterval=args.progress_refresh_seconds) as progress:
+            for image_id in ids:
+                for number, parent, leaf in store.db.execute("SELECT number, parent, leaf FROM rows WHERE image_id = ? AND status != 'pending'", (image_id,)).fetchall():
+                    if paths is None or (parent, leaf) in paths:
+                        saved_path = store.db.execute("SELECT path FROM rows WHERE number = ?", (number,)).fetchone()[0]
+                        expected_folder = destination_folder(paths, output_dir, parent, leaf)
+                        if saved_path and Path(saved_path).parent != expected_folder:
+                            store.record(number, "pending")
+                for number, parent, leaf in store.pending_rows(image_id):
+                    if paths is not None and (parent, leaf) not in paths:
+                        store.record(number, "failed", error="Parent/leaf label pair absent from class tree")
+                        continue
+                    existing = existing_image(destination_folder(paths, output_dir, parent, leaf), image_id)
+                    if existing is not None:
+                        store.record(number, "existing", str(existing), str(existing))
+                progress.update(1)
         pending = [image_id for image_id in ids if store.pending_rows(image_id)]
         if args.max_image_ids is not None:
             pending = pending[:args.max_image_ids]
         print("Processing {} pending unique ImageIDs ({} manifest rows)".format(len(pending), len(manifest_rows)), flush=True)
-        fiftyone_stage(pending, store, paths, output_dir, args)
-        tfds_stage(pending, store, paths, output_dir, args)
-        url_stage(pending, metadata_urls, store, paths, output_dir, args)
-        write_status(input_path, status_path, fields, store)
+        grouped = {}
+        for image_id in pending:
+            grouped.setdefault(splits[image_id], []).append(image_id)
+        for split, selected_ids in grouped.items():
+            args.split = split
+            print("Split {}: {} pending ImageIDs".format(split, len(selected_ids)), flush=True)
+            fiftyone_stage(selected_ids, store, paths, output_dir, args)
+            tfds_stage(selected_ids, store, paths, output_dir, args)
+            url_stage(selected_ids, metadata_urls, store, paths, output_dir, args)
+        write_status(input_path, status_path, fields, store, args.progress_refresh_seconds)
         summary = store.summary()
         print("Status counts: {}".format(summary), flush=True)
         print("Status CSV: {}".format(status_path), flush=True)
