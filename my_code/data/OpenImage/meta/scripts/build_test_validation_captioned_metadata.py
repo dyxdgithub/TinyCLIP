@@ -1,4 +1,4 @@
-"""Build separate captioned test/validation CSVs in the AllSet format.
+"""Build separate captioned test/validation CSVs without voice_recording.
 
 Only positive image-level labels (Confidence=1) are included. Each non-empty
 Localized Narratives caption becomes one output row. LabelNames and
@@ -25,7 +25,7 @@ IMAGE_FIELDS = (
     "AuthorProfileURL", "Author", "Title", "OriginalSize", "OriginalMD5",
     "Thumbnail300KURL", "Rotation",
 )
-OUTPUT_FIELDS = IMAGE_FIELDS + ("caption", "voice_recording", "LabelNames", "DisplayNames")
+OUTPUT_FIELDS = IMAGE_FIELDS + ("caption", "LabelNames", "DisplayNames")
 
 
 def parse_args(argv=None):
@@ -37,7 +37,7 @@ def parse_args(argv=None):
     parser.add_argument("--splits", nargs="+", choices=("test", "validation"), default=("test", "validation"),
                         help="Splits to write as separate files. Accepted: test, validation. Default: test validation.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR,
-                        help="Directory for separate test and validation CSVs with the training file's 16 columns. Default: %(default)s")
+                        help="Directory for separate test and validation CSVs without voice_recording. Default: %(default)s")
     parser.add_argument("--checkpoint-dir", type=Path,
                         help="Persistent SQLite index and CSV parts. Default: hidden directory inside --output-dir.")
     parser.add_argument("--rows-per-part", type=int, default=10000,
@@ -197,6 +197,13 @@ def part_path(checkpoint_dir, split, number):
     return checkpoint_dir / "{}_part_{:06d}.csv".format(split, number)
 
 
+def has_expected_header(path, encoding):
+    if not path.is_file():
+        return False
+    with path.open("r", encoding=encoding, newline="") as handle:
+        return next(csv.reader(handle), []) == list(OUTPUT_FIELDS)
+
+
 def write_part(path, rows, split, db):
     temporary = path.with_name(path.name + ".inprogress")
     temporary.unlink(missing_ok=True)
@@ -216,13 +223,12 @@ def write_part(path, rows, split, db):
                 ).fetchall()
                 names = json.dumps([label for label, _ in labels], ensure_ascii=False, separators=(",", ":"))
                 displays = json.dumps([display for _, display in labels], ensure_ascii=False, separators=(",", ":"))
-                for caption, voice in caption_cursor.execute(
-                    "SELECT caption, voice_recording FROM captions WHERE split = ? AND image_id = ? ORDER BY ordinal",
+                for (caption,) in caption_cursor.execute(
+                    "SELECT caption FROM captions WHERE split = ? AND image_id = ? ORDER BY ordinal",
                     (split, image_id),
                 ):
                     output = {field: row[field] for field in IMAGE_FIELDS}
-                    output.update(caption=caption, voice_recording=voice,
-                                  LabelNames=names, DisplayNames=displays)
+                    output.update(caption=caption, LabelNames=names, DisplayNames=displays)
                     writer.writerow(output)
         temporary.replace(path)
     finally:
@@ -248,7 +254,7 @@ def build_parts(db, images_path, split, checkpoint_dir, rows_per_part, refresh_s
                 break
             part_number += 1
             path = part_path(checkpoint_dir, split, part_number)
-            if not path.is_file():
+            if not has_expected_header(path, "utf-8"):
                 write_part(path, rows, split, db)
             parts.append(path)
             progress.update(len(rows))
@@ -303,7 +309,8 @@ def main(argv=None):
         for split in args.splits:
             output = outputs[split]
             stage = "final_done_" + split
-            if db.execute("SELECT value FROM metadata WHERE key = ?", (stage,)).fetchone() and output.is_file():
+            if (db.execute("SELECT value FROM metadata WHERE key = ?", (stage,)).fetchone()
+                    and has_expected_header(output, "utf-8-sig")):
                 print("Already complete: {}".format(output), flush=True)
                 continue
             print("Processing {} metadata".format(split), flush=True)
