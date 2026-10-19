@@ -1,4 +1,4 @@
-"""Build captioned test/validation metadata in the AllSet training CSV format.
+"""Build separate captioned test/validation CSVs in the AllSet format.
 
 Only positive image-level labels (Confidence=1) are included. Each non-empty
 Localized Narratives caption becomes one output row. LabelNames and
@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 META_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_SOURCE_ROOT = Path("E:/数据集/Open Image")
-DEFAULT_OUTPUT = META_DIR / "AllSet" / "Image IDs_with_captions_and_labels_captioned_only_test_validation.csv"
+DEFAULT_OUTPUT_DIR = META_DIR / "AllSet"
 SPLIT_DIRS = {"test": "test", "validation": "val"}
 IMAGE_FIELDS = (
     "ImageID", "Subset", "OriginalURL", "OriginalLandingURL", "License",
@@ -35,11 +35,11 @@ def parse_args(argv=None):
     parser.add_argument("--class-names", type=Path,
                         help="LabelName/DisplayName CSV. Default: Class Names.csv under --source-root's hierarchy directory.")
     parser.add_argument("--splits", nargs="+", choices=("test", "validation"), default=("test", "validation"),
-                        help="Splits to combine, in output order. Accepted: test, validation. Default: test validation.")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT,
-                        help="Combined CSV with the training file's 16 columns. Default: %(default)s")
+                        help="Splits to write as separate files. Accepted: test, validation. Default: test validation.")
+    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR,
+                        help="Directory for separate test and validation CSVs with the training file's 16 columns. Default: %(default)s")
     parser.add_argument("--checkpoint-dir", type=Path,
-                        help="Persistent SQLite index and CSV parts. Default: hidden directory beside --output.")
+                        help="Persistent SQLite index and CSV parts. Default: hidden directory inside --output-dir.")
     parser.add_argument("--rows-per-part", type=int, default=10000,
                         help="Image IDs rows per resumable CSV part. Default: %(default)s")
     parser.add_argument("--checkpoint-interval", type=int, default=5000,
@@ -71,7 +71,7 @@ def require_columns(path, expected):
         raise ValueError("{} is missing columns: {}".format(path, ", ".join(sorted(missing))))
 
 
-def input_signature(paths, args, output):
+def input_signature(paths, args, outputs):
     sources = []
     for path in paths:
         if not path.is_file():
@@ -81,7 +81,7 @@ def input_signature(paths, args, output):
     return json.dumps({
         "sources": sources,
         "splits": list(args.splits),
-        "output": str(output),
+        "outputs": {split: str(path) for split, path in outputs.items()},
         "rows_per_part": args.rows_per_part,
     }, ensure_ascii=False, sort_keys=True)
 
@@ -96,7 +96,7 @@ def open_checkpoint(path, signature):
     current = db.execute("SELECT value FROM metadata WHERE key = 'input_signature'").fetchone()
     if current and current[0] != signature:
         db.close()
-        raise ValueError("Source files or settings changed; choose a new --checkpoint-dir and --output")
+        raise ValueError("Source files or settings changed; choose a new --checkpoint-dir and --output-dir")
     if current is None:
         db.execute("INSERT INTO metadata VALUES ('input_signature', ?)", (signature,))
     db.commit()
@@ -278,38 +278,45 @@ def combine_parts(parts, output, refresh_seconds):
 def main(argv=None):
     args = parse_args(argv)
     source_root = args.source_root.expanduser().resolve()
-    output = args.output.expanduser().resolve()
+    output_dir = args.output_dir.expanduser().resolve()
+    outputs = {
+        split: output_dir / "Image IDs_with_captions_and_labels_captioned_only_{}.csv".format(split)
+        for split in args.splits
+    }
     checkpoint_dir = (args.checkpoint_dir.expanduser().resolve() if args.checkpoint_dir
-                      else output.parent / ("." + output.stem + "_parts"))
+                      else output_dir / ("." + "_".join(args.splits) + "_captioned_metadata_parts"))
     class_names_path = (args.class_names.expanduser().resolve() if args.class_names
                         else source_root / "Hierarchy for 600 boxable classes" / "Class Names.csv")
     files = {split: source_files(source_root, split) for split in args.splits}
     inputs = [class_names_path] + [path for split in args.splits for path in files[split].values()]
-    if output in inputs:
-        raise ValueError("--output must differ from every input file")
-    signature = input_signature(inputs, args, output)
+    if any(output in inputs for output in outputs.values()):
+        raise ValueError("Output CSV paths must differ from every input file")
+    signature = input_signature(inputs, args, outputs)
     db_path = checkpoint_dir / "metadata_index.sqlite3"
-    if output.exists() and not db_path.exists():
-        raise FileExistsError("Output exists without its checkpoint: {}".format(output))
+    if not db_path.exists():
+        for output in outputs.values():
+            if output.exists():
+                raise FileExistsError("Output exists without its checkpoint: {}".format(output))
     db = open_checkpoint(db_path, signature)
     try:
-        if db.execute("SELECT value FROM metadata WHERE key = 'final_done'").fetchone() and output.is_file():
-            print("Already complete: {}".format(output), flush=True)
-            return 0
         class_names = load_class_names(class_names_path)
-        all_parts = []
         for split in args.splits:
+            output = outputs[split]
+            stage = "final_done_" + split
+            if db.execute("SELECT value FROM metadata WHERE key = ?", (stage,)).fetchone() and output.is_file():
+                print("Already complete: {}".format(output), flush=True)
+                continue
             print("Processing {} metadata".format(split), flush=True)
             index_labels(db, files[split]["labels"], split, class_names,
                          args.checkpoint_interval, args.progress_refresh_seconds)
             index_narratives(db, files[split]["narratives"], split,
                              args.checkpoint_interval, args.progress_refresh_seconds)
-            all_parts.extend(build_parts(db, files[split]["images"], split, checkpoint_dir,
-                                         args.rows_per_part, args.progress_refresh_seconds))
-        combine_parts(all_parts, output, args.progress_refresh_seconds)
-        db.execute("INSERT OR REPLACE INTO metadata VALUES ('final_done', '1')")
-        db.commit()
-        print("Wrote {} from {} completed parts".format(output, len(all_parts)), flush=True)
+            parts = build_parts(db, files[split]["images"], split, checkpoint_dir,
+                                args.rows_per_part, args.progress_refresh_seconds)
+            combine_parts(parts, output, args.progress_refresh_seconds)
+            db.execute("INSERT OR REPLACE INTO metadata VALUES (?, '1')", (stage,))
+            db.commit()
+            print("Wrote {} from {} completed parts".format(output, len(parts)), flush=True)
         print("Checkpoint directory: {}".format(checkpoint_dir), flush=True)
         return 0
     finally:
